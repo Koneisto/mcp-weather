@@ -1,4 +1,4 @@
-# mcp-weather
+# 🇪🇺🇫🇮 mcp-weather
 
 A [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server that aggregates weather data from 6 sources, optimized for European and Nordic/Baltic locations. Works out of the box with zero API keys -- add optional keys to unlock more sources.
 
