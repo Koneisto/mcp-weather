@@ -61,7 +61,7 @@ class Cache {
       inflight: this.inflight.size,
       hits: this.hits,
       misses: this.misses,
-      hitRate: total > 0 ? `${((this.hits / total) * 100).toFixed(1)}%` : 'N/A',
+      hitRate: total > 0 ? `${((this.hits / total) * 100).toFixed(1).replace('.', ',')} %` : 'N/A',
     };
   }
 }

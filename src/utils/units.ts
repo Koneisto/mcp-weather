@@ -1,3 +1,25 @@
+/** Format number with Finnish decimal comma: 2.3 → "2,3" */
+export function formatNum(value: number): string {
+  return String(value).replace('.', ',');
+}
+
+/** Format number with fixed decimals and Finnish comma: (1.5, 1) → "1,5" */
+export function formatFixed(value: number, decimals: number): string {
+  return value.toFixed(decimals).replace('.', ',');
+}
+
+/** Convert 12h time string to 24h: "08:06 AM" → "08:06", "01:30 PM" → "13:30" */
+export function to24h(time: string): string {
+  const match = time.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!match) return time;
+  let hours = parseInt(match[1], 10);
+  const minutes = match[2];
+  const period = match[3].toUpperCase();
+  if (period === 'AM' && hours === 12) hours = 0;
+  else if (period === 'PM' && hours !== 12) hours += 12;
+  return `${String(hours).padStart(2, '0')}:${minutes}`;
+}
+
 export function knotsToMs(knots: number): number {
   return Math.round(knots * 0.5144 * 10) / 10;
 }

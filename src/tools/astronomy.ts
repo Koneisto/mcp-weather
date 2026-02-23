@@ -3,6 +3,7 @@ import type { tool } from '../types.js';
 import { resolveLocation } from '../utils/location.js';
 import { fetchOpenMeteoForecast } from '../sources/open-meteo.js';
 import { fetchWeatherApiAstronomy } from '../sources/weatherapi.js';
+import { formatNum } from '../utils/units.js';
 
 const schema = {
   location: z.string().describe('City name, coordinates (lat,lon), or Finnish city alias'),
@@ -55,7 +56,7 @@ export const astronomyTool: tool<typeof schema> = {
         const a = astroResult.data;
         lines.push('');
         if (a.moonPhase) lines.push(`Moon phase: ${a.moonPhase}`);
-        if (a.moonIllumination !== undefined) lines.push(`Moon illumination: ${a.moonIllumination}%`);
+        if (a.moonIllumination !== undefined) lines.push(`Moon illumination: ${formatNum(a.moonIllumination)} %`);
         if (a.moonrise) lines.push(`Moonrise: ${a.moonrise}`);
         if (a.moonset) lines.push(`Moonset: ${a.moonset}`);
       }

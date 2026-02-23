@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { tool } from '../types.js';
 import { fetchMetar } from '../sources/metar.js';
 import { lookupFinnishLocation } from '../utils/finnish-locations.js';
-import { degreesToCardinal } from '../utils/units.js';
+import { degreesToCardinal, formatNum, formatFixed } from '../utils/units.js';
 
 const schema = {
   station: z.string().describe('ICAO airport code (e.g. "EFHK") or city name with a known ICAO code'),
@@ -41,16 +41,16 @@ export const metarTool: tool<typeof schema> = {
 
       if (m.observationTime) lines.push(`Observation: ${m.observationTime}`);
       if (m.flightCategory) lines.push(`Flight category: ${m.flightCategory}`);
-      if (m.temperature !== undefined) lines.push(`Temperature: ${m.temperature}°C`);
-      if (m.dewPoint !== undefined) lines.push(`Dew point: ${m.dewPoint}°C`);
+      if (m.temperature !== undefined) lines.push(`Temperature: ${formatNum(m.temperature)} °C`);
+      if (m.dewPoint !== undefined) lines.push(`Dew point: ${formatNum(m.dewPoint)} °C`);
       if (m.windSpeed !== undefined) {
-        const dir = m.windDirection !== undefined ? ` from ${degreesToCardinal(m.windDirection)} (${m.windDirection}°)` : '';
-        lines.push(`Wind: ${m.windSpeed} m/s${dir}`);
+        const dir = m.windDirection !== undefined ? ` from ${degreesToCardinal(m.windDirection)} (${formatNum(m.windDirection)}°)` : '';
+        lines.push(`Wind: ${formatNum(m.windSpeed)} m/s${dir}`);
       }
-      if (m.windGusts !== undefined) lines.push(`Wind gusts: ${m.windGusts} m/s`);
-      if (m.visibility !== undefined) lines.push(`Visibility: ${(m.visibility / 1000).toFixed(1)} km`);
-      if (m.pressure !== undefined) lines.push(`Pressure: ${m.pressure} hPa`);
-      if (m.altimeter !== undefined) lines.push(`Altimeter: ${m.altimeter} hPa`);
+      if (m.windGusts !== undefined) lines.push(`Wind gusts: ${formatNum(m.windGusts)} m/s`);
+      if (m.visibility !== undefined) lines.push(`Visibility: ${formatFixed(m.visibility / 1000, 1)} km`);
+      if (m.pressure !== undefined) lines.push(`Pressure: ${formatNum(m.pressure)} hPa`);
+      if (m.altimeter !== undefined) lines.push(`Altimeter: ${formatNum(m.altimeter)} hPa`);
       if (m.clouds) lines.push(`Clouds: ${m.clouds}`);
       if (m.weather) lines.push(`Weather: ${m.weather}`);
 

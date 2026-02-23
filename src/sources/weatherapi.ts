@@ -1,7 +1,7 @@
 import type { CurrentWeather, AstronomyData, SourceResult } from '../types.js';
 import { config } from '../config.js';
 import { cache } from '../cache.js';
-import { kmhToMs } from '../utils/units.js';
+import { kmhToMs, to24h } from '../utils/units.js';
 
 interface WeatherApiCurrentResponse {
   current: {
@@ -142,8 +142,8 @@ export async function fetchWeatherApiAstronomy(lat: number, lon: number, date: s
       data: {
         sunrise: a.sunrise,
         sunset: a.sunset,
-        moonrise: a.moonrise,
-        moonset: a.moonset,
+        moonrise: to24h(a.moonrise),
+        moonset: to24h(a.moonset),
         moonPhase: a.moon_phase,
         moonIllumination: parseInt(a.moon_illumination, 10),
       },

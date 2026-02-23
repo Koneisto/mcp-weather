@@ -3,7 +3,7 @@ import type { tool } from '../types.js';
 import { resolveLocation } from '../utils/location.js';
 import { fetchOpenMeteoAirQuality } from '../sources/open-meteo.js';
 import { fetchTomorrowAirQuality } from '../sources/tomorrow-io.js';
-import { aqiToCategory } from '../utils/units.js';
+import { aqiToCategory, formatNum } from '../utils/units.js';
 
 const schema = {
   location: z.string().describe('City name, coordinates (lat,lon), or Finnish city alias'),
@@ -38,12 +38,12 @@ export const airQualityTool: tool<typeof schema> = {
         if (d.aqi !== undefined) {
           lines.push(`European AQI: ${d.aqi} (${d.aqiCategory ?? aqiToCategory(d.aqi)})`);
         }
-        if (d.pm25 !== undefined) lines.push(`PM2.5: ${d.pm25} µg/m³`);
-        if (d.pm10 !== undefined) lines.push(`PM10: ${d.pm10} µg/m³`);
-        if (d.no2 !== undefined) lines.push(`NO₂: ${d.no2} µg/m³`);
-        if (d.o3 !== undefined) lines.push(`O₃: ${d.o3} µg/m³`);
-        if (d.so2 !== undefined) lines.push(`SO₂: ${d.so2} µg/m³`);
-        if (d.co !== undefined) lines.push(`CO: ${d.co} µg/m³`);
+        if (d.pm25 !== undefined) lines.push(`PM2.5: ${formatNum(d.pm25)} µg/m³`);
+        if (d.pm10 !== undefined) lines.push(`PM10: ${formatNum(d.pm10)} µg/m³`);
+        if (d.no2 !== undefined) lines.push(`NO₂: ${formatNum(d.no2)} µg/m³`);
+        if (d.o3 !== undefined) lines.push(`O₃: ${formatNum(d.o3)} µg/m³`);
+        if (d.so2 !== undefined) lines.push(`SO₂: ${formatNum(d.so2)} µg/m³`);
+        if (d.co !== undefined) lines.push(`CO: ${formatNum(d.co)} µg/m³`);
       }
 
       // Tomorrow.io enhancement

@@ -1,6 +1,6 @@
 import type { CurrentWeather, ResolvedLocation, SourceStatus } from '../types.js';
 import { config } from '../config.js';
-import { degreesToCardinal } from './units.js';
+import { degreesToCardinal, formatNum } from './units.js';
 import { fetchOpenMeteoCurrent, getOpenMeteoStatus } from '../sources/open-meteo.js';
 import { fetchWttrCurrent, getWttrStatus } from '../sources/wttr-in.js';
 import { fetchOWMCurrent, getOWMStatus } from '../sources/openweathermap.js';
@@ -54,22 +54,22 @@ export async function aggregateCurrentWeather(
 function buildSummary(w: CurrentWeather, loc: ResolvedLocation): string {
   const parts: string[] = [];
 
-  const temp = w.temperature !== undefined ? `${w.temperature}°C` : 'unknown temperature';
+  const temp = w.temperature !== undefined ? `${formatNum(w.temperature)} °C` : 'unknown temperature';
   const desc = w.weatherDescription?.toLowerCase() ?? 'unknown conditions';
   parts.push(`Currently ${temp} and ${desc} in ${loc.name}.`);
 
   if (w.windSpeed !== undefined) {
     const dir = w.windDirection !== undefined ? ` from ${degreesToCardinal(w.windDirection)}` : '';
-    const gust = w.windGusts !== undefined ? ` (gusts ${w.windGusts} m/s)` : '';
-    parts.push(`Wind ${w.windSpeed} m/s${dir}${gust}.`);
+    const gust = w.windGusts !== undefined ? ` (gusts ${formatNum(w.windGusts)} m/s)` : '';
+    parts.push(`Wind ${formatNum(w.windSpeed)} m/s${dir}${gust}.`);
   }
 
   if (w.humidity !== undefined) {
-    parts.push(`Humidity ${w.humidity}%.`);
+    parts.push(`Humidity ${formatNum(w.humidity)} %.`);
   }
 
   if (w.feelsLike !== undefined && w.temperature !== undefined && Math.abs(w.feelsLike - w.temperature) >= 2) {
-    parts.push(`Feels like ${w.feelsLike}°C.`);
+    parts.push(`Feels like ${formatNum(w.feelsLike)} °C.`);
   }
 
   return parts.join(' ');

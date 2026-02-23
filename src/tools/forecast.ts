@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { tool } from '../types.js';
 import { resolveLocation } from '../utils/location.js';
 import { fetchOpenMeteoForecast } from '../sources/open-meteo.js';
-import { degreesToCardinal } from '../utils/units.js';
+import { degreesToCardinal, formatNum } from '../utils/units.js';
 
 const schema = {
   location: z.string().describe('City name, coordinates (lat,lon), or Finnish city alias'),
@@ -32,17 +32,17 @@ export const forecastTool: tool<typeof schema> = {
         lines.push(`--- ${day.date} ---`);
         if (day.weatherDescription) lines.push(`Conditions: ${day.weatherDescription}`);
         if (day.tempMax !== undefined && day.tempMin !== undefined) {
-          lines.push(`Temperature: ${day.tempMin}°C to ${day.tempMax}°C`);
+          lines.push(`Temperature: ${formatNum(day.tempMin)} °C to ${formatNum(day.tempMax)} °C`);
         }
         if (day.precipitationSum !== undefined) {
-          const prob = day.precipitationProbability !== undefined ? ` (${day.precipitationProbability}% chance)` : '';
-          lines.push(`Precipitation: ${day.precipitationSum} mm${prob}`);
+          const prob = day.precipitationProbability !== undefined ? ` (${formatNum(day.precipitationProbability)} % chance)` : '';
+          lines.push(`Precipitation: ${formatNum(day.precipitationSum)} mm${prob}`);
         }
         if (day.windSpeedMax !== undefined) {
           const dir = day.windDirection !== undefined ? ` from ${degreesToCardinal(day.windDirection)}` : '';
-          lines.push(`Max wind: ${day.windSpeedMax} m/s${dir}`);
+          lines.push(`Max wind: ${formatNum(day.windSpeedMax)} m/s${dir}`);
         }
-        if (day.uvIndexMax !== undefined) lines.push(`UV index max: ${day.uvIndexMax}`);
+        if (day.uvIndexMax !== undefined) lines.push(`UV index max: ${formatNum(day.uvIndexMax)}`);
         if (day.sunrise && day.sunset) {
           const rise = day.sunrise.includes('T') ? day.sunrise.split('T')[1] : day.sunrise;
           const set = day.sunset.includes('T') ? day.sunset.split('T')[1] : day.sunset;
