@@ -50,7 +50,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^26.6.5",
     "@types/suncalc": "^1.9.2",
     "typescript": "^5.9.3"
   }
