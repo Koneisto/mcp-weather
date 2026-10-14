@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Build stage: compile TypeScript with the dev dependencies, then drop them.
-FROM node:22.23-alpine AS build
+FROM node:26.11-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --legacy-peer-deps
@@ -12,7 +12,7 @@ RUN npm run build && npm prune --omit=dev --legacy-peer-deps
 # Runtime stage: Node, production dependencies and the compiled server only.
 # npm, npx and corepack are removed: the server does not use them at runtime, and their bundled dependencies were the
 # only JavaScript findings in an image scan. Alpine packages are upgraded at build time to pick up OS security fixes.
-FROM node:22.23-alpine
+FROM node:26.11-alpine
 RUN apk upgrade --no-cache \
  && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
            /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack /usr/local/bin/yarn /usr/local/bin/yarnpkg /opt/yarn-*
