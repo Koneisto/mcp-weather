@@ -2,6 +2,15 @@ import type { CurrentWeather, DailyForecast, AirQualityData, SourceResult } from
 import { config } from '../config.js';
 import { cache } from '../cache.js';
 import { wmoCodeToDescription, aqiToCategory } from '../utils/units.js';
+import { inNordicArea } from '../utils/region.js';
+
+/**
+ * Nordic and Baltic area: Open-Meteo's metno_seamless = MET Norway's MET Nordic model (2.5 km MEPS, post-processed with
+ * station observations) for the first days, then ECMWF. Elsewhere Open-Meteo's best-match blend.
+ */
+export function forecastModel(lat: number, lon: number): { models?: string; label: string } {
+  return inNordicArea(lat, lon) ? { models: 'metno_seamless', label: 'MET Norway MET Nordic model via Open-Meteo' } : { label: 'Open-Meteo' };
+}
 
 interface OpenMeteoCurrentResponse {
   current: {
@@ -42,6 +51,11 @@ interface OpenMeteoAQResponse {
     ozone: number;
     sulphur_dioxide: number;
     carbon_monoxide: number;
+    alder_pollen?: number | null;
+    birch_pollen?: number | null;
+    grass_pollen?: number | null;
+    mugwort_pollen?: number | null;
+    ragweed_pollen?: number | null;
   };
 }
 
@@ -108,11 +122,13 @@ export async function fetchOpenMeteoCurrent(lat: number, lon: number): Promise<S
 }
 
 export async function fetchOpenMeteoForecast(lat: number, lon: number, days: number): Promise<SourceResult<DailyForecast[]>> {
+  const model = forecastModel(lat, lon);
   try {
     const data = await cache.getOrFetch<OpenMeteoCurrentResponse>(
-      `openmeteo:forecast:${lat},${lon}:${days}`,
+      `openmeteo:forecast:${lat},${lon}:${days}:${model.models ?? 'best'}`,
       async () => {
         const params = new URLSearchParams({
+          ...(model.models ? { models: model.models } : {}),
           latitude: String(lat),
           longitude: String(lon),
           daily: 'temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_direction_10m_dominant,uv_index_max,sunrise,sunset',
@@ -151,10 +167,31 @@ export async function fetchOpenMeteoForecast(lat: number, lon: number, days: num
       sunset: data.daily!.sunset[i],
     }));
 
-    return { ok: true, source: SOURCE, data: forecasts };
+    return { ok: true, source: model.label, data: forecasts };
   } catch (err) {
     return { ok: false, error: String(err), source: SOURCE };
   }
+}
+
+/** Hourly cloud cover (%) for the next hours, local time strings (aurora visibility). Same model choice as the forecast. */
+export async function fetchOpenMeteoHourlyCloud(lat: number, lon: number, hours: number): Promise<{ timezone: string; times: string[]; cloud: Array<number | null> }> {
+  const model = forecastModel(lat, lon);
+  return cache.getOrFetch(`openmeteo:cloud:${lat},${lon}:${hours}:${model.models ?? 'best'}`, async () => {
+    const params = new URLSearchParams({
+      latitude: String(lat), longitude: String(lon), hourly: 'cloud_cover', timezone: 'auto', forecast_hours: String(hours),
+      ...(model.models ? { models: model.models } : {}),
+    });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
+    try {
+      const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`, { signal: controller.signal });
+      if (!res.ok) throw new Error(`Open-Meteo returned ${res.status}`);
+      const d = await res.json() as { timezone: string; hourly: { time: string[]; cloud_cover: Array<number | null> } };
+      return { timezone: d.timezone, times: d.hourly.time, cloud: d.hourly.cloud_cover };
+    } finally {
+      clearTimeout(timeout);
+    }
+  }, 30 * 60000);
 }
 
 export async function fetchOpenMeteoAirQuality(lat: number, lon: number): Promise<SourceResult<AirQualityData>> {
@@ -165,7 +202,7 @@ export async function fetchOpenMeteoAirQuality(lat: number, lon: number): Promis
         const params = new URLSearchParams({
           latitude: String(lat),
           longitude: String(lon),
-          current: 'european_aqi,pm2_5,pm10,nitrogen_dioxide,ozone,sulphur_dioxide,carbon_monoxide',
+          current: 'european_aqi,pm2_5,pm10,nitrogen_dioxide,ozone,sulphur_dioxide,carbon_monoxide,alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,ragweed_pollen',
         });
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
@@ -192,6 +229,8 @@ export async function fetchOpenMeteoAirQuality(lat: number, lon: number): Promis
         o3: c.ozone,
         so2: c.sulphur_dioxide,
         co: c.carbon_monoxide,
+        pollen: Object.fromEntries((['alder', 'birch', 'grass', 'mugwort', 'ragweed'] as const)
+          .map((k) => [k, c[`${k}_pollen`]]).filter(([, v]) => typeof v === 'number')),
       },
     };
   } catch (err) {

@@ -26,7 +26,7 @@ const line = (t, p) => t.split('\n').find((l) => l.startsWith(p)) ?? '';
 
 // ---------- 1. tools ----------
 const tools = (await c.listTools()).tools;
-check('6 tools', tools.length === 6 && ['get_current_weather','get_weather_forecast','get_metar','get_astronomy','get_air_quality','get_weather_source_status'].every((n) => tools.some((t) => t.name === n)), tools.map((t) => t.name));
+check('9 tools', tools.length === 9 && ['get_current_weather','get_weather_forecast','get_precipitation_nowcast','get_weather_warnings','get_air_quality','get_aurora_forecast','get_metar','get_astronomy','get_weather_source_status'].every((n) => tools.some((t) => t.name === n)), tools.map((t) => t.name));
 check('METAR description mentions the FMI fallback', /Finnish Meteorological Institute/.test(tools.find((t) => t.name === 'get_metar').description));
 
 // ---------- 2. current weather ----------
@@ -80,6 +80,31 @@ check('air quality hki: structured pollutants with origin', (await call('get_air
 check('air quality hki: measured station within 10 km, FMI first, no Tomorrow.io', /Measured at: Helsinki .* km away\), hourly average/.test(t) && /^Sources: FMI, Open-Meteo$/m.test(t) && /\(measured\)/.test(t) && !/Tomorrow/.test(t), t);
 t = (await call('get_air_quality', { location: 'Roma' })).text;
 check('air quality Roma: model only, European category scale', /European AQI: \d+ \((Good|Fair|Moderate|Poor|Very poor|Extremely poor)\)/.test(t) && !/measured/.test(t) && /^Sources: Open-Meteo$/m.test(t), t);
+
+// ---------- 3b. Nordic: MET Nordic forecast, warnings in 8 countries, radar nowcast, aurora, pollen ----------
+{
+  let r = await call('get_weather_forecast', { location: 'Oslo', days: 2 });
+  check('forecast Oslo: MET Nordic model', !r.isError && r.data?.source === 'MET Norway MET Nordic model via Open-Meteo' && r.data.days.length === 2, r.text.slice(0, 200));
+  r = await call('get_weather_forecast', { location: 'Paris', days: 1 });
+  check('forecast Paris: Open-Meteo default model', !r.isError && r.data?.source === 'Open-Meteo', r.data?.source);
+  for (const [q, country, coverage] of [['Vaasa', 'Finland', 'point'], ['Tromsø', 'Norway', 'point'], ['Malmö', 'Sweden', 'point'], ['Copenhagen', 'Denmark', 'country'],
+    ['Reykjavik', 'Iceland', 'country'], ['Tallinn', 'Estonia', 'country'], ['Riga', 'Latvia', 'country'], ['Vilnius', 'Lithuania', 'country']]) {
+    r = await call('get_weather_warnings', { location: q });
+    check(`warnings ${q}: ${country}, ${coverage}, credited`, !r.isError && r.data?.country === country && r.data.coverage === coverage && /Source: /.test(r.text) && Array.isArray(r.data.warnings), r.text.slice(0, 300));
+  }
+  r = await call('get_weather_warnings', { location: 'Vaasa', language: 'fi' });
+  check('warnings Vaasa in Finnish: no English event names', !r.isError && r.data.warnings.every((w) => !/warning/i.test(w.event)), r.data?.warnings?.map((w) => w.event));
+  r = await call('get_weather_warnings', { location: 'Berlin' });
+  check('warnings Berlin: isError (outside the region)', r.isError && /not in these countries/.test(r.text), r.text);
+  r = await call('get_precipitation_nowcast', { location: 'Bergen' });
+  check('nowcast Bergen: 2 h of 5-min steps or a clear radar message', (!r.isError && r.data.steps.length >= 20 && typeof r.data.raining === 'boolean') || /radar coverage/.test(r.text), r.text.slice(0, 200));
+  r = await call('get_aurora_forecast', { location: 'Tromsø' });
+  check('aurora Tromsø: Kp needed 1, dark hours, chance', !r.isError && r.data.kpNeeded === 1 && r.data.darkHours >= 0 && ['none', 'low', 'moderate', 'high'].includes(r.data.chance), r.text.slice(0, 300));
+  r = await call('get_aurora_forecast', { location: 'Rovaniemi' });
+  check('aurora Rovaniemi: FMI R-index station nearby', !r.isError && r.data.activityNow && r.data.activityNow.distanceKm < 300, r.text.slice(0, 300));
+  r = await call('get_air_quality', { location: 'hki' });
+  check('air quality hki: pollen levels (CAMS)', !r.isError && r.data.pollen && ['none', 'low', 'moderate', 'high'].includes(r.data.pollen.birch?.level), JSON.stringify(r.data?.pollen));
+}
 
 // ---------- 4. astronomy ----------
 t = (await call('get_astronomy', { location: 'EFHK' })).text;

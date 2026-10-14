@@ -49,7 +49,8 @@ async function inMemoryClient() {
 test('tools: same names, with title, output schema and read-only annotations', async () => {
   const c = await inMemoryClient();
   const tools = (await c.listTools()).tools;
-  assert.deepEqual(tools.map((t) => t.name).sort(), ['get_air_quality', 'get_astronomy', 'get_current_weather', 'get_metar', 'get_weather_forecast', 'get_weather_source_status']);
+  assert.deepEqual(tools.map((t) => t.name).sort(), ['get_air_quality', 'get_astronomy', 'get_aurora_forecast', 'get_current_weather', 'get_metar',
+    'get_precipitation_nowcast', 'get_weather_forecast', 'get_weather_source_status', 'get_weather_warnings']);
   for (const t of tools) {
     assert.ok(t.title, t.name);
     assert.equal(t.outputSchema?.type, 'object', t.name);
@@ -166,7 +167,7 @@ test('1.0.2: JSON-only clients are served (no SSE needed), foreign Origin is rej
     const r = await fetch(`${base}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body });
     assert.equal(r.status, 200);
     assert.match(r.headers.get('content-type'), /application\/json/);
-    assert.equal((await r.json()).result.serverInfo.version, '1.0.2');
+    assert.equal((await r.json()).result.serverInfo.version, JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version);
     const f = await fetch(`${base}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', origin: 'http://evil.example' }, body });
     assert.equal(f.status, 403);
   } finally { await new Promise((res) => http.close(res)); }

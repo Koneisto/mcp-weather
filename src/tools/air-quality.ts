@@ -17,19 +17,25 @@ const POLLUTANTS: Array<[Pollutant, string]> = [
 ];
 
 const value = z.object({ value: z.number().describe('µg/m³'), origin: z.enum(['measured', 'model']) });
+const POLLEN = [['alder', 'Alder'], ['birch', 'Birch'], ['grass', 'Grass'], ['mugwort', 'Mugwort'], ['ragweed', 'Ragweed']] as const;
+/** Pollen level from grains/m³: tree pollen (alder, birch) low ≤ 10, moderate ≤ 100; herbs and grass low ≤ 10, moderate ≤ 50. */
+const pollenLevel = (k: string, v: number) => v < 1 ? 'none' : v <= 10 ? 'low' : v <= (k === 'alder' || k === 'birch' ? 100 : 50) ? 'moderate' : 'high';
+const pollenOut = z.object({ value: z.number().describe('grains/m³'), level: z.enum(['none', 'low', 'moderate', 'high']) });
 const outputSchema = {
   location: locationOut,
   europeanAqi: z.number().optional(),
   category: z.string().optional().describe('Good, Fair, Moderate, Poor, Very poor, Extremely poor'),
   pollutants: z.object({ pm25: value.optional(), pm10: value.optional(), no2: value.optional(), o3: value.optional(), so2: value.optional(), co: value.optional() }),
   measuredAt: stationOut.optional().describe('air quality station (Finland, within 10 km); time = hourly value'),
+  pollen: z.object({ alder: pollenOut.optional(), birch: pollenOut.optional(), grass: pollenOut.optional(), mugwort: pollenOut.optional(), ragweed: pollenOut.optional() })
+    .optional().describe('CAMS model, Europe only'),
   sources: z.array(z.string()),
 };
 
 export const airQualityTool: tool<typeof schema, typeof outputSchema> = {
   name: 'get_air_quality',
   title: 'Air quality',
-  description: 'Get air quality index and pollutant concentrations (PM2.5, PM10, NO2, O3, SO2, CO) for a location. Returns the European AQI with category. In Finland, values measured at the nearest air quality station (within 10 km) take precedence over the model.',
+  description: 'Get air quality index, pollutant concentrations (PM2.5, PM10, NO2, O3, SO2, CO) and pollen (alder, birch, grass, mugwort, ragweed; Europe) for a location. Returns the European AQI with category. In Finland, values measured at the nearest air quality station (within 10 km) take precedence over the model.',
   schema,
   outputSchema,
   annotations: READ_ONLY_EXTERNAL,
@@ -71,6 +77,15 @@ export const airQualityTool: tool<typeof schema, typeof outputSchema> = {
         }
       }
 
+      const pollenIn = model.ok ? model.data.pollen ?? {} : {};
+      const pollen: Record<string, { value: number; level: 'none' | 'low' | 'moderate' | 'high' }> = {};
+      for (const [k] of POLLEN) { const v = pollenIn[k]; if (typeof v === 'number') pollen[k] = { value: Math.round(v * 10) / 10, level: pollenLevel(k, v) }; }
+      if (Object.keys(pollen).length) {
+        const present = POLLEN.filter(([k]) => pollen[k] && pollen[k].level !== 'none');
+        lines.push(present.length ? `Pollen: ${present.map(([k, l]) => `${l} ${pollen[k].level} (${formatNum(pollen[k].value)} grains/m³)`).join(', ')}`
+          : 'Pollen: none in the air (out of season or not detected)');
+      }
+
       lines.push('');
       if (measured) {
         lines.push(`Measured at: ${measured.station} (${formatNum(measured.distanceKm)} km away), hourly average, ${formatLocalTime(measured.observationTime)}`);
@@ -85,6 +100,7 @@ export const airQualityTool: tool<typeof schema, typeof outputSchema> = {
         category: aqiOut === undefined ? undefined : aqiToCategory(aqiOut),
         pollutants: structured,
         measuredAt: measured && { station: measured.station, distanceKm: measured.distanceKm, observationTime: measured.observationTime },
+        pollen: Object.keys(pollen).length ? pollen : undefined,
         sources,
       });
     } catch (err) {

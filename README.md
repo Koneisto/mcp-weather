@@ -5,13 +5,17 @@
 [![License: MIT](https://img.shields.io/github/license/Koneisto/mcp-weather)](LICENSE)
 ![Node.js](https://img.shields.io/badge/node-%3E%3D22-brightgreen)
 
-A [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server that aggregates weather data from 7 sources, optimized for European and Nordic/Baltic locations. In Finland it uses measured data: weather and air quality from the nearest Finnish Meteorological Institute (FMI) and municipal stations, with models filling the gaps. Works out of the box with zero API keys -- add optional keys to unlock more sources.
+A [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for weather in the Nordic and Baltic countries and the rest of Europe. It uses the national weather services where they are best: measured observations from the Finnish Meteorological Institute (FMI), MET Norway's high-resolution MET Nordic forecast, official warnings from FMI, SMHI, MET Norway and MeteoAlarm, radar nowcasts, and aurora forecasts from FMI magnetometers and NOAA. Works out of the box with zero API keys -- add optional keys to unlock more sources.
 
 ## Features
 
-- **7 weather sources** -- Finnish Meteorological Institute (FMI), Open-Meteo, wttr.in, METAR, OpenWeatherMap, WeatherAPI, Tomorrow.io
+- **Nordic weather services** -- FMI (Finland), MET Norway, SMHI (Sweden), MeteoAlarm (Denmark, Iceland, Estonia, Latvia, Lithuania), NOAA SWPC, plus Open-Meteo, wttr.in, METAR and optional OpenWeatherMap, WeatherAPI, Tomorrow.io
+- **MET Nordic forecast** -- in the Nordic and Baltic countries the forecast comes from MET Norway's 2.5 km MET Nordic model (post-processed with station observations), elsewhere from Open-Meteo's best-match blend
+- **Official warnings in 8 countries** -- Finland, Sweden and Norway matched to the location (warning polygons and point queries), Denmark, Iceland and the Baltic countries per country
+- **Radar nowcast** -- will it rain in the next 2 hours, in 5-minute steps (MET Norway)
+- **Northern lights** -- Kp needed at the latitude, NOAA Kp forecast, FMI R-index measured right now, darkness and cloud cover hour by hour
 - **Measured data in Finland** -- current weather uses the 10-minute observation of the nearest FMI weather station within 15 km first, air quality the nearest air quality station within 10 km; models fill in what the station does not measure, and farther away the model for the exact point is used (the nearest weather station within 50 km is shown for reference)
-- **6 MCP tools** -- current weather, forecast, air quality, aviation METAR, astronomy, source status
+- **9 MCP tools** -- current weather, forecast, precipitation nowcast, warnings, air quality with pollen, aurora, aviation METAR, astronomy, source status
 - **Nordic/Finnish focus** -- 30+ Finnish cities with instant alias resolution (e.g. `hki`, `tre`, `stadi`), Nordic/Baltic capitals included
 - **Multi-source aggregation** -- merges data from all available sources for more complete and accurate results
 - **Zero-config start** -- 4 sources work without any API keys (FMI, Open-Meteo, wttr.in, METAR)
@@ -22,8 +26,11 @@ A [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server that a
 | Tool | Description |
 |------|-------------|
 | `get_current_weather` | Current conditions from up to 6 sources, merged into one result; in Finland the nearest FMI station's measurement comes first |
-| `get_weather_forecast` | 1-7 day daily forecast (temperature, precipitation, wind, UV) |
-| `get_air_quality` | European AQI with PM2.5, PM10, NO2, O3, SO2, CO levels; in Finland measured at the nearest air quality station (within 10 km) |
+| `get_weather_forecast` | 1-7 day daily forecast (temperature, precipitation, wind, UV); MET Nordic model in the Nordic and Baltic countries |
+| `get_precipitation_nowcast` | Rain or snow in the next 2 hours from radar, 5-minute steps: raining now, start and end, heaviest rate, total (MET Norway, Nordic radar area) |
+| `get_weather_warnings` | Active official warnings in Finland (FMI), Sweden (SMHI), Norway (MET Norway), Denmark, Iceland, Estonia, Latvia, Lithuania (MeteoAlarm); English, Finnish, Swedish or Norwegian where available |
+| `get_aurora_forecast` | Northern lights chance hour by hour: Kp needed at the latitude, NOAA Kp forecast, FMI R-index now (Finland), darkness and cloud cover |
+| `get_air_quality` | European AQI with PM2.5, PM10, NO2, O3, SO2, CO levels; in Finland measured at the nearest air quality station (within 10 km); pollen (alder, birch, grass, mugwort, ragweed) from CAMS |
 | `get_metar` | Aviation weather (raw + decoded) from aviationweather.gov; for Finnish airports falls back to the airport's FMI weather station observation |
 | `get_astronomy` | Sun and moon computed locally: sunrise/sunset, solar noon and altitude, twilight phases, golden hour, day length, moon phase, illumination, moonrise/moonset, midnight sun and polar night |
 | `get_weather_source_status` | Health check for all sources + cache statistics |
@@ -116,8 +123,12 @@ The server tells you what is missing: if optional keys are not set, the first an
 
 | Source | Requires Key | Data Provided |
 |--------|-------------|---------------|
-| FMI (Finnish Meteorological Institute) | No | Measured current conditions and air quality in Finland, METAR fallback for Finnish airports |
-| Open-Meteo | No | Current, forecast, air quality |
+| FMI (Finnish Meteorological Institute) | No | Measured current conditions and air quality in Finland, METAR fallback for Finnish airports, warnings (CAP), aurora R-index |
+| MET Norway | No | Radar nowcast, warnings in Norway (MetAlerts); the MET Nordic model behind the Nordic forecast |
+| SMHI | No | Warnings in Sweden |
+| MeteoAlarm (EUMETNET) | No | Warnings in Denmark, Iceland, Estonia, Latvia, Lithuania |
+| NOAA SWPC | No | Planetary Kp, observed and forecast |
+| Open-Meteo | No | Current, forecast (MET Nordic model in the Nordic area), air quality, pollen, cloud cover |
 | wttr.in | No | Current conditions |
 | METAR | No | Aviation weather |
 | OpenWeatherMap | Yes | Current conditions |
@@ -144,9 +155,12 @@ Finnish Meteorological Institute.
 
 ### Data sources and licences
 
-Outputs name the sources they used. FMI data (including the municipal air quality networks it distributes) and
-Open-Meteo data are licensed under CC BY 4.0; METAR comes from the US NOAA Aviation Weather Center
-(aviationweather.gov). The free Open-Meteo API is for non-commercial use; see
+Outputs name the sources they used and the new Nordic tools also return an `attribution` field. FMI data (including
+the municipal air quality networks it distributes), MET Norway, SMHI, MeteoAlarm (data provided by EUMETNET members)
+and Open-Meteo data are licensed under CC BY 4.0; METAR and Kp come from the US NOAA (public domain). Requests to
+MET Norway follow its terms: an identifying User-Agent, coordinates with at most 4 decimals, no new request before the
+`Expires` time and conditional requests with `If-Modified-Since`. Country outlines for locating coordinates are from
+Natural Earth (public domain). The free Open-Meteo API is for non-commercial use; see
 [Open-Meteo's terms](https://open-meteo.com/en/terms) for commercial use. wttr.in and the optional sources
 (OpenWeatherMap, WeatherAPI, Tomorrow.io) are subject to their providers' terms. Keys for the optional sources are
 read from the environment and are never written to output.
@@ -157,18 +171,26 @@ read from the environment and are never written to output.
 src/
   index.ts              # entry point: stdio or --http
   server.ts             # tool registration and the Streamable HTTP server
+  version.ts            # version (serverInfo and the User-Agent sent to providers)
+  keys.ts               # optional API keys: what is missing and how to set it
   config.ts             # Environment variable loading
   cache.ts              # LRU cache with stampede prevention
   types.ts              # Shared TypeScript interfaces
   tools/
     current-weather.ts  # get_current_weather
     forecast.ts         # get_weather_forecast
+    nowcast.ts          # get_precipitation_nowcast
+    warnings.ts         # get_weather_warnings
+    aurora.ts           # get_aurora_forecast
     air-quality.ts      # get_air_quality
     metar.ts            # get_metar
     astronomy.ts        # get_astronomy
     source-status.ts    # get_weather_source_status
   sources/
-    open-meteo.ts       # Open-Meteo (current, forecast, AQI)
+    open-meteo.ts       # Open-Meteo (current, forecast incl. MET Nordic model, AQI, pollen, cloud cover)
+    met-norway.ts       # MET Norway client (User-Agent, 4 decimals, Expires, If-Modified-Since)
+    warnings.ts         # FMI CAP, SMHI, MET Norway MetAlerts, MeteoAlarm
+    space-weather.ts    # FMI R-index, NOAA Kp
     wttr-in.ts          # wttr.in (current)
     openweathermap.ts   # OpenWeatherMap (current)
     weatherapi.ts       # WeatherAPI (current)
@@ -183,12 +205,16 @@ src/
     suncalc.ts          # Local sun and moon calculations
     location.ts         # Location resolution (alias -> geocode -> coords)
     units.ts            # Unit conversions and WMO weather codes
+    region.ts           # Nordic/Baltic country of a point, time zones
+    http.ts             # GET with timeout and identifying User-Agent
+  data/
+    nordic-borders.ts   # simplified Natural Earth country outlines (public domain)
 ```
 
 ## Tests
 
 ```bash
-npm run build && npm test                                 # offline unit tests (recorded FMI responses in test/fixtures)
+npm run build && npm test                                 # offline unit tests (recorded FMI, SMHI, MET Norway, MeteoAlarm, NOAA responses in test/fixtures)
 npm run test:live -- "node build/index.js"                # live acceptance test over stdio, real network
 npm run test:live -- http://localhost:3015/mcp            # ... or against the Docker endpoint
 ```

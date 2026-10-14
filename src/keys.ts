@@ -51,10 +51,13 @@ export function keyNote(): string | null {
 /** Server instructions for the client and model (sent in the initialize result). */
 export function serverInstructions(): string {
   const m = missingKeys();
-  return 'European weather with measured observations in Finland (FMI stations). Tools: get_current_weather (now), ' +
-    'get_weather_forecast (coming hours and days), get_air_quality, get_metar (airports by ICAO code), get_astronomy ' +
-    '(sun and moon), get_weather_source_status (sources, cache and API keys). Locations can be place names in several ' +
-    'languages, coordinates "lat,lon" or ICAO codes.' +
+  return 'Nordic and European weather: measured observations in Finland (FMI stations), MET Norway\'s high-resolution ' +
+    'MET Nordic forecast in the Nordic and Baltic countries, and official warnings. Tools: get_current_weather (now), ' +
+    'get_weather_forecast (coming days), get_precipitation_nowcast (rain or snow in the next 2 hours, radar), ' +
+    'get_weather_warnings (official warnings in FI, SE, NO, DK, IS, EE, LV, LT), get_air_quality (incl. pollen), ' +
+    'get_aurora_forecast (northern lights), get_metar (airports by ICAO code), get_astronomy (sun and moon), ' +
+    'get_weather_source_status (sources, cache and API keys). Locations can be place names in several languages, ' +
+    'coordinates "lat,lon" or ICAO codes. Credit the data source named in each answer.' +
     (m.length
       ? ` Optional sources without an API key: ${m.map((k) => k.source).join(', ')}. If the user asks about more sources or ` +
         'missing data, get_weather_source_status explains where to get free keys and how to set them.'

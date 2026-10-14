@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-15
+
+### Added
+
+- `get_weather_warnings`: official weather warnings in Finland (FMI CAP, matched to the location by warning polygons),
+  Sweden (SMHI impact-based warnings, GeoJSON areas), Norway (MET Norway MetAlerts by coordinates) and Denmark, Iceland,
+  Estonia, Latvia and Lithuania (MeteoAlarm, per country with area names). English, Finnish, Swedish or Norwegian text.
+- `get_precipitation_nowcast`: radar-based precipitation for the next 2 hours in 5-minute steps (MET Norway Nowcast 2.0).
+- `get_aurora_forecast`: northern lights chance hour by hour from the Kp needed at the latitude, the NOAA Kp forecast,
+  the FMI R-index measured now (Finland), darkness (sun below -12°) and cloud cover.
+- Pollen (alder, birch, grass, mugwort, ragweed) with levels in `get_air_quality` (CAMS via Open-Meteo, Europe).
+- Country of a point for the Nordic and Baltic countries from simplified Natural Earth outlines (coastal points count).
+
+### Changed
+
+- In the Nordic and Baltic countries `get_weather_forecast` uses MET Norway's MET Nordic model (Open-Meteo
+  `metno_seamless`); the source is named in the output.
+- Every provider gets an identifying User-Agent; MET Norway requests follow its terms (4 decimals, Expires,
+  If-Modified-Since).
+
 ## [1.0.2] - 2026-10-15
 
 ### Added
@@ -69,7 +89,8 @@ First public release.
 - 30 offline tests (`npm test`) and a live acceptance test against a running server
   (`npm run test:live -- <stdio command | http://host:port/mcp>`).
 
-[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/Koneisto/mcp-weather/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/Koneisto/mcp-weather/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/Koneisto/mcp-weather/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Koneisto/mcp-weather/releases/tag/v1.0.0
