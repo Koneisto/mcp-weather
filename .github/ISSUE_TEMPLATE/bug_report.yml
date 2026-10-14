@@ -1,0 +1,29 @@
+name: Bug report
+description: Something does not work as described
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The tool, its arguments, what you got and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      placeholder: 'get_current_weather { "location": "hki" }'
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: mcp-weather version or commit, Node.js version, stdio or HTTP, Docker or local.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Output or logs
+      description: Remove any API keys first.
+      render: text

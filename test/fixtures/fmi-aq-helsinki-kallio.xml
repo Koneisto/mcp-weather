@@ -1,0 +1,895 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection
+    timeStamp="2026-10-14T18:07:24Z"
+    numberMatched="12"
+    numberReturned="12"
+           xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0"
+        xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/3.0"
+        xmlns:omso="http://inspire.ec.europa.eu/schemas/omso/3.0"
+        xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gmd="http://www.isotc211.org/2005/gmd"
+        xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:swe="http://www.opengis.net/swe/2.0"
+        xmlns:gmlcov="http://www.opengis.net/gmlcov/1.0"
+        xmlns:sam="http://www.opengis.net/sampling/2.0"
+        xmlns:sams="http://www.opengis.net/samplingSpatial/2.0"
+        xmlns:wml2="http://www.opengis.net/waterml/2.0"
+	xmlns:target="http://xml.fmi.fi/namespace/om/atmosphericfeatures/1.1"
+        xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd
+        http://www.opengis.net/gmlcov/1.0 http://schemas.opengis.net/gmlcov/1.0/gmlcovAll.xsd
+        http://www.opengis.net/sampling/2.0 http://schemas.opengis.net/sampling/2.0/samplingFeature.xsd
+        http://www.opengis.net/samplingSpatial/2.0 http://schemas.opengis.net/samplingSpatial/2.0/spatialSamplingFeature.xsd
+        http://www.opengis.net/swe/2.0 http://schemas.opengis.net/sweCommon/2.0/swe.xsd
+        http://inspire.ec.europa.eu/schemas/ompr/3.0 https://inspire.ec.europa.eu/schemas/ompr/3.0/Processes.xsd
+        http://inspire.ec.europa.eu/schemas/omso/3.0 https://inspire.ec.europa.eu/schemas/omso/3.0/SpecialisedObservations.xsd
+        http://www.opengis.net/waterml/2.0 http://schemas.opengis.net/waterml/2.0/waterml2.xsd
+        http://xml.fmi.fi/namespace/om/atmosphericfeatures/1.1 https://xml.fmi.fi/schema/om/atmosphericfeatures/1.1/atmosphericfeatures.xsd">
+   
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-Ax5vWMmLx5NQLan4mm.Nl5AYWMyJTowtoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eULSxZc.ndU07ctqr.FUucN9ITGx8udakWhTjunTRk1cM7LuyVNO3Laq_hVLmCn.Ezs23Tz05OdZjFgwbNmTo15fPffyyX9_bLy78tPTDi2ZY2Zsw9MvPpEzNm_Hh2Za1M2m_GkruvTM4a23D4iaefTDux5aVq6EBpbcPiLw349HOcGOZvbcvTLvoYeWHbl6ZeXOtqhNZNb9CoxkX8PbO1tunnz07s9TL46VjTsM5tbuu2fmp9MPTTv3c5wmtx64dmnp5k7s2.Jrc.mHpp37qnnhlrgw6eXHrh2aenm_15YsO5uc.m_llyceuXl5v6cldoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eTQ6aduWn0y8J.Qmh007ctrfuy1jVakMA">
+
+		            <om:phenomenonTime>
+        <gml:TimePeriod  gml:id="time1-1-1">
+          <gml:beginPosition>2026-10-14T15:00:00Z</gml:beginPosition>
+          <gml:endPosition>2026-10-14T18:00:00Z</gml:endPosition>
+        </gml:TimePeriod>
+      </om:phenomenonTime>
+      <om:resultTime>
+        <gml:TimeInstant gml:id="time2-1-1">
+          <gml:timePosition>2026-10-14T18:00:00Z</gml:timePosition>
+        </gml:TimeInstant>
+      </om:resultTime>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/airquality_urban"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=PM25_PT1H_avg&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-1-PM25_PT1H_avg">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-1-PM25_PT1H_avg">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-100662-pos-PM25_PT1H_avg">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">100662</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Kallio 2</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-100662</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-100662-1-1-PM25_PT1H_avg"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-100662-1-1-PM25_PT1H_avg" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Kallio 2</gml:name>
+                                <gml:pos>60.18739 24.95060 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-1-PM25_PT1H_avg">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T15:00:00Z</wml2:time>
+				      <wml2:value>2.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T16:00:00Z</wml2:time>
+				      <wml2:value>2.7</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T17:00:00Z</wml2:time>
+				      <wml2:value>2.7</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T18:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-hVzV_m.Ej6_AiCyQp.XanHRjMKaJTowtoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eULSxZc.ndU07ctqr.FUucN9ITGx8udakWhTjunTRk1cM7LuyVNO3Laq_hVLmCn.Ezs23Tz05OdZjFgwbNmTo15fPffyyX9_bLy78tPTDi2ZY2Zsw9MvPpEzNm_Hh2Za1M2m_GkruvTM4a23D4iaefTDux5aVq6EBpbcPiLw349HOcGOZvbcvTLvoYeWHbl6ZeXOtqhNYsL9CoxkX8PbO1tunnz07s9TL46VjTsM5tbuu2fmp9MPTTv3c5wmtx64dmnp5k7s2.Jrc.mHpp37qnnhlrgw6eXHrh2aenm_15YsO5uc.m_llyceuXl5v6cldoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eTQ6aduWn0y8J.Qmh007ctrfuy1jVakMA">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-1"/>
+      <om:resultTime xlink:href="#time2-1-1"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/airquality_urban"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=PM10_PT1H_avg&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-1-PM10_PT1H_avg">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-1-PM10_PT1H_avg">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-100662-pos-PM10_PT1H_avg">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">100662</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Kallio 2</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-100662</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-100662-1-1-PM10_PT1H_avg"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-100662-1-1-PM10_PT1H_avg" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Kallio 2</gml:name>
+                                <gml:pos>60.18739 24.95060 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-1-PM10_PT1H_avg">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T15:00:00Z</wml2:time>
+				      <wml2:value>6.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T16:00:00Z</wml2:time>
+				      <wml2:value>5.7</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T17:00:00Z</wml2:time>
+				      <wml2:value>5.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T18:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-mPcuafYjoUFwW0vugtuQa3TVgJaJTowtoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eULSxZc.ndU07ctqr.FUucN9ITGx8udakWhTjunTRk1cM7LuyVNO3Laq_hVLmCn.Ezs23Tz05OdZjFgwbNmTo15fPffyyX9_bLy78tPTDi2ZY2Zsw9MvPpEzNm_Hh2Za1M2m_GkruvTM4a23D4iaefTDux5aVq6EBpbcPiLw349HOcGOZvbcvTLvoYeWHbl6ZeXOtidPZX6FRjIv4e2drbdPPnp3Z6mXx0rGnYZza3dds_NT6Yemnfu5zhNbj1w7NPTzJ3Zt8TW59MPTTv3VPPDLXBh08uPXDs09PN_ryxYdzc59N_LLk49cvLzf05K7QuvLFh3OnW_Fzy8u2Hpp37ubp1h08uPXDs09PLp1o39eWzy6ddNO3L2w7OuXhh08mh007ctPpl4T8hNDpp25bW_dlrGq1IYA-">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-1"/>
+      <om:resultTime xlink:href="#time2-1-1"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/airquality_urban"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=NO2_PT1H_avg&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-1-NO2_PT1H_avg">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-1-NO2_PT1H_avg">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-100662-pos-NO2_PT1H_avg">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">100662</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Kallio 2</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-100662</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-100662-1-1-NO2_PT1H_avg"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-100662-1-1-NO2_PT1H_avg" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Kallio 2</gml:name>
+                                <gml:pos>60.18739 24.95060 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-1-NO2_PT1H_avg">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T15:00:00Z</wml2:time>
+				      <wml2:value>12.6</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T16:00:00Z</wml2:time>
+				      <wml2:value>5.6</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T17:00:00Z</wml2:time>
+				      <wml2:value>11.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T18:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-39bS1bE_v8ka4xUXif2.h_tyqhGJTowtoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eULSxZc.ndU07ctqr.FUucN9ITGx8udakWhTjunTRk1cM7LuyVNO3Laq_hVLmCn.Ezs23Tz05OdZjFgwbNmTo15fPffyyX9_bLy78tPTDi2ZY2Zsw9MvPpEzNm_Hh2Za1M2m_GkruvTM4a23D4iaefTDux5aVq6EBpbcPiLw349HOcGOZvbcvTLvoYeWHbl6ZeXOtaezv0KjGRfw9s7W26efPTuz1MvjpWNOwzm1u67Z.an0w9NO_dznCa3Hrh2aenmTuzb4mtz6YemnfuqeeGWuDDp5ceuHZp6eb_Xliw7m5z6b.WXJx65eXm_pyV2hdeWLDudOt.Lnl5dsPTTv3c3TrDp5ceuHZp6eXTrRv68tnl066aduXth2dcvDDp5NDpp25afTLwn5CaHTTty2t.7LWNVqQwA--">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-1"/>
+      <om:resultTime xlink:href="#time2-1-1"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/airquality_urban"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=O3_PT1H_avg&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-1-O3_PT1H_avg">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-1-O3_PT1H_avg">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-100662-pos-O3_PT1H_avg">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">100662</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Kallio 2</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-100662</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-100662-1-1-O3_PT1H_avg"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-100662-1-1-O3_PT1H_avg" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Kallio 2</gml:name>
+                                <gml:pos>60.18739 24.95060 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-1-O3_PT1H_avg">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T15:00:00Z</wml2:time>
+				      <wml2:value>30.3</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T16:00:00Z</wml2:time>
+				      <wml2:value>39.6</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T17:00:00Z</wml2:time>
+				      <wml2:value>36.5</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T18:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-YpeaIa71NEyBAeswZvQGMdY_eVCJTowtoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eULSxZc.ndU07ctqr.FUucN9ITGx8udakWhTjunTRk1cM7LuyVNO3Laq_hVLmCn.Ezs23Tz05OdZjFgwbNmTo15fPffyyX9_bLy78tPTDi2ZY2Zsw9MvPpEzNm_Hh2Za1M2m_GkruvTM4a23D4iaefTDux5aVq6EBpbcPiLw349HOcGOZvbcvTLvoYeWHbl6ZeXOtinPZX6FRjIv4e2drbdPPnp3Z6mXx0rGnYZza3dds_NT6Yemnfu5zhNbj1w7NPTzJ3Zt8TW59MPTTv3VPPDLXBh08uPXDs09PN_ryxYdzc59N_LLk49cvLzf05K7QuvLFh3OnW_Fzy8u2Hpp37ubp1h08uPXDs09PLp1o39eWzy6ddNO3L2w7OuXhh08mh007ctPpl4T8hNDpp25bW_dlrGq1IYA-">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-1"/>
+      <om:resultTime xlink:href="#time2-1-1"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/airquality_urban"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=SO2_PT1H_avg&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-1-SO2_PT1H_avg">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-1-SO2_PT1H_avg">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-100662-pos-SO2_PT1H_avg">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">100662</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Kallio 2</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-100662</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-100662-1-1-SO2_PT1H_avg"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-100662-1-1-SO2_PT1H_avg" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Kallio 2</gml:name>
+                                <gml:pos>60.18739 24.95060 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-1-SO2_PT1H_avg">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T15:00:00Z</wml2:time>
+				      <wml2:value>0.4</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T16:00:00Z</wml2:time>
+				      <wml2:value>0.4</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T17:00:00Z</wml2:time>
+				      <wml2:value>0.4</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T18:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-dQ5G8pk7eGQEpNwJfDCUEd1HMZeJTowtoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eULSxZc.ndU07ctqr.FUucN9ITGx8udakWhTjunTRk1cM7LuyVNO3Laq_hVLmCn.Ezs23Tz05OdZjFgwbNmTo15fPffyyX9_bLy78tPTDi2ZY2Zsw9MvPpEzNm_Hh2Za1M2m_GkruvTM4a23D4iaefTDux5aVq6EBpbcPiLw349HOcGOZvbcvTLvoYeWHbl6ZeXOtaHPv0KjGRfw9s7W26efPTuz1MvjpWNOwzm1u67Z.an0w9NO_dznCa3Hrh2aenmTuzb4mtz6YemnfuqeeGWuDDp5ceuHZp6eb_Xliw7m5z6b.WXJx65eXm_pyV2hdeWLDudOt.Lnl5dsPTTv3c3TrDp5ceuHZp6eXTrRv68tnl066aduXth2dcvDDp5NDpp25afTLwn5CaHTTty2t.7LWNVqQwA--">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-1"/>
+      <om:resultTime xlink:href="#time2-1-1"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/airquality_urban"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=CO_PT1H_avg&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-1-CO_PT1H_avg">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-1-CO_PT1H_avg">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-100662-pos-CO_PT1H_avg">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">100662</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Kallio 2</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-100662</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-100662-1-1-CO_PT1H_avg"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-100662-1-1-CO_PT1H_avg" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Kallio 2</gml:name>
+                                <gml:pos>60.18739 24.95060 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-1-CO_PT1H_avg">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T15:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T16:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T17:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T18:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-drDgLXZyxaUhpvKJzqxUeBfLQEeJTowtoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eULSxZc.ndU07ctqr.FUucN9ITGx8udakWhTjunTRk1cM7LuyVNO3Laq_hVLmCn.Ezs23Tz05OdZjFg4YNnDo15fPffyyX9_bLy78tPTDi2ZY2Zsw9MvPpEzNm_Hh2Za1M2m_GkruvTM4a23D4iaefTDux5aVq6EBpbcPiLw349HOcGOZvbcvTLvoYeWHbl6ZeXOtqhNZNb9CoxkX8PbO1tunnz07s9TL46VjTsM5tbuu2fmp9MPTTv3c5wmtx64dmnp5k7s2.Jrc.mHpp37qnnhlrgw6eXHrh2aenm_15YsO5uc.m_llyceuXl5v6cldoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eTQ6aduWn0y8J.Qmh007ctrfuy1jVakMA">
+
+		            <om:phenomenonTime>
+        <gml:TimePeriod  gml:id="time1-1-2">
+          <gml:beginPosition>2026-10-14T15:00:00Z</gml:beginPosition>
+          <gml:endPosition>2026-10-14T18:00:00Z</gml:endPosition>
+        </gml:TimePeriod>
+      </om:phenomenonTime>
+      <om:resultTime>
+        <gml:TimeInstant gml:id="time2-1-2">
+          <gml:timePosition>2026-10-14T18:00:00Z</gml:timePosition>
+        </gml:TimeInstant>
+      </om:resultTime>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/airquality_urban"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=PM25_PT1H_avg&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-2-PM25_PT1H_avg">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-2-PM25_PT1H_avg">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-108068-pos-PM25_PT1H_avg">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">108068</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Teollisuuskatu</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-108068</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-108068-1-2-PM25_PT1H_avg"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-108068-1-2-PM25_PT1H_avg" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Teollisuuskatu</gml:name>
+                                <gml:pos>60.19512 24.94480 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-2-PM25_PT1H_avg">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T15:00:00Z</wml2:time>
+				      <wml2:value>3.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T16:00:00Z</wml2:time>
+				      <wml2:value>3.4</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T17:00:00Z</wml2:time>
+				      <wml2:value>3.6</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T18:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-zZGDhc5w22cgAO6tz4tjRdAiGImJTowtoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eULSxZc.ndU07ctqr.FUucN9ITGx8udakWhTjunTRk1cM7LuyVNO3Laq_hVLmCn.Ezs23Tz05OdZjFg4YNnDo15fPffyyX9_bLy78tPTDi2ZY2Zsw9MvPpEzNm_Hh2Za1M2m_GkruvTM4a23D4iaefTDux5aVq6EBpbcPiLw349HOcGOZvbcvTLvoYeWHbl6ZeXOtqhNYsL9CoxkX8PbO1tunnz07s9TL46VjTsM5tbuu2fmp9MPTTv3c5wmtx64dmnp5k7s2.Jrc.mHpp37qnnhlrgw6eXHrh2aenm_15YsO5uc.m_llyceuXl5v6cldoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eTQ6aduWn0y8J.Qmh007ctrfuy1jVakMA">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-2"/>
+      <om:resultTime xlink:href="#time2-1-2"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/airquality_urban"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=PM10_PT1H_avg&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-2-PM10_PT1H_avg">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-2-PM10_PT1H_avg">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-108068-pos-PM10_PT1H_avg">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">108068</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Teollisuuskatu</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-108068</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-108068-1-2-PM10_PT1H_avg"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-108068-1-2-PM10_PT1H_avg" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Teollisuuskatu</gml:name>
+                                <gml:pos>60.19512 24.94480 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-2-PM10_PT1H_avg">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T15:00:00Z</wml2:time>
+				      <wml2:value>6.5</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T16:00:00Z</wml2:time>
+				      <wml2:value>9.5</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T17:00:00Z</wml2:time>
+				      <wml2:value>11.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T18:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-r2ZTicqGLtIL9oiTtZiTCK2iEzGJTowtoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eULSxZc.ndU07ctqr.FUucN9ITGx8udakWhTjunTRk1cM7LuyVNO3Laq_hVLmCn.Ezs23Tz05OdZjFg4YNnDo15fPffyyX9_bLy78tPTDi2ZY2Zsw9MvPpEzNm_Hh2Za1M2m_GkruvTM4a23D4iaefTDux5aVq6EBpbcPiLw349HOcGOZvbcvTLvoYeWHbl6ZeXOtidPZX6FRjIv4e2drbdPPnp3Z6mXx0rGnYZza3dds_NT6Yemnfu5zhNbj1w7NPTzJ3Zt8TW59MPTTv3VPPDLXBh08uPXDs09PN_ryxYdzc59N_LLk49cvLzf05K7QuvLFh3OnW_Fzy8u2Hpp37ubp1h08uPXDs09PLp1o39eWzy6ddNO3L2w7OuXhh08mh007ctPpl4T8hNDpp25bW_dlrGq1IYA-">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-2"/>
+      <om:resultTime xlink:href="#time2-1-2"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/airquality_urban"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=NO2_PT1H_avg&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-2-NO2_PT1H_avg">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-2-NO2_PT1H_avg">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-108068-pos-NO2_PT1H_avg">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">108068</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Teollisuuskatu</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-108068</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-108068-1-2-NO2_PT1H_avg"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-108068-1-2-NO2_PT1H_avg" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Teollisuuskatu</gml:name>
+                                <gml:pos>60.19512 24.94480 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-2-NO2_PT1H_avg">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T15:00:00Z</wml2:time>
+				      <wml2:value>18.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T16:00:00Z</wml2:time>
+				      <wml2:value>13.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T17:00:00Z</wml2:time>
+				      <wml2:value>14.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T18:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-h_aJSSZIBwjxkhPTJ.dKcOONQ8uJTowtoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eULSxZc.ndU07ctqr.FUucN9ITGx8udakWhTjunTRk1cM7LuyVNO3Laq_hVLmCn.Ezs23Tz05OdZjFg4YNnDo15fPffyyX9_bLy78tPTDi2ZY2Zsw9MvPpEzNm_Hh2Za1M2m_GkruvTM4a23D4iaefTDux5aVq6EBpbcPiLw349HOcGOZvbcvTLvoYeWHbl6ZeXOtaezv0KjGRfw9s7W26efPTuz1MvjpWNOwzm1u67Z.an0w9NO_dznCa3Hrh2aenmTuzb4mtz6YemnfuqeeGWuDDp5ceuHZp6eb_Xliw7m5z6b.WXJx65eXm_pyV2hdeWLDudOt.Lnl5dsPTTv3c3TrDp5ceuHZp6eXTrRv68tnl066aduXth2dcvDDp5NDpp25afTLwn5CaHTTty2t.7LWNVqQwA--">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-2"/>
+      <om:resultTime xlink:href="#time2-1-2"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/airquality_urban"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=O3_PT1H_avg&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-2-O3_PT1H_avg">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-2-O3_PT1H_avg">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-108068-pos-O3_PT1H_avg">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">108068</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Teollisuuskatu</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-108068</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-108068-1-2-O3_PT1H_avg"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-108068-1-2-O3_PT1H_avg" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Teollisuuskatu</gml:name>
+                                <gml:pos>60.19512 24.94480 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-2-O3_PT1H_avg">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T15:00:00Z</wml2:time>
+				      <wml2:value>28.3</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T16:00:00Z</wml2:time>
+				      <wml2:value>36.4</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T17:00:00Z</wml2:time>
+				      <wml2:value>36.2</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T18:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-6r1Lkc2lkxvEjQaxpWDX4EQUANeJTowtoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eULSxZc.ndU07ctqr.FUucN9ITGx8udakWhTjunTRk1cM7LuyVNO3Laq_hVLmCn.Ezs23Tz05OdZjFg4YNnDo15fPffyyX9_bLy78tPTDi2ZY2Zsw9MvPpEzNm_Hh2Za1M2m_GkruvTM4a23D4iaefTDux5aVq6EBpbcPiLw349HOcGOZvbcvTLvoYeWHbl6ZeXOtinPZX6FRjIv4e2drbdPPnp3Z6mXx0rGnYZza3dds_NT6Yemnfu5zhNbj1w7NPTzJ3Zt8TW59MPTTv3VPPDLXBh08uPXDs09PN_ryxYdzc59N_LLk49cvLzf05K7QuvLFh3OnW_Fzy8u2Hpp37ubp1h08uPXDs09PLp1o39eWzy6ddNO3L2w7OuXhh08mh007ctPpl4T8hNDpp25bW_dlrGq1IYA-">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-2"/>
+      <om:resultTime xlink:href="#time2-1-2"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/airquality_urban"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=SO2_PT1H_avg&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-2-SO2_PT1H_avg">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-2-SO2_PT1H_avg">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-108068-pos-SO2_PT1H_avg">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">108068</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Teollisuuskatu</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-108068</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-108068-1-2-SO2_PT1H_avg"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-108068-1-2-SO2_PT1H_avg" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Teollisuuskatu</gml:name>
+                                <gml:pos>60.19512 24.94480 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-2-SO2_PT1H_avg">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T15:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T16:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T17:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T18:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-AGsqpDWwmjPH0ewoGTT7lFPsvaSJTowtoXXliw7nTrfi55eXbD00793N06w6eXHrh2aenl060b.vLZ5dOumnbl7YdnXLww6eULSxZc.ndU07ctqr.FUucN9ITGx8udakWhTjunTRk1cM7LuyVNO3Laq_hVLmCn.Ezs23Tz05OdZjFg4YNnDo15fPffyyX9_bLy78tPTDi2ZY2Zsw9MvPpEzNm_Hh2Za1M2m_GkruvTM4a23D4iaefTDux5aVq6EBpbcPiLw349HOcGOZvbcvTLvoYeWHbl6ZeXOtaHPv0KjGRfw9s7W26efPTuz1MvjpWNOwzm1u67Z.an0w9NO_dznCa3Hrh2aenmTuzb4mtz6YemnfuqeeGWuDDp5ceuHZp6eb_Xliw7m5z6b.WXJx65eXm_pyV2hdeWLDudOt.Lnl5dsPTTv3c3TrDp5ceuHZp6eXTrRv68tnl066aduXth2dcvDDp5NDpp25afTLwn5CaHTTty2t.7LWNVqQwA--">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-2"/>
+      <om:resultTime xlink:href="#time2-1-2"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/airquality_urban"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=CO_PT1H_avg&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-2-CO_PT1H_avg">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-2-CO_PT1H_avg">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-108068-pos-CO_PT1H_avg">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">108068</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Teollisuuskatu</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-108068</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-108068-1-2-CO_PT1H_avg"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-108068-1-2-CO_PT1H_avg" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Teollisuuskatu</gml:name>
+                                <gml:pos>60.19512 24.94480 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-2-CO_PT1H_avg">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T15:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T16:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T17:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-14T18:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+</wfs:FeatureCollection>
