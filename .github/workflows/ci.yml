@@ -34,3 +34,23 @@ jobs:
       - run: npm run build
       - run: npm test
       - run: npm audit --omit=dev --audit-level=high
+
+  image:
+    name: Container image
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build
+        run: docker build -t mcp-weather:ci .
+      - name: Scan for fixable HIGH and CRITICAL vulnerabilities
+        run: >-
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro aquasec/trivy:0.58.1
+          image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed --no-progress mcp-weather:ci
+      - name: Smoke test
+        run: |
+          docker run -d --name mcp-weather -p 3000:3000 mcp-weather:ci
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:3000/health && exit 0; sleep 1; done
+          docker logs mcp-weather; exit 1

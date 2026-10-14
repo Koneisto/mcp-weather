@@ -1,9 +1,11 @@
 node_modules
+build
 .git
+.github
 .gitignore
 *.md
 .env
 .env.*
-src/
-tsconfig.json
+test/
+coverage/
 docker-compose.yml

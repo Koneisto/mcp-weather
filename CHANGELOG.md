@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-14
+
+### Security
+
+- Container image: the runtime stage no longer contains npm, npx or corepack (their bundled dependencies were the only
+  JavaScript findings in an image scan), and Alpine packages are upgraded at build time (OpenSSL, zlib).
+
+### Changed
+
+- The Dockerfile is a self-contained multi-stage build: TypeScript is compiled inside the image, so a plain
+  `docker build .` works from a fresh clone.
+- CI builds the container image, fails on fixable high or critical vulnerabilities (Trivy) and smoke-tests `/health`.
+- Dependabot also keeps the Docker base image up to date.
+
 ## [1.0.0] - 2026-10-14
 
 First public release.
@@ -38,5 +52,6 @@ First public release.
 - 30 offline tests (`npm test`) and a live acceptance test against a running server
   (`npm run test:live -- <stdio command | http://host:port/mcp>`).
 
-[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/Koneisto/mcp-weather/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/Koneisto/mcp-weather/releases/tag/v1.0.0

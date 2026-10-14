@@ -8,7 +8,7 @@ import { astronomyTool } from './tools/astronomy.js';
 import { airQualityTool } from './tools/air-quality.js';
 import { sourceStatusTool } from './tools/source-status.js';
 
-export const SERVER_VERSION = '1.0.0';
+export const SERVER_VERSION = '1.0.1';
 
 const tools = [currentWeatherTool, forecastTool, metarTool, astronomyTool, airQualityTool, sourceStatusTool];
 
