@@ -128,3 +128,46 @@ test('native Streamable HTTP: one process, stateless JSON, /health, 405 on GET, 
     for (const c of clients) await c.close();
   } finally { await new Promise((r) => http.close(r)); }
 });
+
+test('1.0.2: instructions, one-time API key note, key help in source status', async () => {
+  const { resetKeyNote } = await import('../build/server.js');
+  const restore = offline();
+  try {
+    resetKeyNote();
+    const c = await inMemoryClient();
+    assert.match(c.getInstructions() ?? '', /get_weather_source_status explains where to get free keys/);
+    const r1 = await c.callTool({ name: 'get_astronomy', arguments: { location: '60.17,24.94', date: '2026-10-14' } });
+    assert.equal(r1.content.length, 2);
+    assert.match(r1.content[1].text, /^Note: 3 optional sources are off because no API key is set \(OpenWeatherMap, WeatherAPI, Tomorrow\.io\)/);
+    const r2 = await c.callTool({ name: 'get_astronomy', arguments: { location: '60.17,24.94', date: '2026-10-15' } });
+    assert.equal(r2.content.length, 1, 'note only once per process');
+    const s = await c.callTool({ name: 'get_weather_source_status', arguments: {} });
+    assert.deepEqual(s.structuredContent.apiKeys.missing.map((k) => k.env), ['OPENWEATHERMAP_API_KEY', 'WEATHERAPI_KEY', 'TOMORROW_IO_API_KEY']);
+    assert.match(s.content[0].text, /How to set: Docker: add KEY=value to the \.env file/);
+    await c.close();
+    resetKeyNote(); process.env.MCP_WEATHER_KEY_NOTE = 'off';
+    const c2 = await inMemoryClient();
+    const r3 = await c2.callTool({ name: 'get_astronomy', arguments: { location: '60.17,24.94', date: '2026-10-14' } });
+    assert.equal(r3.content.length, 1, 'MCP_WEATHER_KEY_NOTE=off silences the note');
+    await c2.close();
+  } finally { delete process.env.MCP_WEATHER_KEY_NOTE; restore(); }
+});
+
+test('1.0.2: JSON-only clients are served (no SSE needed), foreign Origin is rejected', async () => {
+  const { originAllowed } = await import('../build/server.js');
+  assert.equal(originAllowed(undefined), true);
+  assert.equal(originAllowed('http://localhost:6274'), true);
+  assert.equal(originAllowed('http://evil.example'), false);
+  assert.equal(originAllowed('https://ok.example', ['https://ok.example']), true);
+  const http = await startHttpServer(0, '127.0.0.1');
+  const base = `http://127.0.0.1:${http.address().port}`;
+  const body = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-11-25', capabilities: {}, clientInfo: { name: 't', version: '1' } } });
+  try {
+    const r = await fetch(`${base}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body });
+    assert.equal(r.status, 200);
+    assert.match(r.headers.get('content-type'), /application\/json/);
+    assert.equal((await r.json()).result.serverInfo.version, '1.0.2');
+    const f = await fetch(`${base}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', origin: 'http://evil.example' }, body });
+    assert.equal(f.status, 403);
+  } finally { await new Promise((res) => http.close(res)); }
+});
