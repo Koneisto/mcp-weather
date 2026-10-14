@@ -101,6 +101,16 @@ All settings are via environment variables. Copy `.env.example` to `.env` to get
 | `HTTP_TIMEOUT_MS` | `10000` | HTTP request timeout in milliseconds |
 | `PORT` / `HOST` | `3000` / `0.0.0.0` | Listen address in HTTP mode |
 | `MCP_TRANSPORT` | *(stdio)* | `http` = same as `--http` |
+| `ALLOWED_ORIGINS` | *(empty)* | HTTP mode: extra browser origins allowed to call `/mcp`, comma-separated (requests without `Origin` and from localhost are always allowed) |
+| `MCP_WEATHER_KEY_NOTE` | *(on)* | `off` = no one-time note about missing optional API keys |
+
+### Adding API keys
+
+The server tells you what is missing: if optional keys are not set, the first answer carries a one-time note, and
+`get_weather_source_status` lists each missing key with a free sign-up link and how to set it. To add a key:
+
+- **Docker:** put `KEY=value` in `.env` next to `docker-compose.yml` and run `docker compose up -d`.
+- **Local (stdio):** add the key to the `env` block of this server in your MCP client configuration and restart the client.
 
 ### Sources by API Key Requirement
 
@@ -194,12 +204,13 @@ needs network access; with API keys in the environment it also covers the option
 Two transports from the same server:
 
 - **stdio** (default) for local MCP clients such as desktop apps, IDE extensions and command-line agents.
-- **Streamable HTTP** with `--http` (or `MCP_TRANSPORT=http`): the SDK's own transport in stateless JSON mode. Clients POST to `/mcp`; `GET /health` answers `ok`. One process serves every client, so all of them share the cache. The Docker image runs this mode as a non-root user on port 3000 (mapped to 3015 in docker-compose).
+- **Streamable HTTP** with `--http` (or `MCP_TRANSPORT=http`): the SDK's own transport in stateless JSON mode. Clients POST to `/mcp`; `GET /health` answers `ok`. Responses are always JSON (no Server-Sent Events), so clients that accept only `application/json` work too. One process serves every client, so all of them share the cache. The Docker image runs this mode as a non-root user on port 3000 (mapped to 3015 in docker-compose).
 
 Every tool returns readable text and the same data as `structuredContent` that matches the tool's `outputSchema`; failures set `isError`. All tools are annotated read-only.
 
 The Streamable HTTP endpoint has no authentication of its own: run it on a trusted network or behind a reverse proxy
-that adds authentication.
+that adds authentication. Browser requests from other origins are rejected (403) to prevent DNS rebinding; allow
+specific origins with `ALLOWED_ORIGINS`.
 
 ## Contributing
 

@@ -3,6 +3,7 @@ import type { tool } from '../types.js';
 import { ok, READ_ONLY_LOCAL } from '../utils/result.js';
 import { getAllSourceStatuses } from '../utils/aggregator.js';
 import { cache } from '../cache.js';
+import { HOW_TO_SET, KEYS, keyHelpLines } from '../keys.js';
 
 const outputSchema = {
   sources: z.array(z.object({
@@ -12,12 +13,16 @@ const outputSchema = {
     lastError: z.string().optional(),
   })),
   cache: z.object({ entries: z.number(), inflight: z.number(), hits: z.number(), misses: z.number(), hitRate: z.string() }),
+  apiKeys: z.object({
+    missing: z.array(z.object({ source: z.string(), env: z.string(), signup: z.string() })),
+    howToSet: z.string(),
+  }),
 };
 
 export const sourceStatusTool: tool<Record<string, never>, typeof outputSchema> = {
   name: 'get_weather_source_status',
   title: 'Weather source status',
-  description: 'Check health and cache status of all configured weather data sources. Returns each source\'s configuration state, last call result, and cache hit rate. Useful for debugging when weather data seems stale or incomplete.',
+  description: 'Check health and cache status of all weather data sources, and which optional API keys are missing with where to get them and how to set them. Returns each source\'s configuration state, last call result, and cache hit rate. Useful when weather data seems stale or incomplete, or when the user asks how to add more sources.',
   schema: {},
   outputSchema,
   annotations: READ_ONLY_LOCAL,
@@ -33,7 +38,8 @@ export const sourceStatusTool: tool<Record<string, never>, typeof outputSchema> 
         : 'Not configured';
       lines.push(`${s.name}: ${status}`);
       if (!s.configured) {
-        lines.push(`  Requires API key`);
+        const k = KEYS.find((x) => x.source === s.name);
+        lines.push(k ? `  Requires API key: set ${k.env} (free key at ${k.signup})` : '  Requires API key');
       }
       if (s.lastCallTime) {
         lines.push(`  Last call: ${s.lastCallTime}`);
@@ -44,6 +50,7 @@ export const sourceStatusTool: tool<Record<string, never>, typeof outputSchema> 
       lines.push('');
     }
 
+    lines.push(...keyHelpLines());
     lines.push('Cache statistics');
     lines.push(`  Entries: ${cacheStats.entries}`);
     lines.push(`  In-flight requests: ${cacheStats.inflight}`);
@@ -54,6 +61,7 @@ export const sourceStatusTool: tool<Record<string, never>, typeof outputSchema> 
     return ok(lines.join('\n'), {
       sources: statuses.map((s) => ({ name: s.name, status: status(s), lastCallTime: s.lastCallTime, lastError: s.lastCallOk ? undefined : s.lastError })),
       cache: cacheStats,
+      apiKeys: { missing: KEYS.filter((k) => !k.configured).map(({ source, env, signup }) => ({ source, env, signup })), howToSet: HOW_TO_SET },
     });
   },
 };
