@@ -1,0 +1,57 @@
+{
+  "name": "mcp-weather-server",
+  "version": "1.0.0",
+  "description": "MCP server for European weather: measured FMI observations and air quality in Finland, Open-Meteo, METAR and more. Works without API keys.",
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "weather",
+    "forecast",
+    "air-quality",
+    "metar",
+    "fmi",
+    "open-meteo",
+    "finland",
+    "nordic",
+    "europe",
+    "astronomy",
+    "streamable-http"
+  ],
+  "homepage": "https://github.com/Koneisto/mcp-weather#readme",
+  "bugs": {
+    "url": "https://github.com/Koneisto/mcp-weather/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Koneisto/mcp-weather.git"
+  },
+  "license": "MIT",
+  "author": "Koneisto <noreply@koneisto.fi>",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "mcp-weather": "build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
+    "test": "node --test 'test/*.test.mjs'",
+    "test:live": "node test/live.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "suncalc": "^1.9.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/suncalc": "^1.9.2",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,23 @@
+services:
+  mcp-weather:
+    build: .
+    image: mcp-weather:latest
+    container_name: mcp-weather
+    env_file:
+      - .env
+    ports:
+      - "3015:3000"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: unless-stopped
+    # a single Node process serves all clients
+    mem_limit: 512m
+    networks:
+      - mcp-network
+
+networks:
+  mcp-network:
+    external: true
