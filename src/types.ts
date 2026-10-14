@@ -92,6 +92,8 @@ export interface AirQualityData {
   o3?: number;
   so2?: number;
   co?: number;
+  /** grains/m³ (CAMS, Europe only): alder, birch, grass, mugwort, ragweed */
+  pollen?: Partial<Record<'alder' | 'birch' | 'grass' | 'mugwort' | 'ragweed', number>>;
 }
 
 export type SourceResult<T> =

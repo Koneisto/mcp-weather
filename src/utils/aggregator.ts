@@ -1,3 +1,6 @@
+import { getMetNorwayStatus } from '../sources/met-norway.js';
+import { getWarningsStatus } from '../sources/warnings.js';
+import { getSpaceWeatherStatus } from '../sources/space-weather.js';
 import type { CurrentWeather, ResolvedLocation, SourceStatus } from '../types.js';
 import { config } from '../config.js';
 import { degreesToCardinal, formatNum } from './units.js';
@@ -93,6 +96,9 @@ function buildSummary(w: CurrentWeather, loc: ResolvedLocation): string {
 
 export function getAllSourceStatuses(): SourceStatus[] {
   return [
+    getMetNorwayStatus(),
+    getWarningsStatus(),
+    getSpaceWeatherStatus(),
     getFmiStatus(),
     getFmiAirQualityStatus(),
     getOpenMeteoStatus(),

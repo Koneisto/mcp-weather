@@ -1,7 +1,7 @@
 {
   "name": "mcp-weather-server",
-  "version": "1.0.2",
-  "description": "MCP server for European weather: measured FMI observations and air quality in Finland, Open-Meteo, METAR and more. Works without API keys.",
+  "version": "1.1.0",
+  "description": "Nordic weather MCP server: FMI observations, MET Nordic forecast, official warnings in 8 Nordic and Baltic countries, radar nowcast, aurora forecast, air quality with pollen. No API keys required.",
   "keywords": [
     "mcp",
     "mcp-server",
@@ -16,7 +16,14 @@
     "nordic",
     "europe",
     "astronomy",
-    "streamable-http"
+    "streamable-http",
+    "weather-warnings",
+    "aurora",
+    "nowcast",
+    "met-norway",
+    "smhi",
+    "meteoalarm",
+    "baltic"
   ],
   "homepage": "https://github.com/Koneisto/mcp-weather#readme",
   "bugs": {

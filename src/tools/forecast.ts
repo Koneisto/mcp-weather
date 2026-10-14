@@ -32,7 +32,7 @@ const outputSchema = {
 export const forecastTool: tool<typeof schema, typeof outputSchema> = {
   name: 'get_weather_forecast',
   title: 'Weather forecast',
-  description: 'Get daily weather forecast for up to 7 days. Returns high/low temperatures, precipitation probability, max wind speed, UV index, and sunrise/sunset for each day.',
+  description: 'Get daily weather forecast for up to 7 days. Returns high/low temperatures, precipitation probability, max wind speed, UV index, and sunrise/sunset for each day. In the Nordic and Baltic countries the forecast comes from MET Norway\'s high-resolution MET Nordic model.',
   schema,
   outputSchema,
   annotations: READ_ONLY_EXTERNAL,
@@ -75,7 +75,7 @@ export const forecastTool: tool<typeof schema, typeof outputSchema> = {
       }
 
       lines.push(`Location: (${loc.lat}, ${loc.lon})`);
-      lines.push(`Source: Open-Meteo`);
+      lines.push(`Source: ${result.source}`);
 
       const time = (x?: string) => (x && x.includes('T') ? x.split('T')[1] : x);
       return ok(lines.join('\n'), {
@@ -86,7 +86,7 @@ export const forecastTool: tool<typeof schema, typeof outputSchema> = {
           windSpeedMax: d.windSpeedMax, windDirection: d.windDirection, uvIndexMax: d.uvIndexMax,
           sunrise: time(d.sunrise), sunset: time(d.sunset),
         })),
-        source: 'Open-Meteo',
+        source: result.source,
       });
     } catch (err) {
       return fail(`Error: ${errorMessage(err)}`);
