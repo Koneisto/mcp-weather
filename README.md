@@ -42,8 +42,7 @@ The server accepts multiple location formats:
 
 ## Quick Start
 
-Requires Node.js 22 or later (the Docker image builds from the compiled `build/` directory, so Docker also needs
-Node.js on the host for `npm run build`).
+Requires Node.js 22 or later, or only Docker (the image compiles the TypeScript itself).
 
 ### Docker (recommended)
 
@@ -51,7 +50,6 @@ Node.js on the host for `npm run build`).
 git clone https://github.com/Koneisto/mcp-weather.git
 cd mcp-weather
 cp .env.example .env          # optionally add API keys
-npm ci && npm run build       # build TypeScript
 docker network create mcp-network   # once; docker-compose.yml expects this network
 docker compose up -d
 ```
