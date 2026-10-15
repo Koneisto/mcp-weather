@@ -36,8 +36,14 @@ export async function resolveLocation(input: string): Promise<ResolvedLocation> 
     const icao = trimmed.toUpperCase();
     const fi = finnishAirports[icao];
     if (fi) return { lat: fi.lat, lon: fi.lon, name: `${fi.name} (${icao})`, country: 'Finland', icao };
-    const st = await lookupIcaoStation(icao).catch(() => null);
+    let lookupFailed = false;
+    const st = await lookupIcaoStation(icao).catch(() => { lookupFailed = true; return null; });
     if (st) return st;
+    // The station service did not answer: an upper-case code is an airport code, and geocoding it finds an unrelated
+    // place ("ESSA" → Essa, Congo). Mixed case ("Roma", "Bern") is a place name and still goes to geocoding.
+    if (lookupFailed && trimmed === icao) {
+      throw new Error(`Could not look up airport ${icao}: aviationweather.gov did not answer. Try again, or give the place name or coordinates`);
+    }
   }
 
   // 4. Fallback: Open-Meteo geocoding

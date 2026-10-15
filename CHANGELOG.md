@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-10-15
+
+### Fixed
+
+- When aviationweather.gov does not answer, an upper-case airport code (e.g. `ESSA`) is reported as not resolvable instead
+  of being geocoded to an unrelated place with the same name (Essa, Congo). Mixed-case place names still geocode.
+
 ## [1.3.0] - 2026-10-15
 
 ### Added
@@ -121,7 +128,8 @@ First public release.
 - 30 offline tests (`npm test`) and a live acceptance test against a running server
   (`npm run test:live -- <stdio command | http://host:port/mcp>`).
 
-[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.3.1...HEAD
+[1.3.1]: https://github.com/Koneisto/mcp-weather/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/Koneisto/mcp-weather/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/Koneisto/mcp-weather/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/Koneisto/mcp-weather/compare/v1.0.2...v1.1.0
