@@ -247,7 +247,7 @@ test('no station within 15 km: model values, nearest station shown for reference
     const out = r.content[0].text;
     assert.match(out, /^Temperature: 7,9 °C$/m, 'model value for the point');
     assert.doesNotMatch(out, /Measured at:/);
-    assert.match(out, /Nearest weather station: Mikkeli Lentoasema AWOS, 25 km away: 8,6 °C at 20:10 \(for reference/);
+    assert.match(out, /Nearest weather station: Mikkeli Lentoasema AWOS \(FMI\), 25 km away: 8,6 °C at 20:10 \(for reference/);
     assert.match(out, /Finnish Meteorological Institute \(CC BY 4\.0\)/);
     assert.match(out, /^Sources: Open-Meteo$/m);
     assert.equal(r.structuredContent.temperature, 7.9);

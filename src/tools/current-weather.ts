@@ -25,23 +25,25 @@ const outputSchema = {
   uvIndex: z.number().optional(),
   precipitation: z.number().optional().describe('mm'),
   dewPoint: z.number().optional(),
-  measuredAt: stationOut.optional().describe('FMI station whose measurement is used (Finland, within 15 km)'),
-  nearestStation: stationOut.extend({ temperature: z.number().optional() }).optional()
-    .describe('Nearest FMI station within 50 km, for reference only (not used in the values)'),
+  measuredAt: stationOut.extend({ provider: z.string().optional() }).optional()
+    .describe('national weather service station whose measurement is used (within 15 km); in Norway the MET Nordic analysis at the point'),
+  nearestStation: stationOut.extend({ temperature: z.number().optional(), provider: z.string().optional() }).optional()
+    .describe('Nearest national station within 50 km, for reference only (not used in the values)'),
+  attribution: z.array(z.string()).optional(),
   sources: z.array(z.string()),
 };
 
 export const currentWeatherTool: tool<typeof schema, typeof outputSchema> = {
   name: 'get_current_weather',
   title: 'Current weather',
-  description: 'Get current weather conditions for a location. Returns temperature, feels-like, humidity, wind, pressure, cloud cover, UV index, and precipitation aggregated from multiple sources. In Finland the nearest FMI weather station\'s measurement (within 15 km) comes first. Optimized for Nordic/Finnish locations with instant alias resolution.',
+  description: 'Get current weather conditions for a location. Returns temperature, feels-like, humidity, wind, pressure, cloud cover, UV index, and precipitation aggregated from multiple sources. Measured values come first: the nearest station (within 15 km) of the national weather service in Finland (FMI), Sweden (SMHI), Denmark (DMI), Iceland (IMO), Lithuania (LHMT) and Estonia, and MET Norway\'s MET Nordic analysis in Norway, Sweden, Finland and Denmark.',
   schema,
   outputSchema,
   annotations: READ_ONLY_EXTERNAL,
   handler: async (args) => {
     try {
       const loc = await resolveLocation(args.location);
-      const { weather: w, sources, summary, observation, nearbyObservation: near } = await aggregateCurrentWeather(loc);
+      const { weather: w, sources, summary, observation, nearbyObservation: near, analysis } = await aggregateCurrentWeather(loc);
 
       const lines: string[] = [summary, ''];
 
@@ -63,18 +65,21 @@ export const currentWeatherTool: tool<typeof schema, typeof outputSchema> = {
 
       lines.push('');
       lines.push(`Location: ${loc.name}${loc.country ? ', ' + loc.country : ''} (${loc.lat}, ${loc.lon})`);
-      if (observation) {
-        lines.push(`Measured at: ${observation.station} (${formatNum(observation.distanceKm)} km away) at ${formatLocalTime(observation.observationTime)}`);
+      if (observation && !observation.analysis) {
+        lines.push(`Measured at: ${observation.station} (${observation.provider}, ${formatNum(observation.distanceKm)} km away) at ${formatLocalTime(observation.observationTime)}`);
+      } else if (observation) {
+        lines.push(`Analysis: ${observation.station}, valid ${formatLocalTime(observation.observationTime)}`);
       }
       if (near) {
         const t = near.weather.temperature !== undefined ? `${formatNum(near.weather.temperature)} °C` : 'no temperature';
-        lines.push(`Nearest weather station: ${near.station}, ${formatNum(near.distanceKm)} km away: ${t} at ${formatLocalTime(near.observationTime)} (for reference; too far to replace the values above)`);
+        lines.push(`Nearest weather station: ${near.station} (${near.provider}), ${formatNum(near.distanceKm)} km away: ${t} at ${formatLocalTime(near.observationTime)} (for reference; too far to replace the values above)`);
       }
       lines.push(`Sources: ${sources.join(', ')}`);
-      if (observation || near) lines.push('Observation data: Finnish Meteorological Institute (CC BY 4.0)');
+      const attribution = [...new Set([observation, near, analysis].filter((o) => !!o).map((o) => o!.attribution))];
+      if (attribution.length) lines.push(`Observation data: ${attribution.join('; ')}`);
 
       if (!sources.length) return fail(`Error: no weather source answered for ${loc.name}`);
-      const st = (o: typeof observation) => o && { station: o.station, distanceKm: o.distanceKm, observationTime: o.observationTime };
+      const st = (o: typeof observation) => o && { station: o.station, distanceKm: o.distanceKm, observationTime: o.observationTime, provider: o.provider };
       return ok(lines.join('\n'), {
         location: toLocation(loc),
         temperature: w.temperature, feelsLike: w.feelsLike, conditions: w.weatherDescription, humidity: w.humidity,
@@ -82,6 +87,7 @@ export const currentWeatherTool: tool<typeof schema, typeof outputSchema> = {
         cloudCover: w.cloudCover, visibility: w.visibility, uvIndex: w.uvIndex, precipitation: w.precipitation, dewPoint: w.dewPoint,
         measuredAt: st(observation),
         nearestStation: near && { ...st(near)!, temperature: near.weather.temperature },
+        attribution: attribution.length ? attribution : undefined,
         sources,
       });
     } catch (err) {

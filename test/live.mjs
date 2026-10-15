@@ -26,7 +26,7 @@ const line = (t, p) => t.split('\n').find((l) => l.startsWith(p)) ?? '';
 
 // ---------- 1. tools ----------
 const tools = (await c.listTools()).tools;
-check('9 tools', tools.length === 9 && ['get_current_weather','get_weather_forecast','get_precipitation_nowcast','get_weather_warnings','get_air_quality','get_aurora_forecast','get_metar','get_astronomy','get_weather_source_status'].every((n) => tools.some((t) => t.name === n)), tools.map((t) => t.name));
+check('11 tools', tools.length === 11 && ['get_current_weather','get_weather_forecast','get_precipitation_nowcast','get_weather_warnings','get_marine_conditions','get_road_weather','get_air_quality','get_aurora_forecast','get_metar','get_astronomy','get_weather_source_status'].every((n) => tools.some((t) => t.name === n)), tools.map((t) => t.name));
 check('METAR description mentions the FMI fallback', /Finnish Meteorological Institute/.test(tools.find((t) => t.name === 'get_metar').description));
 
 // ---------- 2. current weather ----------
@@ -35,23 +35,23 @@ const errOf = async (name, args) => { const r = await call(name, args); return r
 const sane = (t) => { const T = num(t, /^Temperature: (-?[\d,]+) °C/m), p = num(t, /^Pressure: ([\d,]+) hPa/m), h = num(t, /^Humidity: ([\d,]+) %/m);
   return T > -50 && T < 50 && (isNaN(p) || (p > 940 && p < 1070)) && (isNaN(h) || (h >= 0 && h <= 100)); };
 let t = await cw('hki');
-check('hki: FMI first, Kaisaniemi under 1 km', /^Sources: FMI, /m.test(t) && /Measured at: Helsinki Kaisaniemi \(0,\d km away\)/.test(t), t);
+check('hki: FMI first, Kaisaniemi under 1 km', /^Sources: FMI, /m.test(t) && /Measured at: Helsinki Kaisaniemi \(FMI, 0,\d km away\)/.test(t), t);
 check('hki: sane values, FMI credited', sane(t) && /Finnish Meteorological Institute \(CC BY 4\.0\)/.test(t), t);
 t = await cw('Kivistö');
-check('Kivistö: Helsinki-Vantaa airport 7,4 km', /Measured at: Vantaa Helsinki-Vantaan lentoasema \(7,4 km away\)/.test(t) && /Location: Kivistö, Finland/.test(t), t);
+check('Kivistö: Helsinki-Vantaa airport 7,4 km', /Measured at: Vantaa Helsinki-Vantaan lentoasema \(FMI, 7,4 km away\)/.test(t) && /Location: Kivistö, Finland/.test(t), t);
 const kivTemp = num(t, /^Temperature: (-?[\d,]+) °C/m);
 t = await cw(' efhk ');
-check('" efhk ": airport position, not 0,0', /Location: Helsinki-Vantaa \(EFHK\), Finland \(60\.3172, 24\.9633\)/.test(t) && /lentoasema \(1,4 km away\)/.test(t), t);
+check('" efhk ": airport position, not 0,0', /Location: Helsinki-Vantaa \(EFHK\), Finland \(60\.3172, 24\.9633\)/.test(t) && /lentoasema \(FMI, 1,4 km away\)/.test(t), t);
 const efhkTemp = num(t, /^Temperature: (-?[\d,]+) °C/m);
 check('Kivistö and EFHK from the same station → same temperature', kivTemp === efhkTemp, [kivTemp, efhkTemp]);
 t = await cw('ESSA');
-check('ESSA: Arlanda, Sweden, no FMI, wttr.in included', /Stockholm\/Arlanda Arpt \(ESSA\), Sweden/.test(t) && !/FMI/.test(line(t, 'Sources')) && /wttr\.in/.test(t) && sane(t), t);
+check('ESSA: Arlanda, Sweden, SMHI station, no FMI', /Stockholm\/Arlanda Arpt \(ESSA\), Sweden/.test(t) && /^Sources: SMHI, MET Nordic analysis/m.test(t) && !/FMI/.test(line(t, 'Sources')) && sane(t), t);
 t = await cw('Utsjoki');
-check('Utsjoki: model values, nearest station (Kevo) for reference', !/Measured at/.test(t) && /Nearest weather station: Utsjoki Kevo[^,]*, 1\d(,\d)? km away/.test(t), t);
+check('Utsjoki: model values, nearest station (Kevo) for reference', !/Measured at/.test(t) && /Nearest weather station: Utsjoki Kevo[^(]*\(FMI\), 1\d(,\d)? km away/.test(t), t);
 t = await cw('Ristiina');
-check('Ristiina: Mikkeli station ~20 km for reference', /Nearest weather station: Mikkeli Lentoasema AWOS, (19|20|21)(,\d)? km away/.test(t), t);
+check('Ristiina: Mikkeli station ~20 km for reference', /Nearest weather station: Mikkeli Lentoasema AWOS \(FMI\), (19|20|21)(,\d)? km away/.test(t), t);
 t = await cw('Tallinn');
-check('Tallinn (inside the Finland bounding box): no FMI station within 50 km', /Location: Tallinn/.test(t) && !/Measured at|Nearest weather station/.test(t) && sane(t), t);
+check('Tallinn: measured by the Estonian Environment Agency, not FMI', /Location: Tallinn/.test(t) && /Measured at: .*\(Keskkonnaagentuur, [\d,]+ km away\)/.test(t) && !/FMI/.test(line(t, 'Sources')) && /Keskkonnaagentuur\), https:\/\/www\.ilmateenistus\.ee/.test(t) && sane(t), t);
 t = await cw('65.84,24.14');
 check('Haparanda coordinates: Tornio station nearby → measured', /Measured at: Tornio/.test(t), t);
 t = await cw('Mariehamn');
@@ -71,6 +71,10 @@ check('empty location: isError "Error: Location is required"', t === 'Error: Loc
 // ---------- 3. forecast, air quality ----------
 t = (await call('get_weather_forecast', { location: 'tre', days: 7 })).text;
 check('7-day forecast Tampere', (t.match(/^--- \d{4}-\d\d-\d\d ---/gm) || []).length === 7, t.slice(0, 200));
+{
+  const r = await call('get_weather_forecast', { location: 'tre', days: 7 });
+  check('forecast Tampere: FMI meteorologist forecast for the full days (at least 5 of 7), credited', r.data.days.filter((d) => d.source === 'FMI').length >= 5 && /^Source: Finnish Meteorological Institute, meteorologist-edited forecast/m.test(r.text), r.data?.days?.map((d) => d.source));
+}
 const omSunrise = (/Sunrise: (\d\d:\d\d)/.exec((await call('get_weather_forecast', { location: 'EFHK', days: 1 })).text) || [])[1];
 const bad = await call('get_weather_forecast', { location: 'tre', days: 30 });
 check('forecast days=30: rejected or capped', bad.isError || (bad.text.match(/^--- /gm) || []).length <= 16, bad.text.slice(0, 200));
@@ -104,6 +108,24 @@ check('air quality Roma: model only, European category scale', /European AQI: \d
   check('aurora Rovaniemi: FMI R-index station nearby', !r.isError && r.data.activityNow && r.data.activityNow.distanceKm < 300, r.text.slice(0, 300));
   r = await call('get_air_quality', { location: 'hki' });
   check('air quality hki: pollen levels (CAMS)', !r.isError && r.data.pollen && ['none', 'low', 'moderate', 'high'].includes(r.data.pollen.birch?.level), JSON.stringify(r.data?.pollen));
+}
+
+// ---------- 3c. marine and road weather ----------
+{
+  // each country's tide gauges, with its own reference level (sea level in cm stays within ±3 m)
+  for (const [q, provider, reference] of [['Helsinki', 'FMI', 'theoretical mean sea level'], ['Stockholm', 'SMHI', 'RH 2000'], ['Copenhagen', 'DMI', 'DVR90'], ['Bergen', 'Kartverket', 'mean sea level']]) {
+    const r = await call('get_marine_conditions', { location: q });
+    const sl = r.data?.seaLevel;
+    check(`marine ${q}: sea level from ${provider} against ${reference}`, !r.isError && sl?.provider === provider && sl.reference === reference && Math.abs(sl.cm) < 300 && r.data.model, r.text.slice(0, 300));
+  }
+  let r = await call('get_marine_conditions', { location: 'Helsinki' });
+  check('marine Helsinki: FMI sea level forecast and a wave buoy within 100 km', r.data?.seaLevelForecast?.provider === 'FMI' && (!r.data.waves || r.data.waves.distanceKm <= 100), r.text.slice(0, 400));
+  r = await call('get_marine_conditions', { location: 'Tampere' });
+  check('marine Tampere: isError (inland)', r.isError && /not at the coast/.test(r.text), r.text);
+  r = await call('get_road_weather', { location: 'Kivistö' });
+  check('road weather Kivistö: station within 30 km with a surface state, forecast steps', !r.isError && r.data.station?.distanceKm <= 30 && r.data.station.surface && r.data.forecast.length === 5 && /Fintraffic/.test(r.text), r.text.slice(0, 400));
+  r = await call('get_road_weather', { location: 'Stockholm' });
+  check('road weather Stockholm: isError (Finland only)', r.isError && /covers Finland/.test(r.text), r.text);
 }
 
 // ---------- 4. astronomy ----------

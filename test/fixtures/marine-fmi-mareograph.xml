@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection
+    timeStamp="2026-10-15T16:16:43Z"
+    numberMatched="28"
+    numberReturned="28"
+           xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0"
+        xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/3.0"
+        xmlns:omso="http://inspire.ec.europa.eu/schemas/omso/3.0"
+        xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gmd="http://www.isotc211.org/2005/gmd"
+        xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:swe="http://www.opengis.net/swe/2.0"
+        xmlns:gmlcov="http://www.opengis.net/gmlcov/1.0"
+        xmlns:sam="http://www.opengis.net/sampling/2.0"
+        xmlns:sams="http://www.opengis.net/samplingSpatial/2.0"
+        xmlns:wml2="http://www.opengis.net/waterml/2.0"
+	xmlns:target="http://xml.fmi.fi/namespace/om/atmosphericfeatures/1.1"
+        xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd
+        http://www.opengis.net/gmlcov/1.0 http://schemas.opengis.net/gmlcov/1.0/gmlcovAll.xsd
+        http://www.opengis.net/sampling/2.0 http://schemas.opengis.net/sampling/2.0/samplingFeature.xsd
+        http://www.opengis.net/samplingSpatial/2.0 http://schemas.opengis.net/samplingSpatial/2.0/spatialSamplingFeature.xsd
+        http://www.opengis.net/swe/2.0 http://schemas.opengis.net/sweCommon/2.0/swe.xsd
+        http://inspire.ec.europa.eu/schemas/ompr/3.0 https://inspire.ec.europa.eu/schemas/ompr/3.0/Processes.xsd
+        http://inspire.ec.europa.eu/schemas/omso/3.0 https://inspire.ec.europa.eu/schemas/omso/3.0/SpecialisedObservations.xsd
+        http://www.opengis.net/waterml/2.0 http://schemas.opengis.net/waterml/2.0/waterml2.xsd
+        http://xml.fmi.fi/namespace/om/atmosphericfeatures/1.1 https://xml.fmi.fi/schema/om/atmosphericfeatures/1.1/atmosphericfeatures.xsd">
+   
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-pfYm7GzVt40fEP8EcyMs18LkbYiJTowrIWbbpdOt.Lnl5dsPTTv3c3Trbh5Zd.flh4aHTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxZsmbFg6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznBjmb23L0y76GHlh25emXlzrMrwakyLWa23Tz56d2epl8dKxp2Gc2t3XbPzU.mHpp37uc4TW49cOzT08yd2bfE1ufTD00791Tzwy1zb.GXdkw9MN_bh5Zd.flh4aG5z6b.WXJx65eXm_pyVshZtul0634ueXl2w9NO_dzdOtuHll35.WHhodOumnbl7YdnXLww6eTQ6aduWn0y8J.Qmh007ctrfuy1jVakMA">
+
+		            <om:phenomenonTime>
+        <gml:TimePeriod  gml:id="time1-1-4">
+          <gml:beginPosition>2026-10-15T13:16:43Z</gml:beginPosition>
+          <gml:endPosition>2026-10-15T16:00:00Z</gml:endPosition>
+        </gml:TimePeriod>
+      </om:phenomenonTime>
+      <om:resultTime>
+        <gml:TimeInstant gml:id="time2-1-4">
+          <gml:timePosition>2026-10-15T16:00:00Z</gml:timePosition>
+        </gml:TimeInstant>
+      </om:resultTime>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_mareograph"/>
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=WATLEV&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-4-WATLEV">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-4-WATLEV">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-132310-pos-WATLEV">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">132310</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Kaivopuisto</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-10022814</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/wmo">2960</gml:name>
+			<target:representativePoint xlink:href="#point-fmisid-132310-1-4-WATLEV"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-132310-1-4-WATLEV" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Kaivopuisto</gml:name>
+                                <gml:pos>60.15363 24.95622 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-4-WATLEV">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>281.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>293.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T16:00:00Z</wml2:time>
+				      <wml2:value>304.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-vMrxOvVKpPIq8t8lJlXFBn4QxzuJTowrIWbbpdOt.Lnl5dsPTTv3c3Trbh5Zd.flh4aHTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxZsmbFg6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznBjmb23L0y76GHlh25emXlzrWqV79CoxkX4NaO1tunnz07s9TL46VjTsM5tbuu2fmp9MPTTv3c5wmtx64dmnp5k7s2.Jrc.mHpp37qnnhlrm38Mu7Jh6Yb.3Dyy78_LDw0Nzn038suTj1y8vN_TkrZCzbdLp1vxc8vLth6ad.7m6dbcPLLvz8sPDQ6ddNO3L2w7OuXhh08mh007ctPpl4T8hNDpp25bW_dlrGq1IYA--">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-4"/>
+      <om:resultTime xlink:href="#time2-1-4"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_mareograph"/>
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=TW_PT1H_AVG&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-4-TW_PT1H_AVG">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-4-TW_PT1H_AVG">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-132310-pos-TW_PT1H_AVG">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">132310</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Kaivopuisto</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-10022814</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/wmo">2960</gml:name>
+			<target:representativePoint xlink:href="#point-fmisid-132310-1-4-TW_PT1H_AVG"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-132310-1-4-TW_PT1H_AVG" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Kaivopuisto</gml:name>
+                                <gml:pos>60.15363 24.95622 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-4-TW_PT1H_AVG">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>11.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>10.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T16:00:00Z</wml2:time>
+				      <wml2:value>10.8</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-oUhvkQzdBp4KFyHCARxECRRsSxiJTowrIWbbpdOt.Lnl5dsPTTv3c3Trbh5Zd.flh4aHTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxZtGTJm6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznBjmb23L0y76GHlh25emXlzrMrwakyLWa23Tz56d2epl8dKxp2Gc2t3XbPzU.mHpp37uc4TW49cOzT08yd2bfE1ufTD00791Tzwy1zb.GXdkw9MN_bh5Zd.flh4aG5z6b.WXJx65eXm_pyVshZtul0634ueXl2w9NO_dzdOtuHll35.WHhodOumnbl7YdnXLww6eTQ6aduWn0y8J.Qmh007ctrfuy1jVakMA">
+
+		            <om:phenomenonTime>
+        <gml:TimePeriod  gml:id="time1-1-5">
+          <gml:beginPosition>2026-10-15T13:16:43Z</gml:beginPosition>
+          <gml:endPosition>2026-10-15T16:00:00Z</gml:endPosition>
+        </gml:TimePeriod>
+      </om:phenomenonTime>
+      <om:resultTime>
+        <gml:TimeInstant gml:id="time2-1-5">
+          <gml:timePosition>2026-10-15T16:00:00Z</gml:timePosition>
+        </gml:TimeInstant>
+      </om:resultTime>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_mareograph"/>
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=WATLEV&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-5-WATLEV">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-5-WATLEV">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-134223-pos-WATLEV">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">134223</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Vaasa Vaskiluoto</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-10022815</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-134223-1-5-WATLEV"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Vaasa</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-134223-1-5-WATLEV" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Vaasa Vaskiluoto</gml:name>
+                                <gml:pos>63.08150 21.57118 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-5-WATLEV">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>374.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>355.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T16:00:00Z</wml2:time>
+				      <wml2:value>387.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-6WiDwzJroNSFogI1rCTMA96IHCKJTowrIWbbpdOt.Lnl5dsPTTv3c3Trbh5Zd.flh4aHTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxZtGTJm6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznBjmb23L0y76GHlh25emXlzrWqV79CoxkX4NaO1tunnz07s9TL46VjTsM5tbuu2fmp9MPTTv3c5wmtx64dmnp5k7s2.Jrc.mHpp37qnnhlrm38Mu7Jh6Yb.3Dyy78_LDw0Nzn038suTj1y8vN_TkrZCzbdLp1vxc8vLth6ad.7m6dbcPLLvz8sPDQ6ddNO3L2w7OuXhh08mh007ctPpl4T8hNDpp25bW_dlrGq1IYA--">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-5"/>
+      <om:resultTime xlink:href="#time2-1-5"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_mareograph"/>
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=forecast&amp;param=TW_PT1H_AVG&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-5-TW_PT1H_AVG">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-5-TW_PT1H_AVG">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-134223-pos-TW_PT1H_AVG">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">134223</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Vaasa Vaskiluoto</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-10022815</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-134223-1-5-TW_PT1H_AVG"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Vaasa</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-134223-1-5-TW_PT1H_AVG" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Vaasa Vaskiluoto</gml:name>
+                                <gml:pos>63.08150 21.57118 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-5-TW_PT1H_AVG">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>6.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>7.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T16:00:00Z</wml2:time>
+				      <wml2:value>6.8</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+</wfs:FeatureCollection>
