@@ -5,19 +5,20 @@
 [![License: MIT](https://img.shields.io/github/license/Koneisto/mcp-weather)](LICENSE)
 ![Node.js](https://img.shields.io/badge/node-%3E%3D22-brightgreen)
 
-A [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for weather in the Nordic and Baltic countries and the rest of Europe. It uses the national weather services where they are best: station observations from FMI, SMHI, DMI, the Icelandic Met Office, LHMT and the Estonian Environment Agency, MET Norway's high-resolution MET Nordic forecast and analysis, official warnings from FMI, SMHI, MET Norway and MeteoAlarm, sea level and waves from the national tide gauges and buoys, Finnish road weather from Fintraffic, radar nowcasts, and aurora forecasts from FMI magnetometers and NOAA. Works out of the box with zero API keys -- add optional keys to unlock more sources.
+A [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for weather in the Nordic and Baltic countries and the rest of Europe. It uses the national weather services where they are best: station observations from FMI, SMHI, DMI, the Icelandic Met Office, LHMT and the Estonian Environment Agency, MET Norway's high-resolution MET Nordic forecast and analysis, official warnings from FMI, SMHI, MET Norway and MeteoAlarm, sea level and waves from the national tide gauges and buoys, Finnish lake levels and water temperatures from Syke, Finnish road weather from Fintraffic, radar nowcasts, and aurora forecasts from FMI magnetometers and NOAA. Works out of the box with zero API keys -- add optional keys to unlock more sources.
 
 ## Features
 
-- **Nordic weather services** -- FMI (Finland), MET Norway, SMHI (Sweden), DMI (Denmark), Icelandic Met Office, LHMT (Lithuania), Estonian Environment Agency, Kartverket (Norway), Fintraffic, MeteoAlarm, NOAA SWPC, plus Open-Meteo, wttr.in, METAR and optional OpenWeatherMap, WeatherAPI, Tomorrow.io
+- **Nordic weather services** -- FMI (Finland), MET Norway, SMHI (Sweden), DMI (Denmark), Icelandic Met Office, LHMT (Lithuania), Estonian Environment Agency, Kartverket (Norway), Syke (Finnish lakes), Fintraffic, MeteoAlarm, NOAA SWPC, plus Open-Meteo, wttr.in, METAR and optional OpenWeatherMap, WeatherAPI, Tomorrow.io
 - **National forecasts** -- in Finland the daily forecast comes from FMI's meteorologist-edited forecast (the one on ilmatieteenlaitos.fi), elsewhere in the Nordic and Baltic countries from MET Norway's 2.5 km MET Nordic model (post-processed with station observations), and outside them from Open-Meteo's best-match blend
 - **Official warnings in 8 countries** -- Finland, Sweden and Norway matched to the location (warning polygons and point queries), Denmark, Iceland and the Baltic countries per country
 - **Radar nowcast** -- will it rain in the next 2 hours, in 5-minute steps (MET Norway)
 - **Northern lights** -- Kp needed at the latitude, NOAA Kp forecast, FMI R-index measured right now, darkness and cloud cover hour by hour
 - **Measured current weather** -- the nearest station of the national weather service within 15 km comes first: FMI (Finland), SMHI (Sweden), DMI (Denmark), Icelandic Met Office, LHMT (Lithuania) and the Estonian Environment Agency; in Norway the MET Nordic analysis (observations and radar on a 1 km grid); in Finland, Sweden and Denmark the MET Nordic analysis also fills in between stations. Models fill in what the station does not measure, and farther away the nearest station within 50 km is shown for reference. In Finland air quality is measured at the nearest air quality station within 10 km
 - **Sea** -- measured sea level against each country's reference (FMI, SMHI, DMI, Kartverket) with the forecast in Finland and Norway, water temperature, wave buoys, and a wave model anywhere at sea
+- **Finnish lakes** -- water level as height above sea level (N2000) with the change in a week and the normal for the date (previous 30 years), surface water temperature against its normal, and ice thickness in winter, for about 800 Syke stations; ask by lake name (`Saimaa` includes its basins such as Haukivesi and Pihlajavesi) or by place
 - **Road weather in Finland** -- road surface temperature and state, friction and slipperiness warnings from the nearest Fintraffic road weather station, and the road condition forecast for the next 12 hours
-- **11 MCP tools** -- current weather, forecast, precipitation nowcast, warnings, marine conditions, road weather, air quality with pollen, aurora, aviation METAR, astronomy, source status
+- **12 MCP tools** -- current weather, forecast, precipitation nowcast, warnings, marine conditions, lake conditions, road weather, air quality with pollen, aurora, aviation METAR, astronomy, source status
 - **Nordic/Finnish focus** -- 30+ Finnish cities with instant alias resolution (e.g. `hki`, `tre`, `stadi`), Nordic/Baltic capitals included
 - **Multi-source aggregation** -- merges data from all available sources for more complete and accurate results
 - **Zero-config start** -- every source works without an API key except the three optional ones
@@ -32,6 +33,7 @@ A [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for we
 | `get_precipitation_nowcast` | Rain or snow in the next 2 hours from radar, 5-minute steps: raining now, start and end, heaviest rate, total (MET Norway, Nordic radar area) |
 | `get_weather_warnings` | Active official warnings in Finland (FMI), Sweden (SMHI), Norway (MET Norway), Denmark, Iceland, Estonia, Latvia, Lithuania (MeteoAlarm); English, Finnish, Swedish or Norwegian where available |
 | `get_marine_conditions` | Sea level against the national reference and its forecast (Finland, Norway), water temperature and wave buoys (FMI, SMHI, DMI, Kartverket), wave model (MET Norway Oceanforecast in Norway, Open-Meteo Marine elsewhere) |
+| `get_lake_conditions` | Finland: lake or river water level (gauge and N2000 height, change in a week, normal for the date over the previous 30 years), surface water temperature against its normal, ice thickness in winter (Syke); by lake name or place |
 | `get_road_weather` | Finland: nearest Fintraffic road weather station (road surface temperature and state, friction, slipperiness warning, precipitation, visibility, wind) and the road condition forecast for 12 hours |
 | `get_aurora_forecast` | Northern lights chance hour by hour: Kp needed at the latitude, NOAA Kp forecast, FMI R-index now (Finland), darkness and cloud cover |
 | `get_air_quality` | European AQI with PM2.5, PM10, NO2, O3, SO2, CO levels; in Finland measured at the nearest air quality station (within 10 km); pollen (alder, birch, grass, mugwort, ragweed) from CAMS |
@@ -135,6 +137,7 @@ The server tells you what is missing: if optional keys are not set, the first an
 | LHMT (meteo.lt) | No | Station observations in Lithuania |
 | Estonian Environment Agency | No | Station observations in Estonia |
 | Kartverket | No | Sea level and its forecast in Norway |
+| Syke (Finnish Environment Institute) | No | Lake and river water levels, surface water temperature, ice thickness in Finland |
 | Fintraffic Digitraffic | No | Road weather stations and road condition forecast in Finland |
 | MeteoAlarm (EUMETNET) | No | Warnings in Denmark, Iceland, Estonia, Latvia, Lithuania |
 | NOAA SWPC | No | Planetary Kp, observed and forecast |
@@ -164,6 +167,12 @@ Finnish Meteorological Institute.
   DMI DVR90, Kartverket the mean sea level. The output names the reference, so values from different countries are
   not compared as if they were the same. A tide gauge within 60 km, water temperature within 40 km and a wave buoy
   within 100 km are used; the wave model covers the open sea and Iceland.
+- **Lakes:** Syke publishes daily values. A water level gauge reads against its own zero, so the answer also gives
+  the height above sea level (N2000) where Syke publishes the gauge's offset. The normal is the mean, lowest and highest
+  value of the same calendar day in the previous 30 years. A lake name matches stations named after it or filed under it,
+  then the basins Syke files as part of it ("Haukivesi (Saimaa …)"). A place uses the nearest water level station within
+  25 km and the nearest temperature and ice stations within 50 km that still report. Ice thickness is shown only when
+  measured in the last 45 days.
 - **Road weather:** the nearest station with data from the last hour within 30 km; a faulty road surface sensor is
   skipped (the second sensor or the optical one is used). The road condition forecast shows the worst condition per
   step over the road sections within 10 km and the roads and reasons behind a poor one. Sweden and Norway publish road
@@ -181,7 +190,7 @@ Finnish Meteorological Institute.
 
 Outputs name the sources they used and the new Nordic tools also return an `attribution` field. FMI data (including
 the municipal air quality networks it distributes), MET Norway, SMHI, DMI, the Icelandic Met Office, Kartverket,
-Fintraffic (digitraffic.fi), MeteoAlarm (data provided by EUMETNET members) and Open-Meteo data are licensed under
+Syke, Fintraffic (digitraffic.fi), MeteoAlarm (data provided by EUMETNET members) and Open-Meteo data are licensed under
 CC BY 4.0, LHMT (meteo.lt) data under CC BY-SA 4.0, and the Estonian Environment Agency's data may be used when
 Keskkonnaagentuur is credited with a link to ilmateenistus.ee (both are in the output); METAR and Kp come from the US NOAA (public domain). Requests to
 MET Norway follow its terms: an identifying User-Agent, coordinates with at most 4 decimals, no new request before the
@@ -208,6 +217,7 @@ src/
     nowcast.ts          # get_precipitation_nowcast
     warnings.ts         # get_weather_warnings
     marine.ts           # get_marine_conditions
+    lake.ts             # get_lake_conditions
     road-weather.ts     # get_road_weather
     aurora.ts           # get_aurora_forecast
     air-quality.ts      # get_air_quality
@@ -222,6 +232,7 @@ src/
     national-obs.ts     # station observations: SMHI, DMI, IMO, LHMT, Estonia; MET Nordic analysis
     marine.ts           # sea level, water temperature, waves: FMI, SMHI, DMI, Kartverket; wave models
     road-weather.ts     # Fintraffic Digitraffic road weather stations and road condition forecast
+    syke.ts             # Syke hydrology: lake and river water levels, water temperature, ice
     wttr-in.ts          # wttr.in (current)
     openweathermap.ts   # OpenWeatherMap (current)
     weatherapi.ts       # WeatherAPI (current)

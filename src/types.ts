@@ -47,6 +47,8 @@ export interface CurrentWeather {
   weatherDescription?: string;
   precipitation?: number;
   dewPoint?: number;
+  /** cm, measured (FMI stations) */
+  snowDepth?: number;
 }
 
 export interface DailyForecast {

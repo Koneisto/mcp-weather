@@ -26,7 +26,7 @@ const line = (t, p) => t.split('\n').find((l) => l.startsWith(p)) ?? '';
 
 // ---------- 1. tools ----------
 const tools = (await c.listTools()).tools;
-check('11 tools', tools.length === 11 && ['get_current_weather','get_weather_forecast','get_precipitation_nowcast','get_weather_warnings','get_marine_conditions','get_road_weather','get_air_quality','get_aurora_forecast','get_metar','get_astronomy','get_weather_source_status'].every((n) => tools.some((t) => t.name === n)), tools.map((t) => t.name));
+check('12 tools', tools.length === 12 && ['get_current_weather','get_weather_forecast','get_precipitation_nowcast','get_weather_warnings','get_marine_conditions','get_lake_conditions','get_road_weather','get_air_quality','get_aurora_forecast','get_metar','get_astronomy','get_weather_source_status'].every((n) => tools.some((t) => t.name === n)), tools.map((t) => t.name));
 check('METAR description mentions the FMI fallback', /Finnish Meteorological Institute/.test(tools.find((t) => t.name === 'get_metar').description));
 
 // ---------- 2. current weather ----------
@@ -124,6 +124,14 @@ check('air quality Roma: model only, European category scale', /European AQI: \d
   check('marine Tampere: isError (inland)', r.isError && /not at the coast/.test(r.text), r.text);
   r = await call('get_road_weather', { location: 'Kivistö' });
   check('road weather Kivistö: station within 30 km with a surface state, forecast steps', !r.isError && r.data.station?.distanceKm <= 30 && r.data.station.surface && r.data.forecast.length === 5 && /Fintraffic/.test(r.text), r.text.slice(0, 400));
+  r = await call('get_lake_conditions', { location: 'Saimaa' });
+  const sai = r.data?.waterLevels?.find((l) => l.station === 'Saimaa, Lauritsala');
+  check('lake Saimaa: Lauritsala level 74–78 m N2000 within 3 days, 30-year normal, credited Syke', !r.isError && sai && sai.n2000M > 74 && sai.n2000M < 78
+    && Date.now() - Date.parse(sai.date) < 3 * 86400000 && sai.normal?.years >= 20 && /Syke/.test(r.text), r.text.slice(0, 400));
+  r = await call('get_lake_conditions', { location: 'Savonlinna' });
+  check('lake by place Savonlinna: a Saimaa basin within 25 km', !r.isError && r.data.waterLevels[0]?.distanceKm <= 25 && r.data.waterLevels[0]?.partOf === 'Saimaa', r.text.slice(0, 300));
+  r = await call('get_lake_conditions', { location: 'Stockholm' });
+  check('lake Stockholm: isError (Finland only)', r.isError && /covers Finland/.test(r.text), r.text);
   r = await call('get_road_weather', { location: 'Stockholm' });
   check('road weather Stockholm: isError (Finland only)', r.isError && /covers Finland/.test(r.text), r.text);
 }

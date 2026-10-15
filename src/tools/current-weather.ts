@@ -25,6 +25,7 @@ const outputSchema = {
   uvIndex: z.number().optional(),
   precipitation: z.number().optional().describe('mm'),
   dewPoint: z.number().optional(),
+  snowDepth: z.number().optional().describe('cm, measured at the FMI station'),
   measuredAt: stationOut.extend({ provider: z.string().optional() }).optional()
     .describe('national weather service station whose measurement is used (within 15 km); in Norway the MET Nordic analysis at the point'),
   nearestStation: stationOut.extend({ temperature: z.number().optional(), provider: z.string().optional() }).optional()
@@ -62,6 +63,7 @@ export const currentWeatherTool: tool<typeof schema, typeof outputSchema> = {
       if (w.uvIndex !== undefined) lines.push(`UV index: ${formatNum(w.uvIndex)}`);
       if (w.precipitation !== undefined) lines.push(`Precipitation: ${formatNum(w.precipitation)} mm`);
       if (w.dewPoint !== undefined) lines.push(`Dew point: ${formatNum(w.dewPoint)} °C`);
+      if (w.snowDepth) lines.push(`Snow depth: ${formatNum(w.snowDepth)} cm`);   // 0 = no snow, not shown
 
       lines.push('');
       lines.push(`Location: ${loc.name}${loc.country ? ', ' + loc.country : ''} (${loc.lat}, ${loc.lon})`);
@@ -84,7 +86,7 @@ export const currentWeatherTool: tool<typeof schema, typeof outputSchema> = {
         location: toLocation(loc),
         temperature: w.temperature, feelsLike: w.feelsLike, conditions: w.weatherDescription, humidity: w.humidity,
         pressure: w.pressure, windSpeed: w.windSpeed, windDirection: w.windDirection, windGusts: w.windGusts,
-        cloudCover: w.cloudCover, visibility: w.visibility, uvIndex: w.uvIndex, precipitation: w.precipitation, dewPoint: w.dewPoint,
+        cloudCover: w.cloudCover, visibility: w.visibility, uvIndex: w.uvIndex, precipitation: w.precipitation, dewPoint: w.dewPoint, snowDepth: w.snowDepth,
         measuredAt: st(observation),
         nearestStation: near && { ...st(near)!, temperature: near.weather.temperature },
         attribution: attribution.length ? attribution : undefined,

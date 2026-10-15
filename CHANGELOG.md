@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-15
+
+### Added
+
+- `get_lake_conditions` (Finland, Syke): daily water level of lakes and rivers with the height above sea level (N2000),
+  the change in a week and the normal for the date (mean, lowest and highest of the previous 30 years), surface water
+  temperature against its normal, and ice thickness with snow on the ice in winter. By lake name (a lake includes the
+  basins Syke files under it, so `Saimaa` also covers Haukivesi, Pihlajavesi and Orivesi-Pyhäselkä) or by place.
+- Snow depth measured at the FMI station in `get_current_weather` (shown when there is snow).
+
 ## [1.2.0] - 2026-10-15
 
 ### Added
@@ -111,7 +121,8 @@ First public release.
 - 30 offline tests (`npm test`) and a live acceptance test against a running server
   (`npm run test:live -- <stdio command | http://host:port/mcp>`).
 
-[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/Koneisto/mcp-weather/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/Koneisto/mcp-weather/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/Koneisto/mcp-weather/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/Koneisto/mcp-weather/compare/v1.0.1...v1.0.2
