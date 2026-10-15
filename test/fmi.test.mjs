@@ -364,3 +364,16 @@ test('snow depth (snow_aws): whole cm, negative = no snow', async () => {
   assert.equal(stationToWeather(st(-1)).snowDepth, 0);
   assert.equal(stationToWeather({ values: {} }).snowDepth, undefined, 'the station does not measure snow');
 });
+
+test('airport lookup down: an upper-case ICAO code is an error, not a place of the same name; a place name still geocodes', async () => {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('stationinfo')) return new Response('unavailable', { status: 503 });
+    if (String(url).includes('geocoding-api')) return new Response(JSON.stringify({ results: [{ latitude: 46.95, longitude: 7.45, name: 'Bern', country: 'Switzerland' }] }), { status: 200 });
+    throw new Error('unexpected ' + url);
+  };
+  try {
+    await assert.rejects(resolveLocation('ESGG'), /Could not look up airport ESGG: aviationweather\.gov did not answer/);
+    assert.equal((await resolveLocation('Bern')).name, 'Bern');
+  } finally { globalThis.fetch = realFetch; }
+});
