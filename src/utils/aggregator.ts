@@ -17,6 +17,7 @@ import { countryOfLocation } from './region.js';
 import { getFmiAirQualityStatus } from '../sources/fmi-airquality.js';
 import { getMarineStatus } from '../sources/marine.js';
 import { getRoadWeatherStatus } from '../sources/road-weather.js';
+import { getSykeStatus } from '../sources/syke.js';
 
 const NEARBY_STATION_KM = 50;
 
@@ -67,6 +68,7 @@ export async function aggregateCurrentWeather(
     merged.weatherDescription ??= d.weatherDescription;
     merged.precipitation ??= d.precipitation;
     merged.dewPoint ??= d.dewPoint;
+    merged.snowDepth ??= d.snowDepth;
   }
 
   const obs = await obsPromise, analysis = (await anaPromise) ?? undefined;
@@ -113,6 +115,7 @@ export function getAllSourceStatuses(): SourceStatus[] {
     getSpaceWeatherStatus(),
     getMarineStatus(),
     getRoadWeatherStatus(),
+    getSykeStatus(),
     getFmiStatus(),
     getFmiForecastStatus(),
     getFmiAirQualityStatus(),

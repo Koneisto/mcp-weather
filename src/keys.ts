@@ -55,7 +55,7 @@ export function serverInstructions(): string {
     'MET Nordic analysis in NO), MET Norway\'s high-resolution MET Nordic forecast in the Nordic and Baltic countries, and official ' +
     'warnings. Tools: get_current_weather (now), get_weather_forecast (coming days; FMI\'s meteorologist forecast in Finland), get_precipitation_nowcast (rain or snow in the ' +
     'next 2 hours, radar), get_weather_warnings (official warnings in FI, SE, NO, DK, IS, EE, LV, LT), get_marine_conditions ' +
-    '(sea level, water temperature, waves), get_road_weather (driving conditions in Finland), get_air_quality (incl. pollen), ' +
+    '(sea level, water temperature, waves), get_lake_conditions (Finnish lakes: water level, temperature, ice), get_road_weather (driving conditions in Finland), get_air_quality (incl. pollen), ' +
     'get_aurora_forecast (northern lights), get_metar (airports by ICAO code), get_astronomy (sun and moon), ' +
     'get_weather_source_status (sources, cache and API keys). Locations can be place names in several languages, ' +
     'coordinates "lat,lon" or ICAO codes. Credit the data source named in each answer.' +

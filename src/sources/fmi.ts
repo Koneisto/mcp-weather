@@ -17,7 +17,7 @@ import { errorText } from '../utils/units.js';
 const SOURCE = 'FMI';
 const WFS = 'https://opendata.fmi.fi/wfs';
 const QUERY = 'fmi::observations::weather::timevaluepair';
-const PARAMS = ['t2m', 'td', 'rh', 'ws_10min', 'wg_10min', 'wd_10min', 'p_sea', 'vis', 'n_man', 'r_1h'];
+const PARAMS = ['t2m', 'td', 'rh', 'ws_10min', 'wg_10min', 'wd_10min', 'p_sea', 'vis', 'n_man', 'r_1h', 'snow_aws'];
 const CACHE_TTL_MS = 10 * 60 * 1000;      // stations report every 10 minutes
 const MAX_AGE_MS = 60 * 60 * 1000;        // older values are not "current"
 // Measurement beats the model only when the station is near: 30 km away a lakeside and an inland spot can differ by
@@ -94,6 +94,7 @@ export function stationToWeather(st: FmiStation): CurrentWeather {
   const v = (p: string) => st.values[p]?.value;
   const clouds = v('n_man');                       // octas 0–8, 9 = sky obscured (fog)
   const precip = v('r_1h');                        // negative = no precipitation
+  const snow = v('snow_aws');                      // cm; only some stations measure it, negative = none
   return {
     temperature: v('t2m'),
     dewPoint: v('td'),
@@ -105,6 +106,7 @@ export function stationToWeather(st: FmiStation): CurrentWeather {
     visibility: v('vis'),
     cloudCover: clouds === undefined ? undefined : clouds >= 9 ? 100 : Math.round((clouds / 8) * 100),
     precipitation: precip === undefined ? undefined : Math.max(0, precip),
+    snowDepth: snow === undefined ? undefined : Math.max(0, Math.round(snow)),
   };
 }
 

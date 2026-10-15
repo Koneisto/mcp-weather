@@ -357,3 +357,10 @@ test('air quality outside Finland: model only, no FMI request, no labels', async
     assert.ok(!urls.some((u) => u.includes('fmi.fi')));
   } finally { globalThis.fetch = realFetch; }
 });
+
+test('snow depth (snow_aws): whole cm, negative = no snow', async () => {
+  const st = (v) => ({ fmisid: '1', name: 'x', lat: 0, lon: 0, values: { t2m: { time: '', value: -3 }, snow_aws: { time: '', value: v } } });
+  assert.equal(stationToWeather(st(23.4)).snowDepth, 23);
+  assert.equal(stationToWeather(st(-1)).snowDepth, 0);
+  assert.equal(stationToWeather({ values: {} }).snowDepth, undefined, 'the station does not measure snow');
+});

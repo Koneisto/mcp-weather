@@ -1,0 +1,92 @@
+import { z } from 'zod';
+import type { tool } from '../types.js';
+import { resolveLocation } from '../utils/location.js';
+import { fetchLakeByName, fetchLakeNear, SYKE_ATTRIBUTION, type LakeNormal } from '../sources/syke.js';
+import { countryOfLocation } from '../utils/region.js';
+import { formatNum } from '../utils/units.js';
+import { ok, fail, errorMessage, READ_ONLY_EXTERNAL } from '../utils/result.js';
+import { locationOut } from '../utils/schemas.js';
+
+const schema = {
+  location: z.string().describe('Lake name as Syke names it (e.g. Saimaa, Päijänne, Kallavesi, Pielinen, Inarijärvi), or a place or coordinates (lat,lon) in Finland'),
+};
+
+const normal = z.object({ mean: z.number(), min: z.number(), max: z.number(), years: z.number(), fromYear: z.number(), toYear: z.number() })
+  .describe('same calendar day in the previous 30 years');
+const where = { station: z.string(), lake: z.string().optional(), partOf: z.string().optional().describe('larger lake the basin belongs to'), distanceKm: z.number().optional(), date: z.string().describe('YYYY-MM-DD, daily value') };
+const outputSchema = {
+  location: locationOut.optional(),
+  lake: z.string().optional().describe('lake matched by name'),
+  waterLevels: z.array(z.object({ ...where, cm: z.number().describe('on the gauge'), n2000M: z.number().optional().describe('height in the N2000 system, metres'),
+    change7dCm: z.number().optional(), normal: normal.optional(), fromNormalCm: z.number().optional() })),
+  waterTemperatures: z.array(z.object({ ...where, celsius: z.number(), normal: normal.optional(), fromNormalC: z.number().optional() })),
+  ice: z.array(z.object({ ...where, thicknessCm: z.number().optional(), snowCm: z.number().optional(), weak: z.boolean() })),
+  attribution: z.string(),
+};
+
+// "14 Oct", with the year when it is not this year
+const fiDate = (d: string) => new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC',
+  ...(d.slice(0, 4) !== new Date(Date.now()).toISOString().slice(0, 4) ? { year: 'numeric' as const } : {}) }).format(new Date(d + 'T00:00:00Z'));
+const signed = (x: number, unit: string) => `${x > 0 ? '+' : x < 0 ? '−' : '±'}${formatNum(Math.abs(x))} ${unit}`;
+const normalText = (n: LakeNormal, unit: string, date: string) =>
+  `normal for ${fiDate(date)}, ${formatNum(unit === 'cm' ? Math.round(n.mean) : n.mean)} ${unit} (${n.fromYear}–${n.toYear}, range ${formatNum(n.min)}–${formatNum(n.max)} ${unit})`;
+
+export const lakeTool: tool<typeof schema, typeof outputSchema> = {
+  name: 'get_lake_conditions',
+  title: 'Lake water level, water temperature and ice (Finland)',
+  description: 'Finnish lakes and rivers from the Finnish Environment Institute (Syke): daily water level with its height above sea level (N2000), ' +
+    'the change in a week and how it compares with the same day in the previous 30 years; surface water temperature against its normal; ' +
+    'and ice thickness in winter. Ask by lake name (Saimaa, Päijänne, Kallavesi…) or by a place in Finland.',
+  schema,
+  outputSchema,
+  annotations: READ_ONLY_EXTERNAL,
+  handler: async (args) => {
+    try {
+      // a lake name is looked up among Syke's stations first; anything else is a place
+      let data = await fetchLakeByName(args.location);
+      let loc;
+      if (!data) {
+        loc = await resolveLocation(args.location);
+        if (countryOfLocation(loc) !== 'FI') {
+          return fail(`Lake data covers Finland (Syke stations); ${loc.name} is outside it. For the sea use get_marine_conditions.`);
+        }
+        data = await fetchLakeNear(loc.lat, loc.lon);
+      }
+      const { levels, temperatures, ice } = data;
+      if (!levels.length && !temperatures.length && !ice.length) {
+        return fail(`No Syke lake or river station near ${loc?.name ?? args.location} (water level within 25 km, temperature within 50 km). Try the lake's name.`);
+      }
+
+      const lines = [`Lake conditions ${data.matchedLake ? `for ${data.matchedLake}` : `near ${loc!.name}`}`];
+      const at = (x: { station: string; partOf?: string; distanceKm?: number; date: string }) =>
+        `${x.station}${x.partOf && !x.station.startsWith(x.partOf) ? ` (part of ${x.partOf})` : ''}` +
+        `${x.distanceKm !== undefined ? `, ${formatNum(x.distanceKm)} km away` : ''}, ${fiDate(x.date)}`;
+      for (const l of levels) {
+        lines.push(`Water level at ${at(l)}: ${l.n2000M !== undefined ? `${formatNum(l.n2000M)} m above sea level (N2000), ` : ''}${l.cm} cm on the gauge` +
+          `${l.change7dCm !== undefined ? ` · ${signed(l.change7dCm, 'cm')} in a week` : ''}`);
+        if (l.normal && l.fromNormalCm !== undefined) {
+          lines.push(`  ${l.fromNormalCm === 0 ? 'At' : `${formatNum(Math.abs(l.fromNormalCm))} cm ${l.fromNormalCm > 0 ? 'above' : 'below'}`} the ${normalText(l.normal, 'cm', l.date)}`);
+        }
+      }
+      for (const t of temperatures) {
+        const old = Date.now() - Date.parse(t.date) > 14 * 86400000;
+        lines.push(`Surface water temperature at ${at(t)}: ${formatNum(t.celsius)} °C${old ? ' (last measurement of the open-water season)' : ''}`);
+        if (t.normal && t.fromNormalC !== undefined && !old) {
+          lines.push(`  ${t.fromNormalC === 0 ? 'At' : `${formatNum(Math.abs(t.fromNormalC))} °C ${t.fromNormalC > 0 ? 'warmer than' : 'colder than'}`} the ${normalText(t.normal, '°C', t.date)}`);
+        }
+      }
+      for (const i of ice) {
+        lines.push(`Ice at ${at(i)}: ${i.weak && i.thicknessCm === undefined ? 'weak ice, too thin to measure' : i.thicknessCm !== undefined ? `${i.thicknessCm} cm thick` : 'measured'}` +
+          `${i.snowCm ? `, ${i.snowCm} cm of snow on it` : ''}`);
+      }
+      if (!temperatures.length && !ice.length) lines.push('No water temperature or ice station on this lake or nearby.');
+      lines.push('', 'Daily values; the gauge reading is relative to the gauge\'s own zero, the N2000 height is above sea level.', `Source: ${SYKE_ATTRIBUTION}`);
+      return ok(lines.join('\n'), {
+        location: loc ? { name: loc.name, country: loc.country, lat: loc.lat, lon: loc.lon } : undefined, lake: data.matchedLake,
+        waterLevels: levels, waterTemperatures: temperatures, ice, attribution: SYKE_ATTRIBUTION,
+      });
+    } catch (err) {
+      return fail(`Error fetching lake conditions: ${errorMessage(err)}`);
+    }
+  },
+};
