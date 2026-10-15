@@ -1,0 +1,1791 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection
+    timeStamp="2026-10-15T16:16:43Z"
+    numberMatched="40"
+    numberReturned="40"
+           xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0"
+        xmlns:ompr="http://inspire.ec.europa.eu/schemas/ompr/3.0"
+        xmlns:omso="http://inspire.ec.europa.eu/schemas/omso/3.0"
+        xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gmd="http://www.isotc211.org/2005/gmd"
+        xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:swe="http://www.opengis.net/swe/2.0"
+        xmlns:gmlcov="http://www.opengis.net/gmlcov/1.0"
+        xmlns:sam="http://www.opengis.net/sampling/2.0"
+        xmlns:sams="http://www.opengis.net/samplingSpatial/2.0"
+        xmlns:wml2="http://www.opengis.net/waterml/2.0"
+	xmlns:target="http://xml.fmi.fi/namespace/om/atmosphericfeatures/1.1"
+        xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd
+        http://www.opengis.net/gmlcov/1.0 http://schemas.opengis.net/gmlcov/1.0/gmlcovAll.xsd
+        http://www.opengis.net/sampling/2.0 http://schemas.opengis.net/sampling/2.0/samplingFeature.xsd
+        http://www.opengis.net/samplingSpatial/2.0 http://schemas.opengis.net/samplingSpatial/2.0/spatialSamplingFeature.xsd
+        http://www.opengis.net/swe/2.0 http://schemas.opengis.net/sweCommon/2.0/swe.xsd
+        http://inspire.ec.europa.eu/schemas/ompr/3.0 https://inspire.ec.europa.eu/schemas/ompr/3.0/Processes.xsd
+        http://inspire.ec.europa.eu/schemas/omso/3.0 https://inspire.ec.europa.eu/schemas/omso/3.0/SpecialisedObservations.xsd
+        http://www.opengis.net/waterml/2.0 http://schemas.opengis.net/waterml/2.0/waterml2.xsd
+        http://xml.fmi.fi/namespace/om/atmosphericfeatures/1.1 https://xml.fmi.fi/schema/om/atmosphericfeatures/1.1/atmosphericfeatures.xsd">
+   
+	    <wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-gzOq9BTvjl1haXc_WS0td0wT.LGJTowpoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxYM3Lds6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznh9Cb23L0y76GHlh25emXlzrMr4e2WRza23Tz56d2epl8dKxp2Gc2t3XbPzU.mHpp37uc4TW49cOzT08yd2bfE1ufTD00791Tzwy1tb.GXdkw9MN_F13.W5z6b.WXJx65eXm_pyVmhZtul0634ueXl2w9NO_dzdOu.HtldOumnbl7YdnXLww6eTQ6aduWn0y8Jmh007ctrfuy1jVakM">
+
+		            <om:phenomenonTime>
+        <gml:TimePeriod  gml:id="time1-1-3">
+          <gml:beginPosition>2026-10-15T13:16:43Z</gml:beginPosition>
+          <gml:endPosition>2026-10-15T16:00:00Z</gml:endPosition>
+        </gml:TimePeriod>
+      </om:phenomenonTime>
+      <om:resultTime>
+        <gml:TimeInstant gml:id="time2-1-3">
+          <gml:timePosition>2026-10-15T16:00:00Z</gml:timePosition>
+        </gml:TimeInstant>
+      </om:resultTime>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_buoy"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=WaveHs&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-3-WaveHs">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-3-WaveHs">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-103976-pos-WaveHs">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">103976</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Suomenlinna aaltopoiju</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-103976</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-103976-1-3-WaveHs"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-103976-1-3-WaveHs" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Suomenlinna aaltopoiju</gml:name>
+                                <gml:pos>60.12333 24.97283 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-3-WaveHs">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:25:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:30:00Z</wml2:time>
+				      <wml2:value>0.4</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:35:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:45:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:55:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>0.5</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:05:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:10:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:15:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:25:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:30:00Z</wml2:time>
+				      <wml2:value>0.5</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:35:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:45:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:55:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>0.5</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:05:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:10:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:15:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:25:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:30:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:35:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:45:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:55:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-ppsni06zuqFaAK0vNt8YlXXfoaWJTowpoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxYM3Lds6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznh9Cb23L0y76GHlh25emXlzrQm78mHZXiaWtt08.endnqZfHSsadhnNrd12z81Pph6ad.7nOE1uPXDs09PMndm3xNbn0w9NO_dU88MtbW_hl3ZMPTDfxdd_luc.m_llyceuXl5v6clZoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnk0Omnblp9MvCZodNO3La37stY1WpDA-">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-3"/>
+      <om:resultTime xlink:href="#time2-1-3"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_buoy"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=ModalWDi&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-3-ModalWDi">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-3-ModalWDi">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-103976-pos-ModalWDi">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">103976</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Suomenlinna aaltopoiju</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-103976</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-103976-1-3-ModalWDi"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-103976-1-3-ModalWDi" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Suomenlinna aaltopoiju</gml:name>
+                                <gml:pos>60.12333 24.97283 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-3-ModalWDi">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:25:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:30:00Z</wml2:time>
+				      <wml2:value>193.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:35:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:45:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:55:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>190.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:05:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:10:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:15:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:25:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:30:00Z</wml2:time>
+				      <wml2:value>193.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:35:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:45:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:55:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>189.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:05:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:10:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:15:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:25:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:30:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:35:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:45:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:55:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-QzEcxXrOy8uOZ2Zl1eviOzCSeGSJTowpoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxYM3Lds6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznh9Cb23L0y76GHlh25emXlzrGr1KDW26efPTuz1MvjpWNOwzm1u67Z.an0w9NO_dznCa3Hrh2aenmTuzb4mtz6YemnfuqeeGWtrfwy7smHphv4uu_y3OfTfyy5OPXLy839OSs0LNt0unW_Fzy8u2Hpp37ubp13w9srp1007cvbDs65eGHTyaHTTty0.mXhM0Omnbltb92WsarUhgA--">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-3"/>
+      <om:resultTime xlink:href="#time2-1-3"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_buoy"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=WTP&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-3-WTP">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-3-WTP">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-103976-pos-WTP">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">103976</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Suomenlinna aaltopoiju</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-103976</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-103976-1-3-WTP"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-103976-1-3-WTP" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Suomenlinna aaltopoiju</gml:name>
+                                <gml:pos>60.12333 24.97283 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-3-WTP">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:25:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:30:00Z</wml2:time>
+				      <wml2:value>3.5</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:35:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:45:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:55:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>3.3</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:05:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:10:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:15:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:25:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:30:00Z</wml2:time>
+				      <wml2:value>3.3</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:35:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:45:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:55:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>3.2</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:05:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:10:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:15:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:25:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:30:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:35:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:45:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:55:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-NxneNoKMUVQTBGg7sl2I0m8TCMCJTowpoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxYM3Lds6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznh9Cb23L0y76GHlh25emXlzrMqV4NSLSa23Tz56d2epl8dKxp2Gc2t3XbPzU.mHpp37uc4TW49cOzT08yd2bfE1ufTD00791Tzwy1tb.GXdkw9MN_F13.W5z6b.WXJx65eXm_pyVmhZtul0634ueXl2w9NO_dzdOu.HtldOumnbl7YdnXLww6eTQ6aduWn0y8Jmh007ctrfuy1jVakM">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-3"/>
+      <om:resultTime xlink:href="#time2-1-3"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_buoy"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=TWATER&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-3-TWATER">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-3-TWATER">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-103976-pos-TWATER">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">103976</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Helsinki Suomenlinna aaltopoiju</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-103976</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-103976-1-3-TWATER"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Helsinki</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-103976-1-3-TWATER" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Helsinki Suomenlinna aaltopoiju</gml:name>
+                                <gml:pos>60.12333 24.97283 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-3-TWATER">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:20:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:25:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:30:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:35:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:40:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:45:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:50:00Z</wml2:time>
+				      <wml2:value>12.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:55:00Z</wml2:time>
+				      <wml2:value>12.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>12.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:05:00Z</wml2:time>
+				      <wml2:value>12.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:10:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:15:00Z</wml2:time>
+				      <wml2:value>12.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:20:00Z</wml2:time>
+				      <wml2:value>12.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:25:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:30:00Z</wml2:time>
+				      <wml2:value>12.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:35:00Z</wml2:time>
+				      <wml2:value>12.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:40:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:45:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:50:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:55:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>12.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:05:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:10:00Z</wml2:time>
+				      <wml2:value>12.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:15:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:20:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:25:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:30:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:35:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:40:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:45:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:50:00Z</wml2:time>
+				      <wml2:value>12.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:55:00Z</wml2:time>
+				      <wml2:value>11.9</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-weAEu7Q0_mcvdDMmFSBvrg7fqRiJTowpoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxYNGzBg6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznh9Cb23L0y76GHlh25emXlzrMr4e2WRza23Tz56d2epl8dKxp2Gc2t3XbPzU.mHpp37uc4TW49cOzT08yd2bfE1ufTD00791Tzwy1tb.GXdkw9MN_F13.W5z6b.WXJx65eXm_pyVmhZtul0634ueXl2w9NO_dzdOu.HtldOumnbl7YdnXLww6eTQ6aduWn0y8Jmh007ctrfuy1jVakM">
+
+		            <om:phenomenonTime>
+        <gml:TimePeriod  gml:id="time1-1-4">
+          <gml:beginPosition>2026-10-15T13:16:43Z</gml:beginPosition>
+          <gml:endPosition>2026-10-15T16:00:00Z</gml:endPosition>
+        </gml:TimePeriod>
+      </om:phenomenonTime>
+      <om:resultTime>
+        <gml:TimeInstant gml:id="time2-1-4">
+          <gml:timePosition>2026-10-15T16:00:00Z</gml:timePosition>
+        </gml:TimeInstant>
+      </om:resultTime>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_buoy"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=WaveHs&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-4-WaveHs">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-4-WaveHs">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-104600-pos-WaveHs">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">104600</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Pori Kaijakari</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-104600</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-104600-1-4-WaveHs"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Pori</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-104600-1-4-WaveHs" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Pori Kaijakari</gml:name>
+                                <gml:pos>61.62160 21.38740 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-4-WaveHs">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-mvIlWxgxMutKXFQ6Ndc7pe5dAK6JTowpoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxYNGzBg6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznh9Cb23L0y76GHlh25emXlzrQm78mHZXiaWtt08.endnqZfHSsadhnNrd12z81Pph6ad.7nOE1uPXDs09PMndm3xNbn0w9NO_dU88MtbW_hl3ZMPTDfxdd_luc.m_llyceuXl5v6clZoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnk0Omnblp9MvCZodNO3La37stY1WpDA-">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-4"/>
+      <om:resultTime xlink:href="#time2-1-4"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_buoy"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=ModalWDi&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-4-ModalWDi">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-4-ModalWDi">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-104600-pos-ModalWDi">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">104600</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Pori Kaijakari</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-104600</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-104600-1-4-ModalWDi"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Pori</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-104600-1-4-ModalWDi" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Pori Kaijakari</gml:name>
+                                <gml:pos>61.62160 21.38740 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-4-ModalWDi">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-X4mQuBKHN7ge1dnD9MLmRwob3PqJTowpoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxYNGzBg6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznh9Cb23L0y76GHlh25emXlzrGr1KDW26efPTuz1MvjpWNOwzm1u67Z.an0w9NO_dznCa3Hrh2aenmTuzb4mtz6YemnfuqeeGWtrfwy7smHphv4uu_y3OfTfyy5OPXLy839OSs0LNt0unW_Fzy8u2Hpp37ubp13w9srp1007cvbDs65eGHTyaHTTty0.mXhM0Omnbltb92WsarUhgA--">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-4"/>
+      <om:resultTime xlink:href="#time2-1-4"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_buoy"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=WTP&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-4-WTP">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-4-WTP">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-104600-pos-WTP">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">104600</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Pori Kaijakari</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-104600</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-104600-1-4-WTP"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Pori</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-104600-1-4-WTP" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Pori Kaijakari</gml:name>
+                                <gml:pos>61.62160 21.38740 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-4-WTP">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-40tsFolG7.YIgHeHXRbFO3.37wqJTowpoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxYNGzBg6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznh9Cb23L0y76GHlh25emXlzrMqV4NSLSa23Tz56d2epl8dKxp2Gc2t3XbPzU.mHpp37uc4TW49cOzT08yd2bfE1ufTD00791Tzwy1tb.GXdkw9MN_F13.W5z6b.WXJx65eXm_pyVmhZtul0634ueXl2w9NO_dzdOu.HtldOumnbl7YdnXLww6eTQ6aduWn0y8Jmh007ctrfuy1jVakM">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-4"/>
+      <om:resultTime xlink:href="#time2-1-4"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_buoy"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=TWATER&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-4-TWATER">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-4-TWATER">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-104600-pos-TWATER">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">104600</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Pori Kaijakari</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-104600</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-104600-1-4-TWATER"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Pori</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-104600-1-4-TWATER" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Pori Kaijakari</gml:name>
+                                <gml:pos>61.62160 21.38740 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-4-TWATER">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>10.3</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>10.3</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-k_MNrkDjl_XZf6NtM7ljhDAtRWiJTowpoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxZtGTJi6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznh9Cb23L0y76GHlh25emXlzrMr4e2WRza23Tz56d2epl8dKxp2Gc2t3XbPzU.mHpp37uc4TW49cOzT08yd2bfE1ufTD00791Tzwy1tb.GXdkw9MN_F13.W5z6b.WXJx65eXm_pyVmhZtul0634ueXl2w9NO_dzdOu.HtldOumnbl7YdnXLww6eTQ6aduWn0y8Jmh007ctrfuy1jVakM">
+
+		            <om:phenomenonTime>
+        <gml:TimePeriod  gml:id="time1-1-7">
+          <gml:beginPosition>2026-10-15T13:16:43Z</gml:beginPosition>
+          <gml:endPosition>2026-10-15T16:00:00Z</gml:endPosition>
+        </gml:TimePeriod>
+      </om:phenomenonTime>
+      <om:resultTime>
+        <gml:TimeInstant gml:id="time2-1-7">
+          <gml:timePosition>2026-10-15T16:00:00Z</gml:timePosition>
+        </gml:TimeInstant>
+      </om:resultTime>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_buoy"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=WaveHs&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-7-WaveHs">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-7-WaveHs">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-134221-pos-WaveHs">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">134221</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Suomenlahti aaltopoiju</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-10022810</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-134221-1-7-WaveHs"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Sipoo</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-134221-1-7-WaveHs" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Suomenlahti aaltopoiju</gml:name>
+                                <gml:pos>59.96500 25.23500 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-7-WaveHs">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:30:00Z</wml2:time>
+				      <wml2:value>0.7</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>0.6</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:10:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:30:00Z</wml2:time>
+				      <wml2:value>0.7</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>0.7</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:10:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:30:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-IUMf9oHotq3d9QMVRP9BSzyN8seJTowpoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxZtGTJi6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznh9Cb23L0y76GHlh25emXlzrQm78mHZXiaWtt08.endnqZfHSsadhnNrd12z81Pph6ad.7nOE1uPXDs09PMndm3xNbn0w9NO_dU88MtbW_hl3ZMPTDfxdd_luc.m_llyceuXl5v6clZoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnk0Omnblp9MvCZodNO3La37stY1WpDA-">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-7"/>
+      <om:resultTime xlink:href="#time2-1-7"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_buoy"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=ModalWDi&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-7-ModalWDi">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-7-ModalWDi">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-134221-pos-ModalWDi">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">134221</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Suomenlahti aaltopoiju</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-10022810</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-134221-1-7-ModalWDi"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Sipoo</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-134221-1-7-ModalWDi" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Suomenlahti aaltopoiju</gml:name>
+                                <gml:pos>59.96500 25.23500 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-7-ModalWDi">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:30:00Z</wml2:time>
+				      <wml2:value>187.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>207.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:10:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:30:00Z</wml2:time>
+				      <wml2:value>199.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>208.0</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:10:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:30:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-MiYSjxq5T1xcWlBYMHSAI1EFZKaJTowpoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxZtGTJi6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznh9Cb23L0y76GHlh25emXlzrGr1KDW26efPTuz1MvjpWNOwzm1u67Z.an0w9NO_dznCa3Hrh2aenmTuzb4mtz6YemnfuqeeGWtrfwy7smHphv4uu_y3OfTfyy5OPXLy839OSs0LNt0unW_Fzy8u2Hpp37ubp13w9srp1007cvbDs65eGHTyaHTTty0.mXhM0Omnbltb92WsarUhgA--">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-7"/>
+      <om:resultTime xlink:href="#time2-1-7"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_buoy"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=WTP&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-7-WTP">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-7-WTP">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-134221-pos-WTP">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">134221</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Suomenlahti aaltopoiju</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-10022810</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-134221-1-7-WTP"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Sipoo</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-134221-1-7-WTP" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Suomenlahti aaltopoiju</gml:name>
+                                <gml:pos>59.96500 25.23500 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-7-WTP">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:30:00Z</wml2:time>
+				      <wml2:value>3.4</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>3.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:10:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:30:00Z</wml2:time>
+				      <wml2:value>3.2</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:50:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>3.2</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:10:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:20:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:30:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:40:00Z</wml2:time>
+				      <wml2:value>NaN</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+<wfs:member>
+                <omso:PointTimeSeriesObservation gml:id="WFS-7BGZDOB8A7yLzGKO.jUNCPZ.q5aJTowpoWbbpdOt.Lnl5dsPTTv3c3Trvh7ZXTrpp25e2HZ1y8MOnlC0sWXPp3VNO3Laq_hVL3vW6ExsfLnWpFoU47p00ZNXDOy7slTTty2qv4VS9go4hM7Nt089OTnWYxZtGTJi6NeXz338sl_f2y8u_LT0w4tmWJmbMPTLz6RMzZvx4dmWtTNpvxpK7r0zOGttw.Imnn0w7seWlauhAaW3D4i8N.PRznh9Cb23L0y76GHlh25emXlzrMqV4NSLSa23Tz56d2epl8dKxp2Gc2t3XbPzU.mHpp37uc4TW49cOzT08yd2bfE1ufTD00791Tzwy1tb.GXdkw9MN_F13.W5z6b.WXJx65eXm_pyVmhZtul0634ueXl2w9NO_dzdOu.HtldOumnbl7YdnXLww6eTQ6aduWn0y8Jmh007ctrfuy1jVakM">
+
+		      
+      <om:phenomenonTime xlink:href="#time1-1-7"/>
+      <om:resultTime xlink:href="#time2-1-7"/>      
+
+		<om:procedure xlink:href="http://xml.fmi.fi/inspire/process/opendata_buoy"/>
+   		
+
+                <om:observedProperty  xlink:href="https://opendata.fmi.fi/meta?observableProperty=observation&amp;param=TWATER&amp;language=eng"/>
+				<om:featureOfInterest>
+                    <sams:SF_SpatialSamplingFeature gml:id="fi-1-7-TWATER">
+          <sam:sampledFeature>
+		<target:LocationCollection gml:id="sampled-target-1-7-TWATER">
+		    <target:member>
+		    <target:Location gml:id="obsloc-fmisid-134221-pos-TWATER">
+		        <gml:identifier codeSpace="http://xml.fmi.fi/namespace/stationcode/fmisid">134221</gml:identifier>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/name">Suomenlahti aaltopoiju</gml:name>
+			<gml:name codeSpace="http://xml.fmi.fi/namespace/locationcode/geoid">-10022810</gml:name>
+			
+			<target:representativePoint xlink:href="#point-fmisid-134221-1-7-TWATER"/>
+			
+			
+			<target:region codeSpace="http://xml.fmi.fi/namespace/location/region">Sipoo</target:region>
+			
+		    </target:Location></target:member>
+		</target:LocationCollection>
+ 	   </sam:sampledFeature>
+                        <sams:shape>
+                            
+			    <gml:Point gml:id="point-fmisid-134221-1-7-TWATER" srsName="http://www.opengis.net/def/crs/EPSG/0/4258" srsDimension="2">
+                                <gml:name>Suomenlahti aaltopoiju</gml:name>
+                                <gml:pos>59.96500 25.23500 </gml:pos>
+                            </gml:Point>
+                            
+                        </sams:shape>
+                    </sams:SF_SpatialSamplingFeature>
+                </om:featureOfInterest>
+
+		  <om:result>
+                    <wml2:MeasurementTimeseries gml:id="obs-obs-1-7-TWATER">                         
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:20:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:30:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:40:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T13:50:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:00:00Z</wml2:time>
+				      <wml2:value>13.2</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:10:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:20:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:30:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:40:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T14:50:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:00:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:10:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:20:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:30:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                          
+                        <wml2:point>
+                            <wml2:MeasurementTVP> 
+                                      <wml2:time>2026-10-15T15:40:00Z</wml2:time>
+				      <wml2:value>13.1</wml2:value>
+                            </wml2:MeasurementTVP>
+                        </wml2:point>                         
+                    </wml2:MeasurementTimeseries>
+                </om:result>
+
+        </omso:PointTimeSeriesObservation>
+    </wfs:member>
+</wfs:FeatureCollection>

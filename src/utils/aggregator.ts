@@ -10,19 +10,30 @@ import { fetchOWMCurrent, getOWMStatus } from '../sources/openweathermap.js';
 import { fetchWeatherApiCurrent, getWeatherApiStatus } from '../sources/weatherapi.js';
 import { fetchTomorrowCurrent, getTomorrowStatus } from '../sources/tomorrow-io.js';
 import { getMetarStatus } from '../sources/metar.js';
-import { fetchFmiObservation, getFmiStatus, isInFinland, type FmiObservation } from '../sources/fmi.js';
+import { getFmiStatus } from '../sources/fmi.js';
+import { getFmiForecastStatus } from '../sources/fmi-forecast.js';
+import { fetchNationalObservation, metNordicAnalysis, getNationalObsStatus, type Observation } from '../sources/national-obs.js';
+import { countryOfLocation } from './region.js';
 import { getFmiAirQualityStatus } from '../sources/fmi-airquality.js';
+import { getMarineStatus } from '../sources/marine.js';
+import { getRoadWeatherStatus } from '../sources/road-weather.js';
 
 const NEARBY_STATION_KM = 50;
 
 export async function aggregateCurrentWeather(
   loc: ResolvedLocation,
-): Promise<{ weather: CurrentWeather; sources: string[]; summary: string; observation?: FmiObservation; nearbyObservation?: FmiObservation }> {
-  // In Finland the nearest FMI station's measurement comes first: values below are filled in order,
-  // so measured data takes precedence over model data, and models fill what the station does not measure.
-  const fmiPromise = isInFinland(loc.lat, loc.lon) ? fetchFmiObservation(loc.lat, loc.lon) : Promise.resolve(null);
+): Promise<{ weather: CurrentWeather; sources: string[]; summary: string; observation?: Observation; nearbyObservation?: Observation; analysis?: Observation }> {
+  // Measured first: the nearest station of the country's national weather service (FMI, SMHI, DMI, IMO, LHMT, Estonia)
+  // within 15 km, then MET Norway's MET Nordic analysis (observations and radar on a 1 km grid) in Finland, Sweden, Norway
+  // and Denmark, then the models. Values are filled in this order, so measurements win and models only fill the gaps.
+  const country = countryOfLocation(loc);
+  const obsPromise = fetchNationalObservation(country, loc.lat, loc.lon);
+  // Norway: the analysis already is the national observation (Frost needs a client id), so it is not fetched twice
+  const anaPromise = country && ['FI', 'SE', 'DK'].includes(country)
+    ? metNordicAnalysis(loc.lat, loc.lon).catch(() => null) : Promise.resolve(null);
   const results = await Promise.allSettled([
-    fmiPromise.then((r) => (r && r.ok ? { ok: true as const, source: r.source, data: r.data.weather } : null)),
+    obsPromise.then((r) => (r.ok ? { ok: true as const, source: r.source, data: r.data.weather } : null)),
+    anaPromise.then((a) => (a ? { ok: true as const, source: 'MET Nordic analysis', data: a.weather } : null)),
     fetchOpenMeteoCurrent(loc.lat, loc.lon),
     fetchWttrCurrent(`${loc.lat},${loc.lon}`),   // coordinates: wttr.in's own name search failed for e.g. "Stockholm/Arlanda Arpt (ESSA)"
     config.hasOpenWeatherMap ? fetchOWMCurrent(loc.lat, loc.lon) : Promise.resolve(null),
@@ -58,16 +69,16 @@ export async function aggregateCurrentWeather(
     merged.dewPoint ??= d.dewPoint;
   }
 
-  const fmi = await fmiPromise;
-  // No station within 15 km (e.g. Utsjoki, rural lakeside): the model is used for the point, and the nearest
+  const obs = await obsPromise, analysis = (await anaPromise) ?? undefined;
+  // No station within 15 km (e.g. Utsjoki, rural lakeside): the analysis or model is used for the point, and the nearest
   // station within 50 km is shown for reference only, without mixing it into the values.
-  let nearbyObservation: FmiObservation | undefined;
-  if (fmi && !fmi.ok && isInFinland(loc.lat, loc.lon)) {
-    const far = await fetchFmiObservation(loc.lat, loc.lon, NEARBY_STATION_KM);
+  let nearbyObservation: Observation | undefined;
+  if (!obs.ok && country && country !== 'NO') {
+    const far = await fetchNationalObservation(country, loc.lat, loc.lon, NEARBY_STATION_KM);
     if (far.ok) nearbyObservation = far.data;
   }
   const summary = buildSummary(merged, loc);
-  return { weather: merged, sources: usedSources, summary, observation: fmi && fmi.ok ? fmi.data : undefined, nearbyObservation };
+  return { weather: merged, sources: usedSources, summary, observation: obs.ok ? obs.data : undefined, nearbyObservation, analysis };
 }
 
 function buildSummary(w: CurrentWeather, loc: ResolvedLocation): string {
@@ -97,9 +108,13 @@ function buildSummary(w: CurrentWeather, loc: ResolvedLocation): string {
 export function getAllSourceStatuses(): SourceStatus[] {
   return [
     getMetNorwayStatus(),
+    getNationalObsStatus(),
     getWarningsStatus(),
     getSpaceWeatherStatus(),
+    getMarineStatus(),
+    getRoadWeatherStatus(),
     getFmiStatus(),
+    getFmiForecastStatus(),
     getFmiAirQualityStatus(),
     getOpenMeteoStatus(),
     getWttrStatus(),

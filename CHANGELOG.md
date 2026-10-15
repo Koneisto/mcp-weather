@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-15
+
+### Added
+
+- `get_marine_conditions`: measured sea level against each country's reference (FMI theoretical mean sea level, SMHI
+  RH 2000, DMI DVR90, Kartverket mean sea level) with the forecast high and low in Finland (FMI) and Norway
+  (Kartverket, tide plus weather effect), water temperature (FMI, SMHI, DMI), wave buoys (FMI, SMHI) and a wave model
+  anywhere at sea (MET Norway Oceanforecast in Norway, Open-Meteo Marine elsewhere).
+- `get_road_weather` (Finland): the nearest Fintraffic road weather station with road surface temperature and state,
+  friction, slipperiness warning, precipitation, visibility and wind, a frost-risk flag, and Fintraffic's road
+  condition forecast for the next 12 hours with the roads and reasons behind poor conditions.
+- Station observations for current weather from the national weather services: SMHI (Sweden), DMI (Denmark), the
+  Icelandic Met Office, LHMT (Lithuania) and the Estonian Environment Agency, alongside FMI; in Norway the MET Nordic
+  analysis (observations and radar on a 1 km grid).
+
+### Changed
+
+- `get_weather_forecast` in Finland uses FMI's meteorologist-edited forecast for the full days it covers (today and UV,
+  sunrise and sunset stay with the MET Nordic model); each day names its source.
+- `get_current_weather` names the provider with the station ("Measured at: Stockholm-Observatoriekullen A (SMHI, …)"),
+  uses the MET Nordic analysis between stations in Finland, Sweden and Denmark, and returns an `attribution` list.
+
 ## [1.1.0] - 2026-10-15
 
 ### Added
@@ -89,7 +111,8 @@ First public release.
 - 30 offline tests (`npm test`) and a live acceptance test against a running server
   (`npm run test:live -- <stdio command | http://host:port/mcp>`).
 
-[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/Koneisto/mcp-weather/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/Koneisto/mcp-weather/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/Koneisto/mcp-weather/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/Koneisto/mcp-weather/compare/v1.0.0...v1.0.1

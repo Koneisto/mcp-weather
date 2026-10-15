@@ -10,13 +10,15 @@ import { sourceStatusTool } from './tools/source-status.js';
 import { warningsTool } from './tools/warnings.js';
 import { nowcastTool } from './tools/nowcast.js';
 import { auroraTool } from './tools/aurora.js';
+import { marineTool } from './tools/marine.js';
+import { roadWeatherTool } from './tools/road-weather.js';
 import { keyNote, serverInstructions } from './keys.js';
 
 import { VERSION } from './version.js';
 
 export const SERVER_VERSION = VERSION;
 
-const tools = [currentWeatherTool, forecastTool, nowcastTool, warningsTool, airQualityTool, auroraTool, metarTool, astronomyTool, sourceStatusTool];
+const tools = [currentWeatherTool, forecastTool, nowcastTool, warningsTool, marineTool, roadWeatherTool, airQualityTool, auroraTool, metarTool, astronomyTool, sourceStatusTool];
 
 /**
  * A new MCP server instance with all tools. Cheap to create: the data cache and source state are module-level,

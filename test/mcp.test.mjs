@@ -49,8 +49,8 @@ async function inMemoryClient() {
 test('tools: same names, with title, output schema and read-only annotations', async () => {
   const c = await inMemoryClient();
   const tools = (await c.listTools()).tools;
-  assert.deepEqual(tools.map((t) => t.name).sort(), ['get_air_quality', 'get_astronomy', 'get_aurora_forecast', 'get_current_weather', 'get_metar',
-    'get_precipitation_nowcast', 'get_weather_forecast', 'get_weather_source_status', 'get_weather_warnings']);
+  assert.deepEqual(tools.map((t) => t.name).sort(), ['get_air_quality', 'get_astronomy', 'get_aurora_forecast', 'get_current_weather', 'get_marine_conditions',
+    'get_metar', 'get_precipitation_nowcast', 'get_road_weather', 'get_weather_forecast', 'get_weather_source_status', 'get_weather_warnings']);
   for (const t of tools) {
     assert.ok(t.title, t.name);
     assert.equal(t.outputSchema?.type, 'object', t.name);
