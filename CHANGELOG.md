@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-16
+
+### Added
+
+- `get_lake_conditions` takes `days` (0–60): the daily water level (with the N2000 height) and water temperature of the
+  last days, oldest first, for charts; the text gives the lowest and highest value. Each station also carries its Syke
+  `stationId`.
+
 ## [1.3.2] - 2026-10-16
 
 ### Changed
@@ -138,7 +146,8 @@ First public release.
 - 30 offline tests (`npm test`) and a live acceptance test against a running server
   (`npm run test:live -- <stdio command | http://host:port/mcp>`).
 
-[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.3.2...HEAD
+[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/Koneisto/mcp-weather/compare/v1.3.2...v1.4.0
 [1.3.2]: https://github.com/Koneisto/mcp-weather/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/Koneisto/mcp-weather/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/Koneisto/mcp-weather/compare/v1.2.0...v1.3.0

@@ -20,10 +20,15 @@ const LEVEL_KM = 25, TEMP_KM = 50, ICE_KM = 50, SAME_LAKE_KM = 150;
 export interface SykeStation { id: number; name: string; lake?: string; partOf?: string; lat: number; lon: number }
 export interface LakeNormal { mean: number; min: number; max: number; years: number; fromYear: number; toYear: number }
 export interface LakeLevel {
-  station: string; lake?: string; partOf?: string; distanceKm?: number; date: string;
+  station: string; stationId: number; lake?: string; partOf?: string; distanceKm?: number; date: string;
   cm: number; n2000M?: number; change7dCm?: number; normal?: LakeNormal; fromNormalCm?: number;
+  /** daily values of the last `days` days, oldest first (only when asked) */
+  history?: Array<{ date: string; cm: number; n2000M?: number }>;
 }
-export interface LakeTemp { station: string; lake?: string; partOf?: string; distanceKm?: number; date: string; celsius: number; normal?: LakeNormal; fromNormalC?: number }
+export interface LakeTemp {
+  station: string; stationId: number; lake?: string; partOf?: string; distanceKm?: number; date: string; celsius: number; normal?: LakeNormal; fromNormalC?: number;
+  history?: Array<{ date: string; celsius: number }>;
+}
 export interface LakeIce { station: string; lake?: string; partOf?: string; distanceKm?: number; date: string; thicknessCm?: number; snowCm?: number; weak: boolean }
 
 type OData<T> = { value: T[]; 'odata.nextLink'?: string };
@@ -122,7 +127,7 @@ async function level(s: SykeStation & { distanceKm?: number }): Promise<LakeLeve
   const off = offsets.find((o) => o.Korkeustaso_Id === N2000)?.Tasokorjaus;
   const w = num(weekAgo?.Arvo);
   return {
-    station: s.name, lake: s.lake, partOf: s.partOf, distanceKm: s.distanceKm, date, cm,
+    station: s.name, stationId: s.id, lake: s.lake, partOf: s.partOf, distanceKm: s.distanceKm, date, cm,
     n2000M: off !== undefined ? Math.round(off + cm) / 100 : undefined,
     change7dCm: w !== undefined ? cm - w : undefined,
     normal, fromNormalCm: normal ? Math.round(cm - normal.mean) : undefined,
@@ -135,7 +140,33 @@ async function temperature(s: SykeStation & { distanceKm?: number }): Promise<La
   if (!last || c === undefined || Date.now() - Date.parse(last.Aika + 'Z') > TEMP_MAX_AGE) return null;
   const date = last.Aika.slice(0, 10);
   const normal = await sameDayNormal('LampoPintavesi', s.id, date).catch(() => undefined);
-  return { station: s.name, lake: s.lake, partOf: s.partOf, distanceKm: s.distanceKm, date, celsius: c, normal, fromNormalC: normal ? r1(c - normal.mean) : undefined };
+  return { station: s.name, stationId: s.id, lake: s.lake, partOf: s.partOf, distanceKm: s.distanceKm, date, celsius: c, normal, fromNormalC: normal ? r1(c - normal.mean) : undefined };
+}
+
+/** Daily values of a station from `days` days before today on, oldest first (one request, cached like the latest values). */
+async function series(entity: string, id: number, days: number): Promise<Array<{ date: string; value: number }>> {
+  const from = new Date(Date.now() - days * 86400000).toISOString().slice(0, 10);
+  const rows = await cache.getOrFetch(`syke:series:${entity}:${id}:${from}`, () => odataAll<ValueRow>(
+    q(entity, `Paikka_Id eq ${id} and Aika ge datetime'${from}T00:00:00'`, '&$orderby=Aika&$select=Aika,Arvo')), DATA_TTL);
+  return rows.map((r) => ({ date: r.Aika.slice(0, 10), value: num(r.Arvo) })).filter((x): x is { date: string; value: number } => x.value !== undefined);
+}
+
+/**
+ * Adds the daily history of the last `days` days to the stations in the answer (not to every candidate). The gauge
+ * offset that gives the N2000 height of today's value gives it for the history too.
+ */
+export async function withHistory(c: LakeConditions, days: number): Promise<LakeConditions> {
+  if (!days) return c;
+  const levels = await Promise.all(c.levels.map(async (l) => {
+    const off = l.n2000M !== undefined ? Math.round(l.n2000M * 100) - l.cm : undefined;
+    const h = await series('Vedenkorkeus', l.stationId, days).catch(() => null);
+    return h ? { ...l, history: h.map((x) => ({ date: x.date, cm: x.value, n2000M: off !== undefined ? Math.round(off + x.value) / 100 : undefined })) } : l;
+  }));
+  const temperatures = await Promise.all(c.temperatures.map(async (t) => {
+    const h = await series('LampoPintavesi', t.stationId, days).catch(() => null);
+    return h ? { ...t, history: h.map((x) => ({ date: x.date, celsius: x.value })) } : t;
+  }));
+  return { ...c, levels, temperatures };
 }
 
 /** Latest ice measurement of a station: total thickness, snow on the ice, or "weak ice" (seen but too weak to measure). */
