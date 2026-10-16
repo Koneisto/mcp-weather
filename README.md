@@ -171,8 +171,10 @@ Finnish Meteorological Institute.
   the height above sea level (N2000) where Syke publishes the gauge's offset. The normal is the mean, lowest and highest
   value of the same calendar day in the previous 30 years. A lake name matches stations named after it or filed under it,
   then the basins Syke files as part of it ("Haukivesi (Saimaa …)"). A place uses the nearest water level station within
-  25 km and the nearest temperature and ice stations within 50 km that still report. Ice thickness is shown only when
-  measured in the last 45 days.
+  25 km that still reports. Water temperature comes from the same lake (or a basin of it) within 150 km first, because
+  the same water body describes the point better than a nearer different lake, then from the nearest station within
+  50 km. Ice is local, so the nearest ice stations within 50 km come first, then the same lake. Ice thickness is shown
+  only when measured in the last 45 days; out of season the answer names the station that measured last winter.
 - **Road weather:** the nearest station with data from the last hour within 30 km; a faulty road surface sensor is
   skipped (the second sensor or the optical one is used). The road condition forecast shows the worst condition per
   step over the road sections within 10 km and the roads and reasons behind a poor one. Sweden and Norway publish road

@@ -1,5 +1,5 @@
 // Finnish lakes (1.3.0): Syke water level, surface water temperature and ice. Offline: syke-recorded.json holds real Syke
-// responses from 15 Oct 2026 (station lists trimmed to the lakes used here), replayed by URL; the clock is fixed to that evening.
+// responses from 16 Oct 2026 (station lists trimmed to the lakes used here), replayed by URL; the clock is fixed to that morning.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -7,7 +7,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 
 const RECORDED = JSON.parse(readFileSync(new URL('./fixtures/syke-recorded.json', import.meta.url), 'utf8'));
-const NOW = Date.parse('2026-10-15T17:10:00Z');
+const NOW = Date.parse('2026-10-16T09:05:00Z');
 process.env.MCP_WEATHER_KEY_NOTE = 'off';
 const S = await import('../build/sources/syke.js');
 const { createMcpServer } = await import('../build/server.js');
@@ -66,12 +66,12 @@ test('get_lake_conditions "Saimaa": level with N2000 height and 30-year normal, 
     const t = r.content[0].text;
     assert.equal(r.isError, undefined, t);
     assert.match(t, /^Lake conditions for Saimaa$/m);
-    assert.match(t, /^Water level at Saimaa, Lauritsala, 14 Oct: 75,74 m above sea level \(N2000\), 317 cm on the gauge · ±0 cm in a week$/m);
-    assert.match(t, /^ {2}28 cm below the normal for 14 Oct, 345 cm \(1996–2025, range 291–414 cm\)$/m);
-    assert.match(t, /^Water level at Saimaa, Ristiina, 15 Oct: 75,77 m/m);
-    assert.match(t, /^Water level at Haukivesi, Oravi \(part of Saimaa\), 14 Oct: 75,85 m/m);
-    assert.match(t, /^Surface water temperature at Saimaa, Lauritsala, 14 Oct: 11,6 °C$/m);
-    assert.match(t, /^ {2}1,6 °C warmer than the normal for 14 Oct, 10 °C \(1996–2025/m);
+    assert.match(t, /^Water level at Saimaa, Lauritsala, 15 Oct: 75,74 m above sea level \(N2000\), 317 cm on the gauge · \+1 cm in a week$/m);
+    assert.match(t, /^ {2}28 cm below the normal for 15 Oct, 345 cm \(1996–2025, range 293–414 cm\)$/m);
+    assert.match(t, /^Water level at Saimaa, Ristiina, 16 Oct: 75,77 m/m);
+    assert.match(t, /^Water level at Haukivesi, Oravi \(part of Saimaa\), 15 Oct: 75,85 m/m);
+    assert.match(t, /^Surface water temperature at Saimaa, Lauritsala, 15 Oct: 10,9 °C$/m);
+    assert.match(t, /^ {2}1 °C warmer than the normal for 15 Oct, 9,9 °C \(1996–2025/m);
     assert.match(t, /Source: Finnish Environment Institute \(Syke\), CC BY 4\.0/);
     const lv = r.structuredContent.waterLevels[0];
     assert.deepEqual([lv.station, lv.cm, lv.n2000M, lv.fromNormalCm, lv.normal.years], ['Saimaa, Lauritsala', 317, 75.74, -28, 30]);
@@ -84,10 +84,25 @@ test('get_lake_conditions by place: nearest station in Finland; outside Finland 
   try {
     const c = await client();
     const r = await c.callTool({ name: 'get_lake_conditions', arguments: { location: '61.4964,27.2694' } });
-    assert.match(r.content[0].text, /^Water level at Saimaa, Ristiina, [\d,]+ km away, 15 Oct: 75,77 m above sea level/m);
+    assert.match(r.content[0].text, /^Water level at Saimaa, Ristiina, [\d,]+ km away, 16 Oct: 75,77 m above sea level/m);
     assert.equal(r.structuredContent.waterLevels.length, 1);
     const se = await c.callTool({ name: 'get_lake_conditions', arguments: { location: '59.3293,18.0686' } });
     assert.equal(se.isError, true);
     assert.match(se.content[0].text, /covers Finland/);
+  } finally { net.restore(); }
+});
+
+test('get_lake_conditions at Kekinkallio (Ristiina): Saimaa temperature from Lauritsala over a nearer other lake; ice station out of season', async () => {
+  const net = offline();
+  try {
+    const c = await client();
+    const r = await c.callTool({ name: 'get_lake_conditions', arguments: { location: '61.5295,27.3607' } });
+    const t = r.content[0].text;
+    assert.match(t, /^Water level at Saimaa, Ristiina, 6 km away, 16 Oct: 75,77 m above sea level \(N2000\)/m);
+    assert.match(t, /^Surface water temperature at Saimaa, Lauritsala, 70 km away, 15 Oct: 10,9 °C$/m, 'Saimaa, not Kyyvesi 54 km away');
+    assert.match(t, /^Ice is measured in winter at Saimaa, Lauritsala \(69,6 km away\); latest measurement 19 Mar$/m,
+      'Yövesi, Kissalahti 5 km away last measured in 2024 and is skipped');
+    assert.equal(r.structuredContent.iceStationOutOfSeason.station, 'Saimaa, Lauritsala');
+    assert.deepEqual(r.structuredContent.ice, []);
   } finally { net.restore(); }
 });

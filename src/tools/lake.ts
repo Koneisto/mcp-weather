@@ -21,6 +21,8 @@ const outputSchema = {
     change7dCm: z.number().optional(), normal: normal.optional(), fromNormalCm: z.number().optional() })),
   waterTemperatures: z.array(z.object({ ...where, celsius: z.number(), normal: normal.optional(), fromNormalC: z.number().optional() })),
   ice: z.array(z.object({ ...where, thicknessCm: z.number().optional(), snowCm: z.number().optional(), weak: z.boolean() })),
+  iceStationOutOfSeason: z.object({ station: z.string(), distanceKm: z.number().optional(), lastDate: z.string() }).optional()
+    .describe('nearest ice station, measured in winter; no measurement in the last 45 days'),
   attribution: z.string(),
 };
 
@@ -79,11 +81,15 @@ export const lakeTool: tool<typeof schema, typeof outputSchema> = {
         lines.push(`Ice at ${at(i)}: ${i.weak && i.thicknessCm === undefined ? 'weak ice, too thin to measure' : i.thicknessCm !== undefined ? `${i.thicknessCm} cm thick` : 'measured'}` +
           `${i.snowCm ? `, ${i.snowCm} cm of snow on it` : ''}`);
       }
-      if (!temperatures.length && !ice.length) lines.push('No water temperature or ice station on this lake or nearby.');
+      if (data.iceIdle) {
+        const i = data.iceIdle;
+        lines.push(`Ice is measured in winter at ${i.station}${i.distanceKm !== undefined ? ` (${formatNum(i.distanceKm)} km away)` : ''}; latest measurement ${fiDate(i.lastDate)}`);
+      }
+      if (!temperatures.length) lines.push('No water temperature station on this lake or within 50 km.');
       lines.push('', 'Daily values; the gauge reading is relative to the gauge\'s own zero, the N2000 height is above sea level.', `Source: ${SYKE_ATTRIBUTION}`);
       return ok(lines.join('\n'), {
         location: loc ? { name: loc.name, country: loc.country, lat: loc.lat, lon: loc.lon } : undefined, lake: data.matchedLake,
-        waterLevels: levels, waterTemperatures: temperatures, ice, attribution: SYKE_ATTRIBUTION,
+        waterLevels: levels, waterTemperatures: temperatures, ice, iceStationOutOfSeason: data.iceIdle, attribution: SYKE_ATTRIBUTION,
       });
     } catch (err) {
       return fail(`Error fetching lake conditions: ${errorMessage(err)}`);
