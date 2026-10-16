@@ -50,7 +50,7 @@ export const marineTool: tool<typeof schema, typeof outputSchema> = {
       }
       const tz = COUNTRY_TZ[country ?? 'FI'];
       const fmt = (t: string, opts: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour12: false, ...opts }).format(new Date(t));
-      const today = fmt(new Date().toISOString(), { weekday: 'short' });
+      const today = fmt(new Date(Date.now()).toISOString(), { weekday: 'short' });
       // "19:00" today, "Fri 06:00" on other days
       const when = (t: string) => {
         const d = fmt(t, { weekday: 'short' });

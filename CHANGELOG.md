@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.2] - 2026-10-16
+
+### Changed
+
+- `get_lake_conditions` by place takes the water temperature from the same lake as the water level (or a basin of it)
+  within 150 km before a nearer different lake (at Ristiina: Saimaa at Lauritsala, not Kyyvesi), and the lake is taken
+  from the station that answered, not from a nearer one that has stopped reporting.
+- Out of season the answer names the ice station that measured last winter instead of saying there is none; a station
+  without measurements last winter is skipped.
+
 ## [1.3.1] - 2026-10-15
 
 ### Fixed
@@ -128,7 +138,8 @@ First public release.
 - 30 offline tests (`npm test`) and a live acceptance test against a running server
   (`npm run test:live -- <stdio command | http://host:port/mcp>`).
 
-[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.3.1...HEAD
+[Unreleased]: https://github.com/Koneisto/mcp-weather/compare/v1.3.2...HEAD
+[1.3.2]: https://github.com/Koneisto/mcp-weather/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/Koneisto/mcp-weather/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/Koneisto/mcp-weather/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/Koneisto/mcp-weather/compare/v1.1.0...v1.2.0

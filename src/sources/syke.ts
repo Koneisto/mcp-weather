@@ -15,7 +15,7 @@ const LEVEL = 1, ICE = 9, TEMP = 11;          // Suure_Id: water level, ice thic
 const N2000 = 5;                              // Korkeustaso_Id of N2000
 const ICE_THICKNESS = 41, ICE_SNOW = 37, ICE_WEAK = 43;   // Lippu_Id on ice measurements
 const DATA_TTL = 60 * 60000, STATIONS_TTL = 24 * 3600000, NORMAL_YEARS = 30;
-const LEVEL_KM = 25, TEMP_KM = 50, ICE_KM = 50;
+const LEVEL_KM = 25, TEMP_KM = 50, ICE_KM = 50, SAME_LAKE_KM = 150;
 
 export interface SykeStation { id: number; name: string; lake?: string; partOf?: string; lat: number; lon: number }
 export interface LakeNormal { mean: number; min: number; max: number; years: number; fromYear: number; toYear: number }
@@ -146,12 +146,11 @@ export function iceOf(rows: ValueRow[]): Omit<LakeIce, 'station' | 'lake' | 'par
   const flag = (id: number) => day.find((r) => (r.Lippu_Id ?? r.Lippu_id) === id);
   return { date: date.slice(0, 10), thicknessCm: num(flag(ICE_THICKNESS)?.Arvo), snowCm: num(flag(ICE_SNOW)?.Arvo), weak: !!flag(ICE_WEAK) };
 }
-async function ice(s: SykeStation & { distanceKm?: number }): Promise<LakeIce | null> {
-  const rows = await latest('Jaanpaksuus', s.id, 6);
-  const x = iceOf(rows);
-  // ice measurements stop when the ice goes; an old one says nothing about now
-  if (!x || Date.now() - Date.parse(x.date + 'T00:00:00Z') > 45 * 86400000) return null;
-  return { station: s.name, lake: s.lake, partOf: s.partOf, distanceKm: s.distanceKm, ...x };
+async function ice(s: SykeStation & { distanceKm?: number }): Promise<(LakeIce & { current: boolean }) | null> {
+  const x = iceOf(await latest('Jaanpaksuus', s.id, 6));
+  if (!x) return null;
+  // ice measurements stop when the ice goes; an old one says nothing about now, only that the station measures in winter
+  return { station: s.name, lake: s.lake, partOf: s.partOf, distanceKm: s.distanceKm, ...x, current: Date.now() - Date.parse(x.date + 'T00:00:00Z') <= 45 * 86400000 };
 }
 
 let lastCallTime: string | undefined, lastCallOk: boolean | undefined, lastError: string | undefined;
@@ -159,7 +158,11 @@ export function getSykeStatus() {
   return { name: 'Syke (lakes and rivers)', configured: true, available: true, lastCallTime, lastCallOk, lastError };
 }
 
-export interface LakeConditions { matchedLake?: string; levels: LakeLevel[]; temperatures: LakeTemp[]; ice: LakeIce[] }
+export interface LakeConditions {
+  matchedLake?: string; levels: LakeLevel[]; temperatures: LakeTemp[]; ice: LakeIce[];
+  /** nearest ice station when it has no measurement from the last 45 days (open-water season) */
+  iceIdle?: { station: string; distanceKm?: number; lastDate: string };
+}
 
 /** Lake stations by lake name ("Saimaa"), or when none match, the nearest stations to the point. */
 export async function fetchLakeByName(name: string): Promise<LakeConditions | null> {
@@ -172,8 +175,17 @@ export async function fetchLakeByName(name: string): Promise<LakeConditions | nu
 export async function fetchLakeNear(lat: number, lon: number): Promise<LakeConditions> {
   const [lv, tw, ic] = await Promise.all([stations(LEVEL), stations(TEMP), stations(ICE)]);
   // three candidates each: the nearest may have stopped reporting
-  return collect(nearest(lv, lat, lon, LEVEL_KM).slice(0, 3), nearest(tw, lat, lon, TEMP_KM).slice(0, 3), nearest(ic, lat, lon, ICE_KM).slice(0, 3),
-    { levels: 1, temps: 1, ice: 1 });
+  const first = await collect(nearest(lv, lat, lon, LEVEL_KM).slice(0, 3), [], [], { levels: 1, temps: 0, ice: 0 });
+  // Water temperature: the lake of the water level station used (or a basin of it) describes the water at the point
+  // better than a nearer different lake (at Ristiina: Saimaa at Lauritsala 70 km, not Kyyvesi 54 km). Ice is local, so
+  // the nearest stations come first. The lake is taken from the station that answered, not the nearest one, which may
+  // have stopped reporting.
+  const used = first.levels[0], home = used?.partOf ?? used?.lake;
+  const onHome = (list: SykeStation[]) => nearest(list.filter((s) => !!home && (s.lake === home || s.partOf === home)), lat, lon, SAME_LAKE_KM);
+  const merge = <S extends { id: number }>(a: S[], b: S[]) => [...a, ...b.filter((s) => !a.some((x) => x.id === s.id))];
+  const T = merge(onHome(tw), nearest(tw, lat, lon, TEMP_KM)).slice(0, 3);
+  const I = merge(nearest(ic, lat, lon, ICE_KM).slice(0, 3), onHome(ic)).slice(0, 4);   // nearest first, then the same lake farther away
+  return { ...await collect([], T, I, { levels: 0, temps: 1, ice: 1 }), levels: first.levels };
 }
 async function collect(L: SykeStation[], T: SykeStation[], I: SykeStation[], max: { levels: number; temps: number; ice: number }): Promise<LakeConditions> {
   try {
@@ -185,7 +197,11 @@ async function collect(L: SykeStation[], T: SykeStation[], I: SykeStation[], max
     if (asked && failed === asked) throw new Error(`Syke did not answer (${lastError})`);   // not "no station nearby"
     lastCallTime = new Date().toISOString(); lastCallOk = true;
     const ok = <X>(a: Array<X | null>, n: number) => a.filter((x): x is X => x !== null).slice(0, n);
-    return { levels: ok(levels, max.levels), temperatures: ok(temperatures, max.temps), ice: ok(ices, max.ice) };
+    const iceAll = ok(ices, ices.length), current = iceAll.filter((x) => x.current).slice(0, max.ice).map(({ current: _, ...x }) => x);
+    // a station counts as measuring in winter only if it measured last winter (Yövesi, Kissalahti last measured in 4/2024)
+    const lastWinter = iceAll.find((x) => !x.current && Date.now() - Date.parse(x.date + 'T00:00:00Z') <= 300 * 86400000);
+    const idle = !current.length && lastWinter ? { station: lastWinter.station, distanceKm: lastWinter.distanceKm, lastDate: lastWinter.date } : undefined;
+    return { levels: ok(levels, max.levels), temperatures: ok(temperatures, max.temps), ice: current, iceIdle: idle };
   } catch (err) {
     lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = String(err instanceof Error ? err.message : err);
     throw err;
