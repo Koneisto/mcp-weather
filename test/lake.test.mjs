@@ -106,3 +106,20 @@ test('get_lake_conditions at Kekinkallio (Ristiina): Saimaa temperature from Lau
     assert.deepEqual(r.structuredContent.ice, []);
   } finally { net.restore(); }
 });
+
+test('get_lake_conditions days=30: daily history of the level (with N2000) and the water temperature, oldest first', async () => {
+  const net = offline();
+  try {
+    const c = await client();
+    const r = await c.callTool({ name: 'get_lake_conditions', arguments: { location: '61.5295,27.3607', days: 30 } });
+    const lv = r.structuredContent.waterLevels[0], tw = r.structuredContent.waterTemperatures[0];
+    assert.equal(lv.history.length, 31);
+    assert.deepEqual(lv.history[0], { date: '2026-09-16', cm: lv.history[0].cm, n2000M: Math.round(7262 + lv.history[0].cm) / 100 });   // gauge offset 7577 − 315 cm
+    assert.deepEqual(lv.history.at(-1), { date: '2026-10-16', cm: 315, n2000M: 75.77 });
+    assert.ok(lv.history.every((h, i, a) => i === 0 || a[i - 1].date < h.date), 'oldest first');
+    assert.ok(tw.history.length >= 28 && tw.history.at(-1).celsius === 10.9);
+    assert.match(r.content[0].text, /^ {2}Last 30 days: lowest \d+ cm, highest \d+ cm \(31 daily values\)$/m);
+    const plain = await c.callTool({ name: 'get_lake_conditions', arguments: { location: '61.5295,27.3607' } });
+    assert.equal(plain.structuredContent.waterLevels[0].history, undefined, 'no history unless asked');
+  } finally { net.restore(); }
+});

@@ -128,6 +128,9 @@ check('air quality Roma: model only, European category scale', /European AQI: \d
   const sai = r.data?.waterLevels?.find((l) => l.station === 'Saimaa, Lauritsala');
   check('lake Saimaa: Lauritsala level 74–78 m N2000 within 3 days, 30-year normal, credited Syke', !r.isError && sai && sai.n2000M > 74 && sai.n2000M < 78
     && Date.now() - Date.parse(sai.date) < 3 * 86400000 && sai.normal?.years >= 20 && /Syke/.test(r.text), r.text.slice(0, 400));
+  r = await call('get_lake_conditions', { location: '61.5295,27.3607', days: 30 });
+  check('lake history 30 days at Ristiina: 25+ daily levels with N2000, oldest first', !r.isError && r.data.waterLevels[0]?.history?.length >= 25
+    && r.data.waterLevels[0].history.every((h, i, a) => h.n2000M > 74 && (i === 0 || a[i - 1].date < h.date)), r.text.slice(0, 300));
   r = await call('get_lake_conditions', { location: 'Savonlinna' });
   check('lake by place Savonlinna: a Saimaa basin within 25 km', !r.isError && r.data.waterLevels[0]?.distanceKm <= 25 && r.data.waterLevels[0]?.partOf === 'Saimaa', r.text.slice(0, 300));
   r = await call('get_lake_conditions', { location: 'Stockholm' });

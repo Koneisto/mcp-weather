@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { tool } from '../types.js';
 import { resolveLocation } from '../utils/location.js';
-import { fetchLakeByName, fetchLakeNear, SYKE_ATTRIBUTION, type LakeNormal } from '../sources/syke.js';
+import { fetchLakeByName, fetchLakeNear, withHistory, SYKE_ATTRIBUTION, type LakeNormal } from '../sources/syke.js';
 import { countryOfLocation } from '../utils/region.js';
 import { formatNum } from '../utils/units.js';
 import { ok, fail, errorMessage, READ_ONLY_EXTERNAL } from '../utils/result.js';
@@ -9,6 +9,7 @@ import { locationOut } from '../utils/schemas.js';
 
 const schema = {
   location: z.string().describe('Lake name as Syke names it (e.g. Saimaa, Päijänne, Kallavesi, Pielinen, Inarijärvi), or a place or coordinates (lat,lon) in Finland'),
+  days: z.number().int().min(0).max(60).default(0).describe('Also return the daily water level and temperature of the last N days (0-60, default 0), e.g. for a chart'),
 };
 
 const normal = z.object({ mean: z.number(), min: z.number(), max: z.number(), years: z.number(), fromYear: z.number(), toYear: z.number() })
@@ -17,9 +18,12 @@ const where = { station: z.string(), lake: z.string().optional(), partOf: z.stri
 const outputSchema = {
   location: locationOut.optional(),
   lake: z.string().optional().describe('lake matched by name'),
-  waterLevels: z.array(z.object({ ...where, cm: z.number().describe('on the gauge'), n2000M: z.number().optional().describe('height in the N2000 system, metres'),
-    change7dCm: z.number().optional(), normal: normal.optional(), fromNormalCm: z.number().optional() })),
-  waterTemperatures: z.array(z.object({ ...where, celsius: z.number(), normal: normal.optional(), fromNormalC: z.number().optional() })),
+  waterLevels: z.array(z.object({ ...where, stationId: z.number().describe('Syke station id'), cm: z.number().describe('on the gauge'),
+    n2000M: z.number().optional().describe('height in the N2000 system, metres'),
+    change7dCm: z.number().optional(), normal: normal.optional(), fromNormalCm: z.number().optional(),
+    history: z.array(z.object({ date: z.string(), cm: z.number(), n2000M: z.number().optional() })).optional().describe('daily values, oldest first (days > 0)') })),
+  waterTemperatures: z.array(z.object({ ...where, stationId: z.number(), celsius: z.number(), normal: normal.optional(), fromNormalC: z.number().optional(),
+    history: z.array(z.object({ date: z.string(), celsius: z.number() })).optional() })),
   ice: z.array(z.object({ ...where, thicknessCm: z.number().optional(), snowCm: z.number().optional(), weak: z.boolean() })),
   iceStationOutOfSeason: z.object({ station: z.string(), distanceKm: z.number().optional(), lastDate: z.string() }).optional()
     .describe('nearest ice station, measured in winter; no measurement in the last 45 days'),
@@ -30,6 +34,8 @@ const outputSchema = {
 const fiDate = (d: string) => new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC',
   ...(d.slice(0, 4) !== new Date(Date.now()).toISOString().slice(0, 4) ? { year: 'numeric' as const } : {}) }).format(new Date(d + 'T00:00:00Z'));
 const signed = (x: number, unit: string) => `${x > 0 ? '+' : x < 0 ? '−' : '±'}${formatNum(Math.abs(x))} ${unit}`;
+const rangeText = (v: number[], unit: string, days: number) =>
+  `Last ${days} days: lowest ${formatNum(Math.min(...v))} ${unit}, highest ${formatNum(Math.max(...v))} ${unit} (${v.length} daily values)`;
 const normalText = (n: LakeNormal, unit: string, date: string) =>
   `normal for ${fiDate(date)}, ${formatNum(unit === 'cm' ? Math.round(n.mean) : n.mean)} ${unit} (${n.fromYear}–${n.toYear}, range ${formatNum(n.min)}–${formatNum(n.max)} ${unit})`;
 
@@ -54,6 +60,7 @@ export const lakeTool: tool<typeof schema, typeof outputSchema> = {
         }
         data = await fetchLakeNear(loc.lat, loc.lon);
       }
+      data = await withHistory(data, args.days ?? 0);
       const { levels, temperatures, ice } = data;
       if (!levels.length && !temperatures.length && !ice.length) {
         return fail(`No Syke lake or river station near ${loc?.name ?? args.location} (water level within 25 km, temperature within 50 km). Try the lake's name.`);
@@ -69,6 +76,7 @@ export const lakeTool: tool<typeof schema, typeof outputSchema> = {
         if (l.normal && l.fromNormalCm !== undefined) {
           lines.push(`  ${l.fromNormalCm === 0 ? 'At' : `${formatNum(Math.abs(l.fromNormalCm))} cm ${l.fromNormalCm > 0 ? 'above' : 'below'}`} the ${normalText(l.normal, 'cm', l.date)}`);
         }
+        if (l.history?.length) lines.push(`  ${rangeText(l.history.map((h) => h.cm), 'cm', args.days ?? 0)}`);
       }
       for (const t of temperatures) {
         const old = Date.now() - Date.parse(t.date) > 14 * 86400000;
@@ -76,6 +84,7 @@ export const lakeTool: tool<typeof schema, typeof outputSchema> = {
         if (t.normal && t.fromNormalC !== undefined && !old) {
           lines.push(`  ${t.fromNormalC === 0 ? 'At' : `${formatNum(Math.abs(t.fromNormalC))} °C ${t.fromNormalC > 0 ? 'warmer than' : 'colder than'}`} the ${normalText(t.normal, '°C', t.date)}`);
         }
+        if (t.history?.length) lines.push(`  ${rangeText(t.history.map((h) => h.celsius), '°C', args.days ?? 0)}`);
       }
       for (const i of ice) {
         lines.push(`Ice at ${at(i)}: ${i.weak && i.thicknessCm === undefined ? 'weak ice, too thin to measure' : i.thicknessCm !== undefined ? `${i.thicknessCm} cm thick` : 'measured'}` +
