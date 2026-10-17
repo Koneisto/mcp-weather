@@ -1,3 +1,5 @@
+import { safeError } from '../utils/errors.js';
+import { httpGet } from '../utils/http.js';
 import type { CurrentWeather, DailyForecast, AirQualityData, SourceResult } from '../types.js';
 import { config } from '../config.js';
 import { cache } from '../cache.js';
@@ -80,15 +82,9 @@ export async function fetchOpenMeteoCurrent(lat: number, lon: number): Promise<S
           wind_speed_unit: 'ms',
           timezone: 'auto',
         });
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-        try {
-          const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`, { signal: controller.signal });
-          if (!res.ok) throw new Error(`Open-Meteo returned ${res.status}`);
-          return await res.json() as OpenMeteoCurrentResponse;
-        } finally {
-          clearTimeout(timeout);
-        }
+        const res = await httpGet(`https://api.open-meteo.com/v1/forecast?${params}`);
+        if (!res.ok) throw new Error(`Open-Meteo returned ${res.status}`);
+        return await res.json() as OpenMeteoCurrentResponse;
       },
     );
 
@@ -116,8 +112,8 @@ export async function fetchOpenMeteoCurrent(lat: number, lon: number): Promise<S
   } catch (err) {
     lastCallTime = new Date().toISOString();
     lastCallOk = false;
-    lastError = String(err);
-    return { ok: false, error: String(err), source: SOURCE };
+    lastError = safeError(err);
+    return { ok: false, error: safeError(err), source: SOURCE };
   }
 }
 
@@ -136,15 +132,9 @@ export async function fetchOpenMeteoForecast(lat: number, lon: number, days: num
           timezone: 'auto',
           forecast_days: String(days),
         });
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-        try {
-          const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`, { signal: controller.signal });
-          if (!res.ok) throw new Error(`Open-Meteo forecast returned ${res.status}`);
-          return await res.json() as OpenMeteoCurrentResponse;
-        } finally {
-          clearTimeout(timeout);
-        }
+        const res = await httpGet(`https://api.open-meteo.com/v1/forecast?${params}`);
+        if (!res.ok) throw new Error(`Open-Meteo forecast returned ${res.status}`);
+        return await res.json() as OpenMeteoCurrentResponse;
       },
     );
 
@@ -169,7 +159,7 @@ export async function fetchOpenMeteoForecast(lat: number, lon: number, days: num
 
     return { ok: true, source: model.label, data: forecasts };
   } catch (err) {
-    return { ok: false, error: String(err), source: SOURCE };
+    return { ok: false, error: safeError(err), source: SOURCE };
   }
 }
 
@@ -181,16 +171,10 @@ export async function fetchOpenMeteoHourlyCloud(lat: number, lon: number, hours:
       latitude: String(lat), longitude: String(lon), hourly: 'cloud_cover', timezone: 'auto', forecast_hours: String(hours),
       ...(model.models ? { models: model.models } : {}),
     });
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-    try {
-      const res = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`, { signal: controller.signal });
-      if (!res.ok) throw new Error(`Open-Meteo returned ${res.status}`);
-      const d = await res.json() as { timezone: string; hourly: { time: string[]; cloud_cover: Array<number | null> } };
-      return { timezone: d.timezone, times: d.hourly.time, cloud: d.hourly.cloud_cover };
-    } finally {
-      clearTimeout(timeout);
-    }
+    const res = await httpGet(`https://api.open-meteo.com/v1/forecast?${params}`);
+    if (!res.ok) throw new Error(`Open-Meteo returned ${res.status}`);
+    const d = await res.json() as { timezone: string; hourly: { time: string[]; cloud_cover: Array<number | null> } };
+    return { timezone: d.timezone, times: d.hourly.time, cloud: d.hourly.cloud_cover };
   }, 30 * 60000);
 }
 
@@ -204,15 +188,9 @@ export async function fetchOpenMeteoAirQuality(lat: number, lon: number): Promis
           longitude: String(lon),
           current: 'european_aqi,pm2_5,pm10,nitrogen_dioxide,ozone,sulphur_dioxide,carbon_monoxide,alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,ragweed_pollen',
         });
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-        try {
-          const res = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?${params}`, { signal: controller.signal });
-          if (!res.ok) throw new Error(`Open-Meteo AQ returned ${res.status}`);
-          return await res.json() as OpenMeteoAQResponse;
-        } finally {
-          clearTimeout(timeout);
-        }
+        const res = await httpGet(`https://air-quality-api.open-meteo.com/v1/air-quality?${params}`);
+        if (!res.ok) throw new Error(`Open-Meteo AQ returned ${res.status}`);
+        return await res.json() as OpenMeteoAQResponse;
       },
     );
 
@@ -234,6 +212,6 @@ export async function fetchOpenMeteoAirQuality(lat: number, lon: number): Promis
       },
     };
   } catch (err) {
-    return { ok: false, error: String(err), source: SOURCE };
+    return { ok: false, error: safeError(err), source: SOURCE };
   }
 }

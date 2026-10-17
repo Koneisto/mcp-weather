@@ -67,7 +67,7 @@ docker network create mcp-network   # once; docker-compose.yml expects this netw
 docker compose up -d
 ```
 
-The server will be available at `http://localhost:3015/mcp` (Streamable HTTP), with a health check at `http://localhost:3015/health`.
+The server will be available at `http://localhost:3015/mcp` (Streamable HTTP), with a health check at `http://localhost:3015/health`. The published port binds to loopback by default. To allow trusted LAN clients, set `MCP_BIND_ADDRESS` to the host's LAN address in `.env`. HTTP has no built-in authentication: use an authenticating proxy before exposing it to untrusted clients.
 
 ### Local Development
 
@@ -111,8 +111,13 @@ All settings are via environment variables. Copy `.env.example` to `.env` to get
 | `TOMORROW_IO_API_KEY` | *(empty)* | [Tomorrow.io](https://www.tomorrow.io/weather-api/) free tier key |
 | `CACHE_TTL_MINUTES` | `60` | Cache time-to-live in minutes |
 | `CACHE_MAX_ENTRIES` | `200` | Maximum cached responses |
-| `HTTP_TIMEOUT_MS` | `10000` | HTTP request timeout in milliseconds |
-| `PORT` / `HOST` | `3000` / `0.0.0.0` | Listen address in HTTP mode |
+| `HTTP_TIMEOUT_MS` | `10000` | Upstream deadline including queue and response body; inbound JSON body deadline, in milliseconds |
+| `HTTP_MAX_RESPONSE_BYTES` | `8388608` | Maximum decoded upstream body size (8 MiB) |
+| `HTTP_MAX_CONCURRENT` / `HTTP_MAX_QUEUED` | `8` / `64` | Maximum active upstream requests and waiting jobs; queued jobs keep their original deadline |
+| `MAX_HTTP_REQUESTS` | `8` | Maximum simultaneous MCP HTTP requests; overload returns 503 with Retry-After |
+| `CACHE_MAX_INFLIGHT` | `64` | Maximum distinct pending cache fetches; identical work is shared |
+| `MCP_BIND_ADDRESS` | `127.0.0.1` | Docker published address; use a trusted LAN address only when needed |
+| `PORT` / `HOST` | `3000` / `127.0.0.1` | Listen address in HTTP mode (Docker explicitly uses `0.0.0.0` inside its network) |
 | `MCP_TRANSPORT` | *(stdio)* | `http` = same as `--http` |
 | `ALLOWED_ORIGINS` | *(empty)* | HTTP mode: extra browser origins allowed to call `/mcp`, comma-separated (requests without `Origin` and from localhost are always allowed) |
 | `MCP_WEATHER_KEY_NOTE` | *(on)* | `off` = no one-time note about missing optional API keys |
@@ -124,6 +129,18 @@ The server tells you what is missing: if optional keys are not set, the first an
 
 - **Docker:** put `KEY=value` in `.env` next to `docker-compose.yml` and run `docker compose up -d`.
 - **Local (stdio):** add the key to the `env` block of this server in your MCP client configuration and restart the client.
+
+### Resource limits and runtime image
+
+Every provider uses the same bounded HTTPS client: deadlines cover the complete decoded body and waiting time,
+response bytes and concurrency are capped, and redirects are rejected. Syke pagination stays within its HTTPS API.
+Coordinates must be within latitude −90…90 and longitude −180…180, location inputs are capped at 200 characters,
+and invalid numeric configuration fails at startup.
+
+The container runs one bundled JavaScript file without `node_modules`, npm, or a compiler. A production dependency
+SBOM is included at `/app/sbom.cdx.json`; CI scans that SBOM as well as the image so bundling does not hide vulnerable
+libraries. The Node and scanner images are pinned by digest. The runtime is non-root and Compose uses a read-only
+filesystem, dropped capabilities and no-new-privileges. Cached responses and in-flight work are shared across clients.
 
 ### Sources by API Key Requirement
 

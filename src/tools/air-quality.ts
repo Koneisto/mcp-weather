@@ -8,7 +8,7 @@ import { ok, fail, errorMessage, READ_ONLY_EXTERNAL } from '../utils/result.js';
 import { locationOut, stationOut, toLocation } from '../utils/schemas.js';
 
 const schema = {
-  location: z.string().describe('City name, coordinates (lat,lon), or Finnish city alias'),
+  location: z.string().max(200).describe('City name, coordinates (lat,lon), or Finnish city alias'),
 };
 
 type Pollutant = 'pm25' | 'pm10' | 'no2' | 'o3' | 'so2' | 'co';

@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-10-18
+
+### Security
+
+- Reject malformed HTTP request targets without terminating the server. Bound inbound JSON body time and size,
+  validate content type, and return 503 with Retry-After when simultaneous MCP requests exceed capacity.
+- Apply one bounded HTTPS client to every source: deadlines cover queue time and the whole decoded response,
+  body bytes and concurrent requests are limited, and redirects are rejected. Constrain Syke pagination to its API.
+- Validate coordinate ranges, location lengths and numeric environment settings. Redact configured provider keys
+  from error output. Local HTTP and the example published Docker port bind to loopback by default.
+
+### Changed
+
+- Share concurrent MET Norway requests and cap distinct pending cache work, avoiding duplicate upstream load.
+- Bundle the runtime into one JavaScript file instead of shipping node_modules. Include a production dependency
+  SBOM and scan it alongside the image; CI checks every vulnerability severity, including development dependencies.
+- Pin Node and Trivy images by digest and harden the example Compose runtime with read-only files, dropped
+  capabilities and no-new-privileges. Existing LAN installs can explicitly retain their published address.
+
 ## [1.5.0] - 2026-10-18
 
 ### Added

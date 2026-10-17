@@ -36,7 +36,7 @@ function fmiFallbackText(icao: string, metarError: string, o: FmiObservation): s
 }
 
 const schema = {
-  station: z.string().describe('ICAO airport code (e.g. "EFHK") or city name with a known ICAO code'),
+  station: z.string().max(200).describe('ICAO airport code (e.g. "EFHK") or city name with a known ICAO code'),
 };
 
 const outputSchema = {

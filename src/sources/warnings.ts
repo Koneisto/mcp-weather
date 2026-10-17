@@ -1,3 +1,4 @@
+import { safeError } from '../utils/errors.js';
 import { cache } from '../cache.js';
 import { getJson, getText } from '../utils/http.js';
 import { metGet, MET_ATTRIBUTION } from './met-norway.js';
@@ -206,7 +207,7 @@ export async function fetchWarnings(country: NordicCountry, lat: number, lon: nu
     lastCallTime = new Date().toISOString(); lastCallOk = true;
     return r;
   } catch (err) {
-    lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = String(err);
+    lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = safeError(err);
     throw err;
   }
 }

@@ -1,3 +1,5 @@
+import { safeError } from '../utils/errors.js';
+import { httpGet } from '../utils/http.js';
 import type { CurrentWeather, SourceResult } from '../types.js';
 import { config } from '../config.js';
 import { cache } from '../cache.js';
@@ -50,15 +52,9 @@ export async function fetchOWMCurrent(lat: number, lon: number): Promise<SourceR
           appid: config.openWeatherMapKey,
           units: 'metric',
         });
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-        try {
-          const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?${params}`, { signal: controller.signal });
-          if (!res.ok) throw new Error(`OWM returned ${res.status}`);
-          return await res.json() as OWMResponse;
-        } finally {
-          clearTimeout(timeout);
-        }
+        const res = await httpGet(`https://api.openweathermap.org/data/2.5/weather?${params}`);
+        if (!res.ok) throw new Error(`OWM returned ${res.status}`);
+        return await res.json() as OWMResponse;
       },
     );
 
@@ -84,7 +80,7 @@ export async function fetchOWMCurrent(lat: number, lon: number): Promise<SourceR
   } catch (err) {
     lastCallTime = new Date().toISOString();
     lastCallOk = false;
-    lastError = String(err);
-    return { ok: false, error: String(err), source: SOURCE };
+    lastError = safeError(err);
+    return { ok: false, error: safeError(err), source: SOURCE };
   }
 }
