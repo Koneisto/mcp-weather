@@ -1,3 +1,4 @@
+import { safeError } from '../utils/errors.js';
 import { cache } from '../cache.js';
 import { getJson } from '../utils/http.js';
 import { kmBetween } from '../utils/region.js';
@@ -55,7 +56,14 @@ async function odataAll<T>(url: string): Promise<T[]> {
   for (let next: string | undefined = url, pages = 0; next && pages < 10; pages++) {   // the API pages at 500 rows
     const d: OData<T> = await getJson<OData<T>>(next, 'Syke');
     out.push(...d.value);
-    next = d['odata.nextLink'];
+    const link = d['odata.nextLink'];
+    if (link) {
+      const target: URL = new URL(link, next);
+      if (target.origin !== new URL(BASE).origin || !target.pathname.startsWith(new URL(BASE).pathname + '/') || target.username || target.password) {
+        throw new Error('Syke pagination URL is outside the hydrology API');
+      }
+      next = target.href;
+    } else next = undefined;
   }
   return out;
 }
@@ -282,7 +290,7 @@ async function collect(L: SykeStation[], T: SykeStation[], I: SykeStation[], max
     const idle = !current.length && lastWinter ? { station: lastWinter.station, distanceKm: lastWinter.distanceKm, lastDate: lastWinter.date } : undefined;
     return { levels: ok(levels, max.levels), temperatures: ok(temperatures, max.temps), ice: current, iceIdle: idle };
   } catch (err) {
-    lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = String(err instanceof Error ? err.message : err);
+    lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = safeError(err instanceof Error ? err.message : err);
     throw err;
   }
 }

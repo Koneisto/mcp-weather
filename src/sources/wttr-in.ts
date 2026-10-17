@@ -1,3 +1,5 @@
+import { safeError } from '../utils/errors.js';
+import { httpGet } from '../utils/http.js';
 import type { CurrentWeather, SourceResult } from '../types.js';
 import { config } from '../config.js';
 import { cache } from '../cache.js';
@@ -35,18 +37,9 @@ export async function fetchWttrCurrent(location: string): Promise<SourceResult<C
     const data = await cache.getOrFetch<WttrResponse>(
       `wttr:current:${location}`,
       async () => {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-        try {
-          const res = await fetch(`https://wttr.in/${encodeURIComponent(location)}?format=j1`, {
-            signal: controller.signal,
-            headers: { 'User-Agent': 'mcp-weather-server/1.0' },
-          });
-          if (!res.ok) throw new Error(`wttr.in returned ${res.status}`);
-          return await res.json() as WttrResponse;
-        } finally {
-          clearTimeout(timeout);
-        }
+        const res = await httpGet(`https://wttr.in/${encodeURIComponent(location)}?format=j1`);
+        if (!res.ok) throw new Error(`wttr.in returned ${res.status}`);
+        return await res.json() as WttrResponse;
       },
     );
 
@@ -76,7 +69,7 @@ export async function fetchWttrCurrent(location: string): Promise<SourceResult<C
   } catch (err) {
     lastCallTime = new Date().toISOString();
     lastCallOk = false;
-    lastError = String(err);
-    return { ok: false, error: String(err), source: SOURCE };
+    lastError = safeError(err);
+    return { ok: false, error: safeError(err), source: SOURCE };
   }
 }

@@ -1,3 +1,5 @@
+import { safeError } from '../utils/errors.js';
+import { httpGet } from '../utils/http.js';
 import type { CurrentWeather, SourceResult } from '../types.js';
 import { config } from '../config.js';
 import { cache } from '../cache.js';
@@ -83,16 +85,10 @@ async function fetchRealtime(lat: number, lon: number): Promise<TomorrowResponse
         apikey: config.tomorrowIoKey,
         units: 'metric',
       });
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-      try {
-        const res = await fetch(`https://api.tomorrow.io/v4/weather/realtime?${params}`, { signal: controller.signal });
-        if (res.status === 429) pausedUntil = Date.now() + RATE_LIMIT_PAUSE_MS;
-        if (!res.ok) throw new Error(`Tomorrow.io returned ${res.status}`);
-        return await res.json() as TomorrowResponse;
-      } finally {
-        clearTimeout(timeout);
-      }
+      const res = await httpGet(`https://api.tomorrow.io/v4/weather/realtime?${params}`);
+      if (res.status === 429) pausedUntil = Date.now() + RATE_LIMIT_PAUSE_MS;
+      if (!res.ok) throw new Error(`Tomorrow.io returned ${res.status}`);
+      return await res.json() as TomorrowResponse;
     },
     TOMORROW_CACHE_TTL_MS,
   );
@@ -132,7 +128,7 @@ export async function fetchTomorrowCurrent(lat: number, lon: number): Promise<So
   } catch (err) {
     lastCallTime = new Date().toISOString();
     lastCallOk = false;
-    lastError = String(err);
-    return { ok: false, error: String(err), source: SOURCE };
+    lastError = safeError(err);
+    return { ok: false, error: safeError(err), source: SOURCE };
   }
 }

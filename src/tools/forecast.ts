@@ -10,7 +10,7 @@ import { ok, fail, errorMessage, READ_ONLY_EXTERNAL } from '../utils/result.js';
 import { locationOut, toLocation } from '../utils/schemas.js';
 
 const schema = {
-  location: z.string().describe('City name, coordinates (lat,lon), or Finnish city alias'),
+  location: z.string().max(200).describe('City name, coordinates (lat,lon), or Finnish city alias'),
   days: z.number().min(1).max(7).default(3).describe('Number of forecast days (1-7, default 3)'),
 };
 

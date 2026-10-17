@@ -8,7 +8,7 @@ import { ok, fail, errorMessage, READ_ONLY_EXTERNAL } from '../utils/result.js';
 import { locationOut, toLocation } from '../utils/schemas.js';
 
 const schema = {
-  location: z.string().describe('Coastal place, harbour, coordinates (lat,lon) at sea or ICAO code; measured data in Finland, Sweden, Denmark and Norway'),
+  location: z.string().max(200).describe('Coastal place, harbour, coordinates (lat,lon) at sea or ICAO code; measured data in Finland, Sweden, Denmark and Norway'),
 };
 
 const reading = {

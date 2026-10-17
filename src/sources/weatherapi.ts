@@ -1,3 +1,5 @@
+import { safeError } from '../utils/errors.js';
+import { httpGet } from '../utils/http.js';
 import type { CurrentWeather, SourceResult } from '../types.js';
 import { config } from '../config.js';
 import { cache } from '../cache.js';
@@ -51,15 +53,9 @@ export async function fetchWeatherApiCurrent(lat: number, lon: number): Promise<
           key: config.weatherApiKey,
           q: `${lat},${lon}`,
         });
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-        try {
-          const res = await fetch(`https://api.weatherapi.com/v1/current.json?${params}`, { signal: controller.signal });
-          if (!res.ok) throw new Error(`WeatherAPI returned ${res.status}`);
-          return await res.json() as WeatherApiCurrentResponse;
-        } finally {
-          clearTimeout(timeout);
-        }
+        const res = await httpGet(`https://api.weatherapi.com/v1/current.json?${params}`);
+        if (!res.ok) throw new Error(`WeatherAPI returned ${res.status}`);
+        return await res.json() as WeatherApiCurrentResponse;
       },
     );
 
@@ -89,7 +85,7 @@ export async function fetchWeatherApiCurrent(lat: number, lon: number): Promise<
   } catch (err) {
     lastCallTime = new Date().toISOString();
     lastCallOk = false;
-    lastError = String(err);
-    return { ok: false, error: String(err), source: SOURCE };
+    lastError = safeError(err);
+    return { ok: false, error: safeError(err), source: SOURCE };
   }
 }

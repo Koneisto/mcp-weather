@@ -1,3 +1,4 @@
+import { httpGet } from './http.js';
 import type { ResolvedLocation } from '../types.js';
 import { config } from '../config.js';
 import { lookupFinnishLocation } from './finnish-locations.js';
@@ -9,6 +10,7 @@ const STATION_CACHE_TTL_MS = 7 * 24 * 3600 * 1000;   // airport positions do not
 export async function resolveLocation(input: string): Promise<ResolvedLocation> {
   const trimmed = input.trim();
   if (!trimmed) throw new Error('Location is required');
+  if (trimmed.length > 200) throw new Error('Location must be at most 200 characters');
 
   // 1. Finnish/Nordic alias map
   const alias = lookupFinnishLocation(trimmed);
@@ -26,6 +28,9 @@ export async function resolveLocation(input: string): Promise<ResolvedLocation> 
   if (coordMatch) {
     const lat = parseFloat(coordMatch[1]);
     const lon = parseFloat(coordMatch[2]);
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) {
+      throw new Error('Coordinates must be finite: latitude -90..90, longitude -180..180');
+    }
     return { lat, lon, name: `${lat.toFixed(2)},${lon.toFixed(2)}` };
   }
 
@@ -53,19 +58,13 @@ export async function resolveLocation(input: string): Promise<ResolvedLocation> 
 /** Airport position from aviationweather.gov (HTTP 204 = unknown station → null). */
 async function lookupIcaoStation(icao: string): Promise<ResolvedLocation | null> {
   return cache.getOrFetch<ResolvedLocation | null>(`station:${icao}`, async () => {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-    try {
-      const res = await fetch(`https://aviationweather.gov/api/data/stationinfo?ids=${icao}&format=json`, { signal: controller.signal });
-      if (!res.ok) throw new Error(`Station info returned ${res.status}`);
-      const body = await res.text();
-      const list = body.trim() ? JSON.parse(body) as Array<{ icaoId: string; site: string; lat: number; lon: number; country?: string }> : [];
-      const s = list.find((x) => x.icaoId === icao);
-      const country = (s?.country && regionName?.of(s.country.toUpperCase())) || s?.country;   // "SE" → "Sweden"
-      return s ? { lat: s.lat, lon: s.lon, name: `${s.site} (${icao})`, country, icao } : null;
-    } finally {
-      clearTimeout(timeout);
-    }
+    const res = await httpGet(`https://aviationweather.gov/api/data/stationinfo?ids=${icao}&format=json`);
+    if (!res.ok) throw new Error(`Station info returned ${res.status}`);
+    const body = await res.text();
+    const list = body.trim() ? JSON.parse(body) as Array<{ icaoId: string; site: string; lat: number; lon: number; country?: string }> : [];
+    const s = list.find((x) => x.icaoId === icao);
+    const country = (s?.country && regionName?.of(s.country.toUpperCase())) || s?.country;   // "SE" → "Sweden"
+    return s ? { lat: s.lat, lon: s.lon, name: `${s.site} (${icao})`, country, icao } : null;
   }, STATION_CACHE_TTL_MS);
 }
 
@@ -93,16 +92,10 @@ async function geocode(query: string): Promise<ResolvedLocation> {
   const r = await cache.getOrFetch<GeoResult | null>(`geocode:${norm(query)}`, async () => {
     const lists = await Promise.all(GEOCODE_LANGUAGES.map(async (lang) => {
       const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=${lang}&format=json`;
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-      try {
-        const res = await fetch(url, { signal: controller.signal });
-        if (!res.ok) throw new Error(`Geocoding API returned ${res.status}`);
-        const data = await res.json() as { results?: GeoResult[] };
-        return data.results ?? [];
-      } finally {
-        clearTimeout(timeout);
-      }
+      const res = await httpGet(url);
+      if (!res.ok) throw new Error(`Geocoding API returned ${res.status}`);
+      const data = await res.json() as { results?: GeoResult[] };
+      return data.results ?? [];
     }).map((p) => p.catch(() => null)));
     if (lists.every((l) => l === null)) throw new Error('Geocoding API unavailable');
     // English first, so an equally ranked place keeps its English name

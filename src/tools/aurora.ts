@@ -10,7 +10,7 @@ import { ok, fail, errorMessage, READ_ONLY_EXTERNAL } from '../utils/result.js';
 import { locationOut, toLocation } from '../utils/schemas.js';
 
 const schema = {
-  location: z.string().describe('City name, coordinates (lat,lon) or ICAO code; best in the Nordic countries'),
+  location: z.string().max(200).describe('City name, coordinates (lat,lon) or ICAO code; best in the Nordic countries'),
   hours: z.number().min(6).max(48).default(24).describe('How many hours ahead (6-48, default 24)'),
 };
 

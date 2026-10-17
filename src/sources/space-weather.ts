@@ -1,3 +1,4 @@
+import { safeError } from '../utils/errors.js';
 import { cache } from '../cache.js';
 import { getJson } from '../utils/http.js';
 
@@ -16,7 +17,7 @@ export function getSpaceWeatherStatus() {
 }
 const track = async <T>(p: Promise<T>): Promise<T> => {
   try { const v = await p; lastCallTime = new Date().toISOString(); lastCallOk = true; return v; }
-  catch (err) { lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = String(err); throw err; }
+  catch (err) { lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = safeError(err); throw err; }
 };
 
 type RRaw = { data?: Record<string, Record<string, string | number>> };

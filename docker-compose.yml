@@ -6,7 +6,13 @@ services:
     env_file:
       - .env
     ports:
-      - "3015:3000"
+      - "${MCP_BIND_ADDRESS:-127.0.0.1}:3015:3000"
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
     logging:
       driver: json-file
       options:

@@ -1,3 +1,4 @@
+import { safeError } from './errors.js';
 /** Format number with Finnish decimal comma: 2.3 → "2,3" */
 export function formatNum(value: number): string {
   return String(value).replace('.', ',');
@@ -29,7 +30,7 @@ export function formatLocalTime(iso: string, timeZone = 'Europe/Helsinki'): stri
 
 /** Readable error text: an aborted fetch is a timeout ("AbortError: This operation was aborted" before 10/2026). */
 export function errorText(err: unknown, timeoutMs: number): string {
-  return err instanceof Error && err.name === 'AbortError' ? `no response within ${Math.round(timeoutMs / 1000)} s` : String(err);
+  return err instanceof Error && ['AbortError', 'TimeoutError'].includes(err.name) ? `no response within ${Math.round(timeoutMs / 1000)} s` : safeError(err);
 }
 
 export function knotsToMs(knots: number): number {

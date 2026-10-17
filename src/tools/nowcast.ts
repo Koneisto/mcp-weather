@@ -8,7 +8,7 @@ import { ok, fail, errorMessage, READ_ONLY_EXTERNAL } from '../utils/result.js';
 import { locationOut, toLocation } from '../utils/schemas.js';
 
 const schema = {
-  location: z.string().describe('City name, coordinates (lat,lon) or ICAO code in the Nordic radar area (Norway, Sweden, Finland, Denmark, Baltic countries)'),
+  location: z.string().max(200).describe('City name, coordinates (lat,lon) or ICAO code in the Nordic radar area (Norway, Sweden, Finland, Denmark, Baltic countries)'),
 };
 
 const outputSchema = {
