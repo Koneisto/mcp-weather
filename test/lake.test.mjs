@@ -123,3 +123,80 @@ test('get_lake_conditions days=30: daily history of the level (with N2000) and t
     assert.equal(plain.structuredContent.waterLevels[0].history, undefined, 'no history unless asked');
   } finally { net.restore(); }
 });
+
+// 18.10.2026: is an old value "missing" (the station normally measures today, data has stopped) or "off season"
+// (water temperature is not measured in winter)? Decided from the last 10 years: years with a value on today's date
+// against years with a value at mid-summer.
+test('reading status: current, missing, off season', () => {
+  const NOW_ = Date.parse('2027-01-15T09:00:00Z');
+  assert.equal(S.ageDaysOf('2027-01-15', NOW_), 0);
+  assert.equal(S.ageDaysOf('2026-12-23', NOW_), 23);
+  const yrs = (md, ys) => ys.map((y) => ({ Paikka_Id: 1, Aika: `${y}-${md}T00:00:00`, Arvo: 5 }));
+  const ref = yrs('07-15', [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]);
+  assert.equal(S.seasonShare([], ref, 2017, 2026), 0, 'mid-January: never measured');
+  assert.equal(S.seasonShare(yrs('12-05', [2021, 2023, 2024, 2025]), ref, 2017, 2026), 0.4);
+  assert.equal(S.seasonShare(yrs('10-20', [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]), ref, 2017, 2026), 1);
+  assert.equal(S.seasonShare([], yrs('07-15', [2025, 2026]), 2017, 2026), undefined, 'two years of record cannot tell the season');
+  assert.equal(S.statusOf(3, 0), 'current', 'daily values: three days old is still current');
+  assert.equal(S.statusOf(4, 1), 'missing');
+  assert.equal(S.statusOf(23, 0), 'off_season');
+  assert.equal(S.statusOf(10, 0.4), 'off_season', 'measured on this day in fewer than half of the years');
+  assert.equal(S.statusOf(10, undefined), 'missing', 'unknown season: an old value is not passed off as winter');
+});
+
+// Recorded data (latest temperature 15 Oct 2026, level 16 Oct) seen from later dates. The same-day queries for the
+// season are answered here: Lauritsala measured water temperature on 15 Jul and 5 Nov in all ten years, on 15 Jan never.
+function later(iso) {
+  const net = offline(), recorded = globalThis.fetch;
+  globalThis.fetch = async (u) => {
+    const s = decodeURIComponent(String(u));
+    const m = /LampoPintavesi\?\$filter=Paikka_Id eq (\d+) and month\(Aika\) eq (\d+) and day\(Aika\) eq (\d+) and year\(Aika\) ge (\d+)/.exec(s);
+    if (m && s.includes('$select=Aika,Arvo') && !s.includes('ge 19')) {
+      const [, , mo, d, from] = m.map(Number);
+      const value = mo === 1 ? [] : Array.from({ length: 10 }, (_, i) => ({ Paikka_Id: 1667, Aika: `${from + i}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}T00:00:00`, Arvo: 8 }));
+      return new Response(JSON.stringify({ value }), { status: 200 });
+    }
+    return recorded(u);
+  };
+  Date.now = () => Date.parse(iso);
+  return net;
+}
+
+test('get_lake_conditions in winter: water temperature off season, not missing', async () => {
+  const net = later('2027-01-15T09:00:00Z');
+  try {
+    const c = await client();
+    const r = await c.callTool({ name: 'get_lake_conditions', arguments: { location: 'Saimaa' } });
+    const tw = r.structuredContent.waterTemperatures[0];
+    assert.deepEqual([tw.station, tw.date, tw.status, tw.ageDays], ['Saimaa, Lauritsala', '2026-10-15', 'off_season', 92]);
+    assert.match(r.content[0].text, /10,9 °C \(last measurement of the open-water season; not measured at this time of year\)$/m);
+    assert.deepEqual(r.structuredContent.waterLevels, [], 'a level 92 days old is a gauge that has stopped: left out');
+    const near = await c.callTool({ name: 'get_lake_conditions', arguments: { location: '61.5295,27.3607' } });
+    assert.deepEqual(near.structuredContent.waterTemperatures.map((x) => [x.station, x.status]), [['Saimaa, Lauritsala', 'off_season']],
+      'by place: the stopped gauge still names Saimaa, so its temperature station is used');
+  } finally { net.restore(); }
+});
+
+test('get_lake_conditions with data stopped in season: water temperature and level missing, not hidden', async () => {
+  const net = later('2026-11-05T09:00:00Z');
+  try {
+    const c = await client();
+    const r = await c.callTool({ name: 'get_lake_conditions', arguments: { location: 'Saimaa' } });
+    const t = r.content[0].text, tw = r.structuredContent.waterTemperatures[0], lv = r.structuredContent.waterLevels[0];
+    assert.deepEqual([tw.status, tw.ageDays], ['missing', 21]);
+    assert.match(t, /10,9 °C \(no new value from Syke for 21 days although it is normally measured at this time of year\)$/m);
+    assert.deepEqual([lv.station, lv.status, lv.ageDays], ['Saimaa, Lauritsala', 'missing', 21]);
+    assert.match(t, /^Water level: no new value from Syke for 21 days \(the gauge reports daily\); the latest is shown\.$/m);
+  } finally { net.restore(); }
+});
+
+test('fresh values are current', async () => {
+  const net = offline();
+  try {
+    const c = await client();
+    const r = await c.callTool({ name: 'get_lake_conditions', arguments: { location: '61.5295,27.3607' } });
+    assert.deepEqual([r.structuredContent.waterLevels[0].status, r.structuredContent.waterLevels[0].ageDays], ['current', 0]);
+    assert.deepEqual([r.structuredContent.waterTemperatures[0].status, r.structuredContent.waterTemperatures[0].ageDays], ['current', 1]);
+    assert.doesNotMatch(r.content[0].text, /no new value|not measured at this time/);
+  } finally { net.restore(); }
+});

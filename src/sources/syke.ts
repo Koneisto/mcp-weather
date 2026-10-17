@@ -19,17 +19,24 @@ const LEVEL_KM = 25, TEMP_KM = 50, ICE_KM = 50, SAME_LAKE_KM = 150;
 
 export interface SykeStation { id: number; name: string; lake?: string; partOf?: string; lat: number; lon: number }
 export interface LakeNormal { mean: number; min: number; max: number; years: number; fromYear: number; toYear: number }
-export interface LakeLevel {
+/**
+ * How a latest value relates to now. Syke publishes daily values, so a value at most CURRENT_DAYS old is current.
+ * An older one is either missing (the station normally measures on this day of the year, so the data has stopped coming)
+ * or off season (it normally does not, e.g. water temperature in winter). Water level is measured all year.
+ */
+export type ReadingStatus = 'current' | 'missing' | 'off_season';
+export interface Freshness { ageDays: number; status: ReadingStatus }
+export interface LakeLevel extends Freshness {
   station: string; stationId: number; lake?: string; partOf?: string; distanceKm?: number; date: string;
   cm: number; n2000M?: number; change7dCm?: number; normal?: LakeNormal; fromNormalCm?: number;
   /** daily values of the last `days` days, oldest first (only when asked) */
   history?: Array<{ date: string; cm: number; n2000M?: number }>;
 }
-export interface LakeTemp {
+export interface LakeTemp extends Freshness {
   station: string; stationId: number; lake?: string; partOf?: string; distanceKm?: number; date: string; celsius: number; normal?: LakeNormal; fromNormalC?: number;
   history?: Array<{ date: string; celsius: number }>;
 }
-export interface LakeIce { station: string; lake?: string; partOf?: string; distanceKm?: number; date: string; thicknessCm?: number; snowCm?: number; weak: boolean }
+export interface LakeIce { station: string; lake?: string; partOf?: string; distanceKm?: number; date: string; ageDays: number; thicknessCm?: number; snowCm?: number; weak: boolean }
 
 type OData<T> = { value: T[]; 'odata.nextLink'?: string };
 type PaikkaRow = { Paikka_Id: number; Nimi: string; JarviNimi: string | null; KoordLat: string | null; KoordLong: string | null };
@@ -111,7 +118,41 @@ async function sameDayNormal(entity: string, id: number, date: string): Promise<
 const latest = (entity: string, id: number, top: number) => cache.getOrFetch(`syke:latest:${entity}:${id}:${top}`,
   () => getJson<OData<ValueRow>>(q(entity, `Paikka_Id eq ${id}`, `&$orderby=Aika desc&$top=${top}`), 'Syke').then((d) => d.value), DATA_TTL);
 
-const LEVEL_MAX_AGE = 14 * 86400000, TEMP_MAX_AGE = 400 * 86400000;   // temperature: the last open-water season counts
+// 18.10.2026: water level is kept for 60 days with status 'missing' instead of vanishing silently after 14 days, so a
+// gauge that stops reporting is seen as stopped. Temperature: the last value of the open-water season counts all winter.
+const LEVEL_MAX_AGE = 60 * 86400000, TEMP_MAX_AGE = 400 * 86400000, DAY = 86400000;
+export const CURRENT_DAYS = 3;
+/** Ice is measured about every 10 days (sometimes 20); weak ice is the last note before the ice goes or the first before it holds. */
+export const ICE_CURRENT_DAYS = 25, WEAK_ICE_CURRENT_DAYS = 12;
+const SEASON_YEARS = 10, SUMMER_REF = '07-15';
+
+export const ageDaysOf = (date: string, now = Date.now()) => Math.max(0, Math.floor((now - Date.parse(date + 'T00:00:00Z')) / DAY));
+/** Share of recent years the station measured on a calendar day: years with a value that day / years with a value at mid-summer. */
+export function seasonShare(onDay: ValueRow[], onRef: ValueRow[], fromYear: number, toYear: number): number | undefined {
+  const years = (rows: ValueRow[]) => new Set(rows.filter((r) => num(r.Arvo) !== undefined).map((r) => Number(r.Aika.slice(0, 4)))
+    .filter((y) => y >= fromYear && y <= toYear));
+  const ref = years(onRef);
+  if (ref.size < 3) return undefined;   // too short a record to tell
+  const day = years(onDay);
+  return [...day].filter((y) => ref.has(y)).length / ref.size;
+}
+export function statusOf(ageDays: number, share: number | undefined): ReadingStatus {
+  if (ageDays <= CURRENT_DAYS) return 'current';
+  return share === undefined || share >= 0.5 ? 'missing' : 'off_season';   // unknown season: an old value is treated as missing
+}
+async function sameDayRows(entity: string, id: number, md: string, fromYear: number): Promise<ValueRow[]> {
+  const [m, d] = md.split('-').map(Number);
+  return cache.getOrFetch(`syke:day:${entity}:${id}:${m}-${d}:${fromYear}`, () => odataAll<ValueRow>(
+    q(entity, `Paikka_Id eq ${id} and month(Aika) eq ${m} and day(Aika) eq ${d} and year(Aika) ge ${fromYear}`, '&$select=Aika,Arvo')), STATIONS_TTL);
+}
+/** Status of a seasonal value: is today a day the station normally measures (in at least half of the last 10 years)? */
+async function seasonalStatus(entity: string, id: number, date: string): Promise<Freshness> {
+  const ageDays = ageDaysOf(date);
+  if (ageDays <= CURRENT_DAYS) return { ageDays, status: 'current' };
+  const today = new Date(Date.now()).toISOString(), y = Number(today.slice(0, 4)), from = y - SEASON_YEARS;
+  const [onDay, onRef] = await Promise.all([sameDayRows(entity, id, today.slice(5, 10), from), sameDayRows(entity, id, SUMMER_REF, from)]);
+  return { ageDays, status: statusOf(ageDays, seasonShare(onDay, onRef, from, y - 1)) };
+}
 
 async function level(s: SykeStation & { distanceKm?: number }): Promise<LakeLevel | null> {
   const rows = await latest('Vedenkorkeus', s.id, 8);
@@ -126,8 +167,10 @@ async function level(s: SykeStation & { distanceKm?: number }): Promise<LakeLeve
   ]);
   const off = offsets.find((o) => o.Korkeustaso_Id === N2000)?.Tasokorjaus;
   const w = num(weekAgo?.Arvo);
+  const ageDays = ageDaysOf(date);
   return {
     station: s.name, stationId: s.id, lake: s.lake, partOf: s.partOf, distanceKm: s.distanceKm, date, cm,
+    ageDays, status: ageDays <= CURRENT_DAYS ? 'current' : 'missing',   // measured all year
     n2000M: off !== undefined ? Math.round(off + cm) / 100 : undefined,
     change7dCm: w !== undefined ? cm - w : undefined,
     normal, fromNormalCm: normal ? Math.round(cm - normal.mean) : undefined,
@@ -139,8 +182,9 @@ async function temperature(s: SykeStation & { distanceKm?: number }): Promise<La
   const c = num(last?.Arvo);
   if (!last || c === undefined || Date.now() - Date.parse(last.Aika + 'Z') > TEMP_MAX_AGE) return null;
   const date = last.Aika.slice(0, 10);
-  const normal = await sameDayNormal('LampoPintavesi', s.id, date).catch(() => undefined);
-  return { station: s.name, stationId: s.id, lake: s.lake, partOf: s.partOf, distanceKm: s.distanceKm, date, celsius: c, normal, fromNormalC: normal ? r1(c - normal.mean) : undefined };
+  const [normal, fresh] = await Promise.all([sameDayNormal('LampoPintavesi', s.id, date).catch(() => undefined),
+    seasonalStatus('LampoPintavesi', s.id, date).catch((): Freshness => ({ ageDays: ageDaysOf(date), status: ageDaysOf(date) <= CURRENT_DAYS ? 'current' : 'missing' }))]);
+  return { station: s.name, stationId: s.id, lake: s.lake, partOf: s.partOf, distanceKm: s.distanceKm, date, celsius: c, normal, fromNormalC: normal ? r1(c - normal.mean) : undefined, ...fresh };
 }
 
 /** Daily values of a station from `days` days before today on, oldest first (one request, cached like the latest values). */
@@ -170,7 +214,7 @@ export async function withHistory(c: LakeConditions, days: number): Promise<Lake
 }
 
 /** Latest ice measurement of a station: total thickness, snow on the ice, or "weak ice" (seen but too weak to measure). */
-export function iceOf(rows: ValueRow[]): Omit<LakeIce, 'station' | 'lake' | 'partOf' | 'distanceKm'> | null {
+export function iceOf(rows: ValueRow[]): Omit<LakeIce, 'station' | 'lake' | 'partOf' | 'distanceKm' | 'ageDays'> | null {
   if (!rows.length) return null;
   const date = rows.map((r) => r.Aika).sort().pop()!;
   const day = rows.filter((r) => r.Aika === date);
@@ -180,8 +224,11 @@ export function iceOf(rows: ValueRow[]): Omit<LakeIce, 'station' | 'lake' | 'par
 async function ice(s: SykeStation & { distanceKm?: number }): Promise<(LakeIce & { current: boolean }) | null> {
   const x = iceOf(await latest('Jaanpaksuus', s.id, 6));
   if (!x) return null;
-  // ice measurements stop when the ice goes; an old one says nothing about now, only that the station measures in winter
-  return { station: s.name, lake: s.lake, partOf: s.partOf, distanceKm: s.distanceKm, ...x, current: Date.now() - Date.parse(x.date + 'T00:00:00Z') <= 45 * 86400000 };
+  // ice measurements stop when the ice goes; an old one says nothing about now, only that the station measures in winter.
+  // 18.10.2026: current for 25 days (was 45: a March measurement then still claimed ice in early May), weak ice for 12.
+  const ageDays = ageDaysOf(x.date);
+  const current = ageDays <= (x.weak && x.thicknessCm === undefined ? WEAK_ICE_CURRENT_DAYS : ICE_CURRENT_DAYS);
+  return { station: s.name, lake: s.lake, partOf: s.partOf, distanceKm: s.distanceKm, ...x, ageDays, current };
 }
 
 let lastCallTime: string | undefined, lastCallOk: boolean | undefined, lastError: string | undefined;
@@ -191,7 +238,7 @@ export function getSykeStatus() {
 
 export interface LakeConditions {
   matchedLake?: string; levels: LakeLevel[]; temperatures: LakeTemp[]; ice: LakeIce[];
-  /** nearest ice station when it has no measurement from the last 45 days (open-water season) */
+  /** nearest ice station when it has no current measurement (older than 25 days, weak ice 12 days): open water or ice not yet measured */
   iceIdle?: { station: string; distanceKm?: number; lastDate: string };
 }
 
@@ -210,8 +257,9 @@ export async function fetchLakeNear(lat: number, lon: number): Promise<LakeCondi
   // Water temperature: the lake of the water level station used (or a basin of it) describes the water at the point
   // better than a nearer different lake (at Ristiina: Saimaa at Lauritsala 70 km, not Kyyvesi 54 km). Ice is local, so
   // the nearest stations come first. The lake is taken from the station that answered, not the nearest one, which may
-  // have stopped reporting.
-  const used = first.levels[0], home = used?.partOf ?? used?.lake;
+  // have stopped reporting. 18.10.2026: when no level station answers, the nearest one still names the lake, so the
+  // water temperature does not vanish with a stopped gauge.
+  const used: { lake?: string; partOf?: string } | undefined = first.levels[0] ?? nearest(lv, lat, lon, LEVEL_KM)[0], home = used?.partOf ?? used?.lake;
   const onHome = (list: SykeStation[]) => nearest(list.filter((s) => !!home && (s.lake === home || s.partOf === home)), lat, lon, SAME_LAKE_KM);
   const merge = <S extends { id: number }>(a: S[], b: S[]) => [...a, ...b.filter((s) => !a.some((x) => x.id === s.id))];
   const T = merge(onHome(tw), nearest(tw, lat, lon, TEMP_KM)).slice(0, 3);
