@@ -173,8 +173,14 @@ Finnish Meteorological Institute.
   then the basins Syke files as part of it ("Haukivesi (Saimaa …)"). A place uses the nearest water level station within
   25 km that still reports. Water temperature comes from the same lake (or a basin of it) within 150 km first, because
   the same water body describes the point better than a nearer different lake, then from the nearest station within
-  50 km. Ice is local, so the nearest ice stations within 50 km come first, then the same lake. Ice thickness is shown
-  only when measured in the last 45 days; out of season the answer names the station that measured last winter.
+  50 km. Ice is local, so the nearest ice stations within 50 km come first, then the same lake. Ice is measured about
+  every 10 days, so a thickness is shown when measured in the last 25 days and weak ice (too thin to measure, the first
+  or last note of a winter) for 12 days; out of season the answer names the station that measured last winter.
+  Each water level and temperature carries `ageDays` and `status`: `current` (at most 3 days old), `missing` (older,
+  although the station measured on this calendar day in at least half of the last 10 years with data, so the data has
+  stopped coming) or `off_season` (not normally measured now: water temperature is measured in the open-water season,
+  at Saimaa roughly from late April to December). A water level is measured all year, so an old one is `missing`; after
+  60 days the gauge is taken as stopped and left out.
 - **Road weather:** the nearest station with data from the last hour within 30 km; a faulty road surface sensor is
   skipped (the second sensor or the optical one is used). The road condition forecast shows the worst condition per
   step over the road sections within 10 km and the roads and reasons behind a poor one. Sweden and Norway publish road
