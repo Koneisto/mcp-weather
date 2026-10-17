@@ -94,12 +94,13 @@ test('SMHI, DMI and Kartverket: national references, suspect values skipped, Kar
 });
 
 test('wave models: Open-Meteo rounded and its 24 h max never below now; land point gives no model; Oceanforecast', () => {
-  const om = M.openMeteoMarineModel(JSON.parse(fx('marine-openmeteo-helsinki.json')));
-  assert.deepEqual([om.heightM, om.directionDeg, om.periodS, om.seaTempC], [0.4, 191, 2.9, 11.2]);
-  assert.ok(om.maxHeightM >= om.heightM);
-  assert.equal(M.openMeteoMarineModel({ current: { time: '2026-10-15T16:00', wave_height: null, sea_surface_temperature: null } }), null);
+  // the 24 h maximum counts from now, so the clock is fixed to the recording (with the real clock it ran out on 17 Oct)
   const realNow = Date.now; Date.now = () => NOW;
   try {
+    const om = M.openMeteoMarineModel(JSON.parse(fx('marine-openmeteo-helsinki.json')));
+    assert.deepEqual([om.heightM, om.directionDeg, om.periodS, om.seaTempC], [0.4, 191, 2.9, 11.2]);
+    assert.ok(om.maxHeightM >= om.heightM);
+    assert.equal(M.openMeteoMarineModel({ current: { time: '2026-10-15T16:00', wave_height: null, sea_surface_temperature: null } }), null);
     const of = M.oceanForecastModel(JSON.parse(fx('marine-oceanforecast-oslo.json')));
     assert.deepEqual([of.provider, of.time, of.heightM, of.directionDeg, of.seaTempC], ['MET Norway', '2026-10-15T16:00:00Z', 0.5, 200, 12.2]);
   } finally { Date.now = realNow; }
