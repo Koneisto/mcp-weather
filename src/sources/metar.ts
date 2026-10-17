@@ -1,3 +1,4 @@
+import { httpGet } from '../utils/http.js';
 import type { MetarData, SourceResult } from '../types.js';
 import { config } from '../config.js';
 import { cache } from '../cache.js';
@@ -58,20 +59,13 @@ export async function fetchMetar(icao: string): Promise<SourceResult<MetarData>>
     const data = await cache.getOrFetch<MetarApiResponse[]>(
       `metar:${station}`,
       async () => {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-        try {
-          const res = await fetch(
-            `https://aviationweather.gov/api/data/metar?ids=${station}&format=json`,
-            { signal: controller.signal },
-          );
-          if (!res.ok) throw new Error(`Aviation Weather API returned ${res.status}`);
-          // No METAR for the station: HTTP 204 with an empty body (not an error)
-          const body = await res.text();
-          return body.trim() ? JSON.parse(body) as MetarApiResponse[] : [];
-        } finally {
-          clearTimeout(timeout);
-        }
+        const res = await httpGet(
+          `https://aviationweather.gov/api/data/metar?ids=${station}&format=json`,
+        );
+        if (!res.ok) throw new Error(`Aviation Weather API returned ${res.status}`);
+        // No METAR for the station: HTTP 204 with an empty body (not an error)
+        const body = await res.text();
+        return body.trim() ? JSON.parse(body) as MetarApiResponse[] : [];
       },
       METAR_CACHE_TTL_MS,
     );

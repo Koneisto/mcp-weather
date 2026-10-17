@@ -8,7 +8,7 @@ import { ok, fail, errorMessage, READ_ONLY_EXTERNAL } from '../utils/result.js';
 import { locationOut } from '../utils/schemas.js';
 
 const schema = {
-  location: z.string().describe('Lake name as Syke names it (e.g. Saimaa, Päijänne, Kallavesi, Pielinen, Inarijärvi), or a place or coordinates (lat,lon) in Finland'),
+  location: z.string().max(200).describe('Lake name as Syke names it (e.g. Saimaa, Päijänne, Kallavesi, Pielinen, Inarijärvi), or a place or coordinates (lat,lon) in Finland'),
   days: z.number().int().min(0).max(60).default(0).describe('Also return the daily water level and temperature of the last N days (0-60, default 0), e.g. for a chart'),
 };
 

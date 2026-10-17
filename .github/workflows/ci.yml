@@ -33,7 +33,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm test
-      - run: npm audit --omit=dev --audit-level=high
+      - run: npm audit --audit-level=low
 
   image:
     name: Container image
@@ -45,10 +45,14 @@ jobs:
           persist-credentials: false
       - name: Build
         run: docker build -t mcp-weather:ci .
-      - name: Scan for fixable HIGH and CRITICAL vulnerabilities
+      - name: Scan runtime OS and libraries at every severity
         run: >-
-          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro aquasec/trivy:0.58.1
-          image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed --no-progress mcp-weather:ci
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock:ro aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222
+          image --exit-code 1 --no-progress mcp-weather:ci
+      - name: Scan bundled production dependency SBOM
+        run: |
+          docker run --rm --entrypoint cat mcp-weather:ci /app/sbom.cdx.json > "$RUNNER_TEMP/weather-sbom.cdx.json"
+          docker run --rm -v "$RUNNER_TEMP/weather-sbom.cdx.json:/scan/sbom.cdx.json:ro" aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222 sbom --exit-code 1 --no-progress /scan/sbom.cdx.json
       - name: Smoke test
         run: |
           docker run -d --name mcp-weather -p 3000:3000 mcp-weather:ci

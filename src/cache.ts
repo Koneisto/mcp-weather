@@ -5,11 +5,13 @@ interface CacheEntry<T = unknown> {
   expiresAt: number;
 }
 
-class Cache {
+export class Cache {
   private store = new Map<string, CacheEntry>();
   private inflight = new Map<string, Promise<unknown>>();
   private hits = 0;
   private misses = 0;
+
+  constructor(private readonly maxEntries = config.cacheMaxEntries, private readonly maxInflight = config.cacheMaxInflight) {}
 
   async getOrFetch<T>(key: string, fetcher: () => Promise<T>, ttlMs?: number): Promise<T> {
     const existing = this.store.get(key);
@@ -29,7 +31,9 @@ class Cache {
       return pending as Promise<T>;
     }
 
-    const promise = fetcher().then((value) => {
+    if (this.inflight.size >= this.maxInflight) throw new Error('Cache fetch capacity reached; retry later');
+
+    const promise = Promise.resolve().then(fetcher).then((value) => {
       this.inflight.delete(key);
       const ttl = ttlMs ?? config.cacheTtlMs;
       this.store.set(key, { value, expiresAt: Date.now() + ttl });
@@ -45,7 +49,7 @@ class Cache {
   }
 
   private evictIfNeeded(): void {
-    while (this.store.size > config.cacheMaxEntries) {
+    while (this.store.size > this.maxEntries) {
       // Delete oldest (first inserted)
       const firstKey = this.store.keys().next().value;
       if (firstKey !== undefined) {

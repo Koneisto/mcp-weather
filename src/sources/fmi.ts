@@ -1,3 +1,4 @@
+import { httpGet } from '../utils/http.js';
 import type { CurrentWeather, SourceResult } from '../types.js';
 import { config } from '../config.js';
 import { cache } from '../cache.js';
@@ -129,19 +130,13 @@ export async function fetchFmiObservation(lat: number, lon: number, radiusKm = D
         const start = new Date(Date.now() - MAX_AGE_MS).toISOString().replace(/\.\d+Z$/, 'Z');
         const url = `${WFS}?service=WFS&version=2.0.0&request=getFeature&storedquery_id=${QUERY}` +
           `&bbox=${bbox}&starttime=${start}&parameters=${PARAMS.join(',')}`;
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-        try {
-          const res = await fetch(url, { signal: controller.signal });
-          if (!res.ok) throw new Error(`FMI open data returned ${res.status}`);
-          const xml = await res.text();
-          if (xml.includes('<ExceptionReport')) {
-            throw new Error(`FMI: ${/<ExceptionText>([^<]*)/.exec(xml)?.[1] ?? 'query failed'}`);
-          }
-          return parseFmiTimeValuePair(xml);
-        } finally {
-          clearTimeout(timeout);
+        const res = await httpGet(url);
+        if (!res.ok) throw new Error(`FMI open data returned ${res.status}`);
+        const xml = await res.text();
+        if (xml.includes('<ExceptionReport')) {
+          throw new Error(`FMI: ${/<ExceptionText>([^<]*)/.exec(xml)?.[1] ?? 'query failed'}`);
         }
+        return parseFmiTimeValuePair(xml);
       },
       CACHE_TTL_MS,
     );

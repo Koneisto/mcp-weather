@@ -1,3 +1,4 @@
+import { safeError } from '../utils/errors.js';
 import { cache } from '../cache.js';
 import { getText } from '../utils/http.js';
 import type { DailyForecast } from '../types.js';
@@ -91,7 +92,7 @@ export async function fetchFmiDailyForecast(lat: number, lon: number): Promise<D
     lastCallTime = new Date().toISOString(); lastCallOk = true;
     return fmiDaily(hours);
   } catch (err) {
-    lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = String(err instanceof Error ? err.message : err);
+    lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = safeError(err instanceof Error ? err.message : err);
     return [];
   }
 }

@@ -1,3 +1,4 @@
+import { httpGet } from '../utils/http.js';
 import type { AirQualityData, SourceResult } from '../types.js';
 import { config } from '../config.js';
 import { cache } from '../cache.js';
@@ -63,17 +64,11 @@ export async function fetchFmiAirQuality(lat: number, lon: number, radiusKm = AI
       const lists = await Promise.all(QUERIES.map(async (q) => {
         const url = `${WFS}?service=WFS&version=2.0.0&request=getFeature&storedquery_id=${q}&bbox=${bbox}` +
           `&starttime=${start}&parameters=${Object.keys(PARAMS).join(',')}`;
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), config.httpTimeoutMs);
-        try {
-          const res = await fetch(url, { signal: controller.signal });
-          if (!res.ok) throw new Error(`FMI air quality returned ${res.status}`);
-          const xml = await res.text();
-          if (xml.includes('<ExceptionReport')) throw new Error(`FMI: ${/<ExceptionText>([^<]*)/.exec(xml)?.[1] ?? 'query failed'}`);
-          return parseFmiTimeValuePair(xml);
-        } finally {
-          clearTimeout(timeout);
-        }
+        const res = await httpGet(url);
+        if (!res.ok) throw new Error(`FMI air quality returned ${res.status}`);
+        const xml = await res.text();
+        if (xml.includes('<ExceptionReport')) throw new Error(`FMI: ${/<ExceptionText>([^<]*)/.exec(xml)?.[1] ?? 'query failed'}`);
+        return parseFmiTimeValuePair(xml);
       }));
       return lists.flat();
     }, CACHE_TTL_MS);

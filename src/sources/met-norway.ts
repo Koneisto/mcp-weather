@@ -1,4 +1,6 @@
+import { safeError } from '../utils/errors.js';
 import { httpGet } from '../utils/http.js';
+import { config } from '../config.js';
 
 /**
  * MET Norway (api.met.no) client following the terms of service: identifying User-Agent, coordinates truncated to
@@ -9,6 +11,7 @@ export const MET_ATTRIBUTION = 'MET Norway (api.met.no), CC BY 4.0';
 
 interface Stored { body: unknown; expires: number; lastModified?: string }
 const store = new Map<string, Stored>();
+const pending = new Map<string, Promise<unknown>>();
 const MAX_STORED = 300;
 let lastCallTime: string | undefined, lastCallOk: boolean | undefined, lastError: string | undefined;
 
@@ -26,6 +29,17 @@ export function clearMetStore(): void {
 export async function metGet<T>(product: string, lat: number, lon: number, extra: Record<string, string> = {}): Promise<T> {
   const params = new URLSearchParams({ lat: String(met4(lat)), lon: String(met4(lon)), ...extra });
   const url = `https://api.met.no/weatherapi/${product}?${params}`;
+  const hit = store.get(url);
+  if (hit && hit.expires > Date.now()) return hit.body as T;
+  const existing = pending.get(url);
+  if (existing) return existing as Promise<T>;
+  if (pending.size >= config.cacheMaxInflight) throw new Error('MET request capacity reached; retry later');
+  const request = fetchMet<T>(url, product).finally(() => pending.delete(url));
+  pending.set(url, request);
+  return request;
+}
+
+async function fetchMet<T>(url: string, product: string): Promise<T> {
   const now = Date.now(), hit = store.get(url);
   if (hit && hit.expires > now) return hit.body as T;
   try {
@@ -44,7 +58,7 @@ export async function metGet<T>(product: string, lat: number, lon: number, extra
     lastCallOk = true;
     return body as T;
   } catch (err) {
-    lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = String(err);
+    lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = safeError(err);
     throw err;
   }
 }
