@@ -6,7 +6,7 @@ Security fixes are made for the latest release.
 
 | Version | Supported |
 |---------|-----------|
-| 1.0.x   | Yes       |
+| 1.5.x   | Yes       |
 
 ## Reporting a vulnerability
 
@@ -23,5 +23,7 @@ Include the affected version, how to reproduce the problem and its impact. You w
 
 mcp-weather only reads public weather data and keeps no user data. Things worth reporting include, for example,
 API keys leaking into output or logs, ways to make the server request arbitrary URLs, and input that crashes or stalls
-the HTTP transport. The HTTP transport has no authentication of its own; run it on a trusted network or behind a proxy
-that adds authentication.
+the HTTP transport. The HTTP transport has no authentication of its own. Local HTTP and the example Compose published port bind to
+loopback by default; Docker listens on its own container interface. Use a trusted network or a proxy that adds
+authentication. Origin checks supplement these boundaries and are not authentication. Inbound body size/deadline,
+MCP concurrency, upstream queue/concurrency/body size and full-response deadlines limit resource use.

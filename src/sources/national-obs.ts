@@ -1,3 +1,4 @@
+import { safeError } from '../utils/errors.js';
 import { cache } from '../cache.js';
 import { getJson, getText } from '../utils/http.js';
 import { kmBetween, type NordicCountry } from '../utils/region.js';
@@ -207,7 +208,7 @@ export async function fetchNationalObservation(country: NordicCountry | null, la
     if (obs && obs.weather.weatherCode !== undefined && !obs.weather.weatherDescription) obs.weather.weatherDescription = wmoCodeToDescription(obs.weather.weatherCode);
     return obs ? { ok: true, source: obs.provider, data: obs } : none(`no station with fresh data within ${radiusKm} km`);
   } catch (err) {
-    lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = String(err);
-    return none(String(err));
+    lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = safeError(err);
+    return none(safeError(err));
   }
 }

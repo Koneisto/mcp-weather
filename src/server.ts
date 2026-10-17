@@ -16,6 +16,7 @@ import { lakeTool } from './tools/lake.js';
 import { keyNote, serverInstructions } from './keys.js';
 
 import { VERSION } from './version.js';
+import { config } from './config.js';
 
 export const SERVER_VERSION = VERSION;
 
@@ -56,17 +57,39 @@ export function createMcpServer(): McpServer {
 
 const MAX_BODY_BYTES = 1 << 20;
 
+class RequestError extends Error {
+  constructor(readonly status: number, message: string) { super(message); }
+}
+
 function readJson(req: IncomingMessage): Promise<unknown> {
   return new Promise((resolve, reject) => {
     let size = 0;
     const chunks: Buffer[] = [];
-    req.on('data', (c: Buffer) => {
-      size += c.length;
-      if (size > MAX_BODY_BYTES) { reject(new Error('request body too large')); req.destroy(); return; }
-      chunks.push(c);
-    });
-    req.on('end', () => { try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); } catch { reject(new Error('invalid JSON')); } });
-    req.on('error', reject);
+    const finish = (err?: Error, value?: unknown) => {
+      clearTimeout(timer);
+      req.removeListener('data', data);
+      req.removeListener('end', end);
+      req.removeListener('error', error);
+      req.removeListener('aborted', aborted);
+      if (err) { req.pause(); reject(err); } else resolve(value);
+    };
+    const data = (chunk: Buffer) => {
+      size += chunk.length;
+      if (size > MAX_BODY_BYTES) finish(new RequestError(413, 'request body too large'));
+      else chunks.push(chunk);
+    };
+    const end = () => {
+      try { finish(undefined, JSON.parse(Buffer.concat(chunks).toString('utf8'))); }
+      catch { finish(new RequestError(400, 'invalid JSON')); }
+    };
+    const error = () => finish(new RequestError(400, 'request interrupted'));
+    const aborted = () => finish(new RequestError(400, 'request interrupted'));
+    const timer = setTimeout(() => finish(new RequestError(408, 'request body timed out')), config.httpTimeoutMs);
+    timer.unref();
+    req.on('data', data);
+    req.on('end', end);
+    req.on('error', error);
+    req.on('aborted', aborted);
   });
 }
 
@@ -79,10 +102,10 @@ const jsonRpcError = (code: number, message: string) => JSON.stringify({ jsonrpc
  */
 export function originAllowed(origin: string | undefined, allowed: string[] = (process.env.ALLOWED_ORIGINS ?? '').split(',').map((s) => s.trim()).filter(Boolean)): boolean {
   if (!origin) return true;
-  if (allowed.includes(origin)) return true;
   try {
-    const host = new URL(origin).hostname;
-    return host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
+    const url = new URL(origin);
+    if (!['http:', 'https:'].includes(url.protocol) || url.origin !== origin) return false;
+    return allowed.includes(origin) || ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
   } catch {
     return false;
   }
@@ -94,38 +117,57 @@ export function originAllowed(origin: string | undefined, allowed: string[] = (p
  * The server never sends Server-Sent Events, so clients that accept only application/json are served too
  * (the SDK otherwise answers 406 unless the client also lists text/event-stream).
  */
-export function startHttpServer(port: number, host = '0.0.0.0'): Promise<Server> {
-  const http = createHttpServer(async (req, res) => {
-    const path = new URL(req.url ?? '/', 'http://localhost').pathname;
-    if (path === '/health' && req.method === 'GET') { res.writeHead(200, { 'content-type': 'text/plain' }).end('ok'); return; }
-    if (path !== '/mcp') { res.writeHead(404, { 'content-type': 'text/plain' }).end('not found'); return; }
-    if (!originAllowed(req.headers.origin)) {
-      res.writeHead(403, { 'content-type': 'application/json' }).end(jsonRpcError(-32000, 'Forbidden: origin not allowed'));
-      return;
-    }
-    if (req.method !== 'POST') {
-      res.writeHead(405, { allow: 'POST', 'content-type': 'application/json' }).end(jsonRpcError(-32000, 'Method not allowed: stateless server, use POST'));
-      return;
-    }
-    let body: unknown;
-    try { body = await readJson(req); } catch (err) {
-      res.writeHead(400, { 'content-type': 'application/json' }).end(jsonRpcError(-32700, `Parse error: ${(err as Error).message}`));
-      return;
-    }
-    const accept = req.headers.accept ?? '';
-    if (!accept.includes('text/event-stream') && (!accept || accept.includes('application/json') || accept.includes('*/*'))) {
-      req.headers.accept = 'application/json, text/event-stream';   // JSON-only client: responses are JSON anyway (enableJsonResponse)
-    }
-    const server = createMcpServer();
-    const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true });
-    res.on('close', () => { void transport.close(); void server.close(); });
-    try {
-      await server.connect(transport);
-      await transport.handleRequest(req, res, body);
-    } catch (err) {
-      console.error('MCP request failed:', err);
-      if (!res.headersSent) res.writeHead(500, { 'content-type': 'application/json' }).end(jsonRpcError(-32603, 'Internal error'));
-    }
+export function startHttpServer(port: number, host = '127.0.0.1'): Promise<Server> {
+  let active = 0;
+  const http = createHttpServer((req, res) => {
+    req.on('error', () => {});   // a disconnected/aborted body can emit error after its reader has settled
+    const respond = (status: number, message: string) => {
+      if (!res.headersSent && !res.destroyed) {
+        res.writeHead(status, { 'content-type': 'application/json', connection: 'close' })
+          .end(jsonRpcError(status === 400 ? -32700 : -32000, message));
+      }
+    };
+    const handle = async () => {
+      let path: string;
+      try {
+        if (!req.url?.startsWith('/') || req.url.startsWith('//')) throw new Error('invalid target');
+        path = new URL(req.url, 'http://localhost').pathname;
+      } catch { respond(400, 'Invalid request target'); return; }
+      if (path === '/health' && req.method === 'GET') { res.writeHead(200, { 'content-type': 'text/plain' }).end('ok'); return; }
+      if (path !== '/mcp') { res.writeHead(404, { 'content-type': 'text/plain' }).end('not found'); return; }
+      if (!originAllowed(req.headers.origin)) { respond(403, 'Forbidden: origin not allowed'); return; }
+      if (req.method !== 'POST') {
+        res.writeHead(405, { allow: 'POST', 'content-type': 'application/json' }).end(jsonRpcError(-32000, 'Method not allowed: stateless server, use POST'));
+        return;
+      }
+      if (active >= config.maxHttpRequests) { res.setHeader('retry-after', '1'); respond(503, 'Server busy; retry later'); return; }
+      if (!/^application\/json(?:\s*;|$)/i.test(req.headers['content-type'] ?? '')) { respond(415, 'Content-Type must be application/json'); return; }
+      if (Number(req.headers['content-length']) > MAX_BODY_BYTES) { respond(413, 'request body too large'); return; }
+      active++;
+      try {
+        const body = await readJson(req);
+        const accept = req.headers.accept ?? '';
+        if (!accept.includes('text/event-stream') && (!accept || accept.includes('application/json') || accept.includes('*/*'))) {
+          req.headers.accept = 'application/json, text/event-stream';
+        }
+        const server = createMcpServer();
+        const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true });
+        res.on('close', () => { void transport.close().catch(() => {}); void server.close().catch(() => {}); });
+        try {
+          await server.connect(transport);
+          await transport.handleRequest(req, res, body);
+        } finally { await transport.close(); await server.close(); }
+      } finally { active--; }
+    };
+    void handle().catch((err: unknown) => {
+      if (err instanceof RequestError) respond(err.status, err.message);
+      else { console.error('MCP request failed'); respond(500, 'Internal error'); }
+    });
   });
-  return new Promise((resolve) => http.listen(port, host, () => resolve(http)));
+  http.requestTimeout = config.httpTimeoutMs;
+  http.headersTimeout = Math.min(config.httpTimeoutMs, 10000);
+  return new Promise((resolve, reject) => {
+    http.once('error', reject);
+    http.listen(port, host, () => { http.removeListener('error', reject); resolve(http); });
+  });
 }

@@ -7,7 +7,7 @@ import { ok, fail, errorMessage, READ_ONLY_EXTERNAL } from '../utils/result.js';
 import { locationOut, toLocation } from '../utils/schemas.js';
 
 const schema = {
-  location: z.string().describe('City name, coordinates (lat,lon) or ICAO code in Finland, Sweden, Norway, Denmark, Iceland, Estonia, Latvia or Lithuania'),
+  location: z.string().max(200).describe('City name, coordinates (lat,lon) or ICAO code in Finland, Sweden, Norway, Denmark, Iceland, Estonia, Latvia or Lithuania'),
   language: z.enum(['en', 'fi', 'sv', 'no']).default('en').describe('Warning text language where the source has it (fi and sv: Finland; sv: Sweden; no: Norway)'),
 };
 

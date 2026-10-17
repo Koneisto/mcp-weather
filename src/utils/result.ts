@@ -1,3 +1,4 @@
+import { safeError } from './errors.js';
 import type { ToolAnnotations, ToolResult } from '../types.js';
 
 /** Successful result: the text as before plus the same data as structuredContent (validated against outputSchema). */
@@ -11,7 +12,7 @@ export function fail(text: string): ToolResult {
 }
 
 export function errorMessage(err: unknown): string {
-  return err instanceof Error ? err.message : String(err);
+  return safeError(err instanceof Error ? err.message : err);
 }
 
 /** All tools only read public weather data; most call external services. */

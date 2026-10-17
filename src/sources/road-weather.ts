@@ -1,3 +1,4 @@
+import { safeError } from '../utils/errors.js';
 import { cache } from '../cache.js';
 import { getJson } from '../utils/http.js';
 import { kmBetween } from '../utils/region.js';
@@ -118,7 +119,7 @@ export async function fetchRoadWeather(lat: number, lon: number): Promise<{ stat
     lastCallTime = new Date().toISOString(); lastCallOk = true;
     return { station, forecast: summarizeForecast(fc), sections: fc.forecastSections?.length ?? 0 };
   } catch (err) {
-    lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = String(err instanceof Error ? err.message : err);
+    lastCallTime = new Date().toISOString(); lastCallOk = false; lastError = safeError(err instanceof Error ? err.message : err);
     throw err;
   }
 }

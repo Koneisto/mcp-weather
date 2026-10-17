@@ -8,7 +8,7 @@ import { ok, fail, errorMessage, READ_ONLY_EXTERNAL } from '../utils/result.js';
 import { locationOut, toLocation } from '../utils/schemas.js';
 
 const schema = {
-  location: z.string().describe('Place, road junction area or coordinates (lat,lon) in Finland'),
+  location: z.string().max(200).describe('Place, road junction area or coordinates (lat,lon) in Finland'),
 };
 
 const condition = z.enum(['normal', 'poor', 'very poor', 'unknown']);

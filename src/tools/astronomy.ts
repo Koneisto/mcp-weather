@@ -7,7 +7,7 @@ import { ok, fail, errorMessage, READ_ONLY_EXTERNAL } from '../utils/result.js';
 import { locationOut, toLocation } from '../utils/schemas.js';
 
 const schema = {
-  location: z.string().describe('City name, coordinates (lat,lon), or Finnish city alias'),
+  location: z.string().max(200).describe('City name, coordinates (lat,lon), or Finnish city alias'),
   date: z.string().optional().describe('Date in YYYY-MM-DD format (default: today)'),
   timezone: z.string().optional().describe('IANA timezone (default: Europe/Helsinki)'),
 };
