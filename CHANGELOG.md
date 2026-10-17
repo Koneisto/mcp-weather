@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-10-18
+
+### Added
+
+- `get_lake_conditions`: every water level and water temperature has `ageDays` and `status` (`current`, `missing` or
+  `off_season`). An old water temperature is `off_season` when the station does not normally measure on this calendar
+  day (winter) and `missing` when it does, so a feed that stops in the open-water season is told apart from winter.
+  The text says which. Ice has `ageDays`.
+
+### Changed
+
+- An old water level is kept for 60 days with status `missing` instead of disappearing after 14 days.
+- Ice thickness counts as current for 25 days (was 45) and weak ice for 12: a March measurement no longer reports ice
+  into May.
+- By place, the lake for the water temperature station comes from the nearest level station when none answers, so the
+  water temperature no longer vanishes with a stopped gauge.
+
 ## [1.4.0] - 2026-10-16
 
 ### Added
