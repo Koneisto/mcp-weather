@@ -21,7 +21,7 @@ const { cache } = await import('../build/cache.js');
 function offline(extra = () => undefined) {
   const realFetch = globalThis.fetch, realNow = Date.now, calls = [];
   globalThis.fetch = async (u, init = {}) => {
-    u = String(u); calls.push({ url: u, headers: init.headers ?? {} });
+    u = String(u); calls.push({ url: u, headers: Object.fromEntries(new Headers(init.headers)) });
     const r = extra(u, init);
     if (r) return r;
     const json = (s, h = {}) => new Response(s, { status: 200, headers: { 'content-type': 'application/json', ...h } });
@@ -123,7 +123,7 @@ test('get_precipitation_nowcast: raining now, when it stops, heaviest and total;
     assert.match(r.content[0].text, /^Precipitation nowcast for /);
     const call = net.calls.find((x) => x.url.includes('/nowcast/'));
     assert.match(call.url, /lat=60\.3912&lon=5\.322(&|$)/, 'coordinates truncated to 4 decimals');
-    assert.match(call.headers['User-Agent'], /^mcp-weather\/\d+\.\d+\.\d+ \(\+https:\/\/github\.com\/Koneisto\/mcp-weather\)$/);
+    assert.match(call.headers['user-agent'], /^mcp-weather\/\d+\.\d+\.\d+ \(\+https:\/\/github\.com\/Koneisto\/mcp-weather\)$/);
     await c.close();
   } finally { net.restore(); }
 });
@@ -145,7 +145,7 @@ test('MET client: no request before Expires, then If-Modified-Since and 304 reus
   let n = 0, t = NOW;
   const realFetch = globalThis.fetch, realNow = Date.now, seen = [];
   globalThis.fetch = async (u, init) => {
-    n++; seen.push(init.headers);
+    n++; seen.push(Object.fromEntries(new Headers(init.headers)));
     return n === 1 ? new Response('{"v":1}', { status: 200, headers: { expires: new Date(NOW + 60000).toUTCString(), 'last-modified': 'Wed, 14 Oct 2026 23:00:00 GMT' } })
       : new Response(null, { status: 304, headers: { expires: new Date(NOW + 180000).toUTCString() } });
   };
@@ -154,7 +154,7 @@ test('MET client: no request before Expires, then If-Modified-Since and 304 reus
     assert.deepEqual(await metGet('x/1.0', 60, 25), { v: 1 });
     t = NOW + 30000; assert.deepEqual(await metGet('x/1.0', 60, 25), { v: 1 }); assert.equal(n, 1, 'cached until Expires');
     t = NOW + 90000; assert.deepEqual(await metGet('x/1.0', 60, 25), { v: 1 }); assert.equal(n, 2);
-    assert.equal(seen[1]['If-Modified-Since'], 'Wed, 14 Oct 2026 23:00:00 GMT');
+    assert.equal(seen[1]['if-modified-since'], 'Wed, 14 Oct 2026 23:00:00 GMT');
   } finally { globalThis.fetch = realFetch; Date.now = realNow; clearMetStore(); }
 });
 

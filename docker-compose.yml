@@ -7,6 +7,8 @@ services:
       - .env
     ports:
       - "${MCP_BIND_ADDRESS:-127.0.0.1}:3015:3000"
+    volumes:
+      - weather-state:/var/lib/mcp-weather
     read_only: true
     tmpfs:
       - /tmp:size=16m
@@ -27,3 +29,6 @@ services:
 networks:
   mcp-network:
     external: true
+
+volumes:
+  weather-state:

@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-10-18
+
+### Added
+
+- Durable provider/account safety budgets, rolling minute/hour ceilings, UTC day/month ceilings, persistent
+  Retry-After and failure circuits. Open-Meteo variable/duration weights are conservatively rounded up. Every dispatched attempt, including redirects and 304 responses, counts.
+- Protected metadata and byte-bounded weather caches with private, bounded restart persistence for public reusable
+  datasets. Docker uses a named state volume. Current and forecast requests share a model-specific seven-day dataset.
+- `/mcp/compact` and stdio `--compact` / `MCP_PROFILE=compact`: short discovery without output schemas, internally
+  validated JSON results without duplicate text/structured data, optional fields and retained safety/provenance.
+- Source status reports cache bytes, protected metadata and remaining local safety budgets without account secrets.
+
+### Changed
+
+- Current weather fetches national observations first and stops optional fallbacks when requested/essential fields
+  are present. Optional `fields` controls source demand; full mode retains its established output structure.
+- Geocoding normalizes queries and stops on unambiguous capitals. Hourly cloud windows and forecast day counts
+  reuse common datasets instead of multiplying upstream calls.
+- The HTTP client honors cache directives and validators, and permits at most three same-origin HTTPS redirects.
+  No HEAD polling or automatic retry loop is added. Existing `/mcp` and default stdio retain all twelve tools.
+
+### Operational limits
+
+- Safety defaults are conservative application ceilings, not a claim about any provider plan. Configure actual
+  allowances and split shared account limits across independent state volumes/hosts. Corrupt or locked quota
+  state fails closed; inspect a crash-left lock before manual recovery. Preserve quota.json across upgrades.
+- Compact payload savings measure protocol bytes; actual token savings depend on the client and tokenizer.
+
 ## [1.5.1] - 2026-10-18
 
 ### Security

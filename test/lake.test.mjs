@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 
-const RECORDED = JSON.parse(readFileSync(new URL('./fixtures/syke-recorded.json', import.meta.url), 'utf8'));
+const RECORDED = Object.fromEntries(Object.entries(JSON.parse(readFileSync(new URL('./fixtures/syke-recorded.json', import.meta.url), 'utf8'))).map(([url,body])=>[new URL(url).href,body]));
 const NOW = Date.parse('2026-10-16T09:05:00Z');
 process.env.MCP_WEATHER_KEY_NOTE = 'off';
 const S = await import('../build/sources/syke.js');

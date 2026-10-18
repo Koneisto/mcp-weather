@@ -90,13 +90,20 @@ export function pickGeocodeResult(query: string, results: GeoResult[]): GeoResul
 
 async function geocode(query: string): Promise<ResolvedLocation> {
   const r = await cache.getOrFetch<GeoResult | null>(`geocode:${norm(query)}`, async () => {
-    const lists = await Promise.all(GEOCODE_LANGUAGES.map(async (lang) => {
-      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=${lang}&format=json`;
-      const res = await httpGet(url);
-      if (!res.ok) throw new Error(`Geocoding API returned ${res.status}`);
-      const data = await res.json() as { results?: GeoResult[] };
-      return data.results ?? [];
-    }).map((p) => p.catch(() => null)));
+    const lists: Array<GeoResult[] | null> = [];
+    // A matching capital is already the highest administrative rank. Common
+    // English queries need one call; ambiguous names still receive all languages.
+    for (const lang of GEOCODE_LANGUAGES) {
+      try {
+        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=${lang}&format=json`;
+        const res = await httpGet(url);
+        if (!res.ok) throw new Error(`Geocoding API returned ${res.status}`);
+        const data = await res.json() as { results?: GeoResult[] };
+        const results = data.results ?? [];
+        lists.push(results);
+        if (results.some((r) => norm(r.name) === norm(query) && r.feature_code === 'PPLC')) break;
+      } catch { lists.push(null); }
+    }
     if (lists.every((l) => l === null)) throw new Error('Geocoding API unavailable');
     // English first, so an equally ranked place keeps its English name
     const seen = new Set<number>(), all: GeoResult[] = [];

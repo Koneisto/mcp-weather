@@ -49,7 +49,8 @@ export function keyNote(): string | null {
 }
 
 /** Server instructions for the client and model (sent in the initialize result). */
-export function serverInstructions(): string {
+export function serverInstructions(profile: 'full' | 'compact' = 'full'): string {
+  if (profile === 'compact') return 'Nordic/Baltic weather. Credit sources; preserve measurement times, freshness, units and safety cautions. fields selects top-level data; provenance and safety remain. Results are single JSON text objects. Missing measurement time means freshness unknown. Use full MCP endpoint for structured automation results.';
   const m = missingKeys();
   return 'Nordic and European weather: measured observations from the national weather services (FI, SE, DK, IS, EE, LT; ' +
     'MET Nordic analysis in NO), MET Norway\'s high-resolution MET Nordic forecast in the Nordic and Baltic countries, and official ' +

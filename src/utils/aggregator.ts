@@ -23,55 +23,54 @@ const NEARBY_STATION_KM = 50;
 
 export async function aggregateCurrentWeather(
   loc: ResolvedLocation,
+  fields?: string[],
 ): Promise<{ weather: CurrentWeather; sources: string[]; summary: string; observation?: Observation; nearbyObservation?: Observation; analysis?: Observation }> {
   // Measured first: the nearest station of the country's national weather service (FMI, SMHI, DMI, IMO, LHMT, Estonia)
   // within 15 km, then MET Norway's MET Nordic analysis (observations and radar on a 1 km grid) in Finland, Sweden, Norway
   // and Denmark, then the models. Values are filled in this order, so measurements win and models only fill the gaps.
   const country = countryOfLocation(loc);
-  const obsPromise = fetchNationalObservation(country, loc.lat, loc.lon);
-  // Norway: the analysis already is the national observation (Frost needs a client id), so it is not fetched twice
-  const anaPromise = country && ['FI', 'SE', 'DK'].includes(country)
-    ? metNordicAnalysis(loc.lat, loc.lon).catch(() => null) : Promise.resolve(null);
-  const results = await Promise.allSettled([
-    obsPromise.then((r) => (r.ok ? { ok: true as const, source: r.source, data: r.data.weather } : null)),
-    anaPromise.then((a) => (a ? { ok: true as const, source: 'MET Nordic analysis', data: a.weather } : null)),
-    fetchOpenMeteoCurrent(loc.lat, loc.lon),
-    fetchWttrCurrent(`${loc.lat},${loc.lon}`),   // coordinates: wttr.in's own name search failed for e.g. "Stockholm/Arlanda Arpt (ESSA)"
-    config.hasOpenWeatherMap ? fetchOWMCurrent(loc.lat, loc.lon) : Promise.resolve(null),
-    config.hasWeatherApi ? fetchWeatherApiCurrent(loc.lat, loc.lon) : Promise.resolve(null),
-    config.hasTomorrowIo ? fetchTomorrowCurrent(loc.lat, loc.lon) : Promise.resolve(null),
-  ]);
-
   const merged: CurrentWeather = {};
   const usedSources: string[] = [];
-
-  for (const result of results) {
-    if (result.status !== 'fulfilled' || !result.value) continue;
-    const r = result.value;
-    if (!r.ok) continue;
-
-    usedSources.push(r.source);
-    const d = r.data;
-
-    // Fill nulls from secondary sources
-    merged.temperature ??= d.temperature;
-    merged.feelsLike ??= d.feelsLike;
-    merged.humidity ??= d.humidity;
-    merged.pressure ??= d.pressure;
-    merged.windSpeed ??= d.windSpeed;
-    merged.windDirection ??= d.windDirection;
-    merged.windGusts ??= d.windGusts;
-    merged.cloudCover ??= d.cloudCover;
-    merged.visibility ??= d.visibility;
-    merged.uvIndex ??= d.uvIndex;
-    merged.weatherCode ??= d.weatherCode;
-    merged.weatherDescription ??= d.weatherDescription;
-    merged.precipitation ??= d.precipitation;
-    merged.dewPoint ??= d.dewPoint;
-    merged.snowDepth ??= d.snowDepth;
+  // Default essentials avoid spending optional/paid calls to fill rare fields (UV,
+  // visibility, snow). Explicit demand can still request those fields.
+  const essentials = ['temperature', 'feelsLike', 'humidity', 'pressure', 'windSpeed', 'windDirection', 'weatherDescription', 'precipitation'];
+  const weatherFields = new Set([...essentials, 'windGusts', 'cloudCover', 'visibility', 'uvIndex', 'weatherCode', 'dewPoint', 'snowDepth']);
+  const requested = fields?.map((f) => f === 'conditions' ? 'weatherDescription' : f).filter((f) => weatherFields.has(f));
+  const required = requested?.length ? requested : essentials;
+  const satisfied = () => required.every((f) => merged[f as keyof CurrentWeather] != null);
+  const merge = (source: string, data: CurrentWeather) => {
+    let contributed = false;
+    for (const [key, value] of Object.entries(data)) {
+      const field = key as keyof CurrentWeather;
+      if (value != null && (typeof value !== 'number' || Number.isFinite(value)) && merged[field] == null) {
+        // Values from a source already selected for requested fields are cheap to retain.
+        (merged as Record<string, unknown>)[field] = value;
+        contributed = true;
+      }
+    }
+    if (contributed) usedSources.push(source);
+  };
+  const obs = await fetchNationalObservation(country, loc.lat, loc.lon);
+  if (obs.ok) merge(obs.source, obs.data.weather);
+  let analysis: Observation | undefined;
+  if (!satisfied() && country && ['FI', 'SE', 'DK'].includes(country)) {
+    analysis = (await metNordicAnalysis(loc.lat, loc.lon).catch(() => null)) ?? undefined;
+    if (analysis) merge('MET Nordic analysis', analysis.weather);
+  }
+  const common = ['temperature', 'feelsLike', 'humidity', 'pressure', 'windSpeed', 'windDirection', 'windGusts', 'cloudCover', 'weatherDescription'];
+  const providers: Array<{fields: string[]; fetch: () => Promise<import('../types.js').SourceResult<CurrentWeather>>}> = [
+    {fields: [...common, 'weatherCode', 'precipitation', 'dewPoint'], fetch: () => fetchOpenMeteoCurrent(loc.lat, loc.lon)},
+    {fields: [...common, 'visibility', 'uvIndex', 'precipitation', 'dewPoint'], fetch: () => fetchWttrCurrent(`${loc.lat},${loc.lon}`)},
+    ...(config.hasOpenWeatherMap ? [{fields: [...common, 'visibility'], fetch: () => fetchOWMCurrent(loc.lat, loc.lon)}] : []),
+    ...(config.hasWeatherApi ? [{fields: [...common, 'visibility', 'uvIndex', 'precipitation', 'dewPoint'], fetch: () => fetchWeatherApiCurrent(loc.lat, loc.lon)}] : []),
+    ...(config.hasTomorrowIo ? [{fields: [...common, 'visibility', 'uvIndex', 'precipitation', 'dewPoint'], fetch: () => fetchTomorrowCurrent(loc.lat, loc.lon)}] : []),
+  ];
+  for (const provider of providers) {
+    if (satisfied()) break;
+    if (!required.some((f) => merged[f as keyof CurrentWeather] == null && provider.fields.includes(f))) continue;
+    try { const result = await provider.fetch(); if (result.ok) merge(result.source, result.data); } catch { /* Continue fallback. */ }
   }
 
-  const obs = await obsPromise, analysis = (await anaPromise) ?? undefined;
   // No station within 15 km (e.g. Utsjoki, rural lakeside): the analysis or model is used for the point, and the nearest
   // station within 50 km is shown for reference only, without mixing it into the values.
   let nearbyObservation: Observation | undefined;
