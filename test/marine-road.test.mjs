@@ -19,7 +19,7 @@ const HELSINKI = '60.1699,24.9384', OSLO = '59.9133,10.739', COPENHAGEN = '55.67
 function offline() {
   const realFetch = globalThis.fetch, realNow = Date.now, calls = [];
   globalThis.fetch = async (u, init = {}) => {
-    u = String(u); calls.push({ url: u, headers: init.headers ?? {} });
+    u = String(u); calls.push({ url: u, headers: Object.fromEntries(new Headers(init.headers)) });
     const res = (s, type = 'application/json') => new Response(s, { status: 200, headers: { 'content-type': type } });
     if (u.includes('mareograph::timevaluepair')) return res(fx('marine-fmi-mareograph.xml'), 'text/xml');
     if (u.includes('wave::timevaluepair')) return res(fx('marine-fmi-wave.xml'), 'text/xml');
@@ -127,7 +127,7 @@ test('get_marine_conditions: Finland, Norway, Denmark and Sweden each from their
     assert.match(osl.content[0].text, /^Sea level: \+33 cm against mean sea level at Oslo \(Kartverket, 18:00\)$/m, 'Oslo is UTC+2 in October');
     assert.match(osl.content[0].text, /^Wave model \(MET Norway Oceanforecast\)/m);
     assert.equal(osl.structuredContent.seaLevelForecast.provider, 'Kartverket');
-    const ua = net.calls.find((x) => x.url.includes('oceanforecast')).headers['User-Agent'];
+    const ua = net.calls.find((x) => x.url.includes('oceanforecast')).headers['user-agent'];
     assert.match(ua, /^mcp-weather\/[\d.]+ \(\+https:\/\/github\.com\/Koneisto\/mcp-weather\)$/);
 
     const cph = await call(COPENHAGEN);
@@ -178,8 +178,8 @@ test('get_road_weather: nearest fresh station and the forecast in Finland; refus
     assert.match(t, /Source: Fintraffic \/ digitraffic\.fi, CC BY 4\.0/);
     assert.equal(hel.structuredContent.station.road, 51);
     const dt = net.calls.find((x) => x.url.includes('tie.digitraffic.fi'));
-    assert.equal(dt.headers['Digitraffic-User'], 'Koneisto/mcp-weather');
-    assert.equal(dt.headers['Accept-Encoding'], 'gzip');
+    assert.equal(dt.headers['digitraffic-user'], 'Koneisto/mcp-weather');
+    assert.equal(dt.headers['accept-encoding'], 'gzip');
 
     const sto = await c.callTool({ name: 'get_road_weather', arguments: { location: STOCKHOLM } });
     assert.equal(sto.isError, true);

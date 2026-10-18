@@ -6,6 +6,8 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { createMcpServer, startHttpServer, SERVER_VERSION } from './server.js';
 
 async function main() {
+  const profile = process.argv.includes('--compact') ? 'compact' : (process.env.MCP_PROFILE ?? 'full');
+  if (profile !== 'full' && profile !== 'compact') throw new Error('MCP_PROFILE must be full or compact');
   if (process.argv.includes('--http') || process.env.MCP_TRANSPORT === 'http') {
     const port = parseInt(process.env.PORT ?? '3000', 10);
     const http = await startHttpServer(port, process.env.HOST ?? '127.0.0.1');
@@ -15,8 +17,8 @@ async function main() {
     process.on('SIGINT', stop);
     return;
   }
-  await createMcpServer().connect(new StdioServerTransport());
-  console.error(`MCP Weather Server ${SERVER_VERSION} running on stdio`);
+  await createMcpServer(profile).connect(new StdioServerTransport());
+  console.error(`MCP Weather Server ${SERVER_VERSION} running on stdio (${profile})`);
 }
 
 main().catch((error) => {

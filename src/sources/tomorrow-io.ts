@@ -27,10 +27,6 @@ interface TomorrowResponse {
 
 const SOURCE = 'Tomorrow.io';
 const TOMORROW_CACHE_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours (limited free calls)
-// Free tier: about 25 calls per hour. After HTTP 429 the source pauses instead of spending more calls
-// (and time) on requests that fail until the rate window resets.
-const RATE_LIMIT_PAUSE_MS = 15 * 60 * 1000;
-let pausedUntil = 0;
 let lastCallTime: string | undefined;
 let lastCallOk: boolean | undefined;
 let lastError: string | undefined;
@@ -74,9 +70,6 @@ const tomorrowWeatherCodes: Record<number, string> = {
 
 /** Realtime call (the free tier returns no air quality fields: pollutants were never filled in from here). */
 async function fetchRealtime(lat: number, lon: number): Promise<TomorrowResponse> {
-  if (Date.now() < pausedUntil) {
-    throw new Error(`Tomorrow.io rate limit reached, paused until ${new Date(pausedUntil).toISOString()}`);
-  }
   return cache.getOrFetch<TomorrowResponse>(
     `tomorrow:realtime:${lat},${lon}`,
     async () => {
@@ -86,7 +79,6 @@ async function fetchRealtime(lat: number, lon: number): Promise<TomorrowResponse
         units: 'metric',
       });
       const res = await httpGet(`https://api.tomorrow.io/v4/weather/realtime?${params}`);
-      if (res.status === 429) pausedUntil = Date.now() + RATE_LIMIT_PAUSE_MS;
       if (!res.ok) throw new Error(`Tomorrow.io returned ${res.status}`);
       return await res.json() as TomorrowResponse;
     },

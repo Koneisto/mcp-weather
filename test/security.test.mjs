@@ -58,7 +58,7 @@ test('upstream byte cap counts decoded bytes and cancels oversized bodies',async
 });
 test('all upstream calls share a bounded queue, sockets and original deadlines',async()=>{
  const original=globalThis.fetch;let active=0,peak=0,calls=0;
- globalThis.fetch=async(_u,options)=>{assert.equal(options.redirect,'error');calls++;peak=Math.max(peak,++active);await pause(10);active--;return new Response('{}');};
+ globalThis.fetch=async(_u,options)=>{assert.equal(options.redirect,'manual');calls++;peak=Math.max(peak,++active);await pause(10);active--;return new Response('{}');};
  try{const jobs=Array.from({length:5},(_,i)=>httpGet(`https://weather.example/${i}`));const results=await Promise.allSettled(jobs);assert.equal(results.filter(x=>x.status==='fulfilled').length,4);assert.equal(results.filter(x=>x.status==='rejected').length,1);assert.equal(peak,2);assert.equal(calls,4);}finally{globalThis.fetch=original;}
  const limiter=new Limiter(1,1);let release;const first=limiter.run(()=>new Promise(r=>release=r),AbortSignal.timeout(1000));
  const second=limiter.run(()=>assert.fail('expired queued task started'),AbortSignal.timeout(10));const keepalive=pause(30);
@@ -90,7 +90,7 @@ test('invalid numeric configuration fails at startup with only the setting name'
 test('standalone bundle serves MCP without node_modules',async()=>{
  const dir=await mkdtemp(join(tmpdir(),'weather-bundle-'));const file=join(dir,'weather.mjs');await copyFile(new URL('../build/weather.mjs',import.meta.url),file);
  const c=new Client({name:'bundle-test',version:'1'});
- try{await c.connect(new StdioClientTransport({command:process.execPath,args:[file],cwd:dir,env:{PATH:process.env.PATH,MCP_WEATHER_KEY_NOTE:'off'},stderr:'pipe'}));assert.equal((await c.listTools()).tools.length,12);const r=await c.callTool({name:'get_astronomy',arguments:{location:'60.17,24.94',date:'2026-10-18'}});assert.ok(!r.isError);assert.equal(r.structuredContent.date,'2026-10-18');}finally{await c.close();await rm(dir,{recursive:true,force:true});}
+ try{await c.connect(new StdioClientTransport({command:process.execPath,args:[file],cwd:dir,env:{PATH:process.env.PATH,MCP_STATE_DIR:process.env.MCP_STATE_DIR,MCP_WEATHER_KEY_NOTE:'off'},stderr:'pipe'}));assert.equal((await c.listTools()).tools.length,12);const r=await c.callTool({name:'get_astronomy',arguments:{location:'60.17,24.94',date:'2026-10-18'}});assert.ok(!r.isError);assert.equal(r.structuredContent.date,'2026-10-18');}finally{await c.close();await rm(dir,{recursive:true,force:true});}
 });
 
 test('identical concurrent MET requests share one upstream call and still honor Expires',async()=>{

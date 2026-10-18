@@ -15,7 +15,9 @@ export function forecastModel(lat: number, lon: number): { models?: string; labe
 }
 
 interface OpenMeteoCurrentResponse {
+  timezone?: string;
   current: {
+    time?: string;
     temperature_2m: number;
     apparent_temperature: number;
     relative_humidity_2m: number;
@@ -70,30 +72,46 @@ export function getOpenMeteoStatus() {
   return { name: SOURCE, configured: true, available: true, lastCallTime, lastCallOk, lastError };
 }
 
+// Current weather and 1–7 day forecasts use the same model/grid and raw
+// representation. A bounded seven-day superset removes day-count fragmentation.
+async function fetchWeatherDataset(lat: number, lon: number): Promise<OpenMeteoCurrentResponse> {
+  lat = Number(lat.toFixed(4)); lon = Number(lon.toFixed(4));
+  const model = forecastModel(lat, lon);
+  const day = new Date(Date.now()).toISOString().slice(0, 10);
+  const key = `openmeteo:weather:${lat},${lon}:${model.models ?? 'best'}:${day}`;
+  const fetcher = async () => {
+    const params = new URLSearchParams({
+      latitude: String(lat), longitude: String(lon),
+      ...(model.models ? { models: model.models } : {}),
+      current: 'temperature_2m,apparent_temperature,relative_humidity_2m,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,cloud_cover,weather_code,precipitation,dew_point_2m',
+      daily: 'temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_direction_10m_dominant,uv_index_max,sunrise,sunset',
+      wind_speed_unit: 'ms', timezone: 'auto', forecast_days: '7',
+    });
+    const res = await httpGet(`https://api.open-meteo.com/v1/forecast?${params}`);
+    if (!res.ok) throw new Error(`Open-Meteo returned ${res.status}`);
+    const data = await res.json() as OpenMeteoCurrentResponse;
+    lastCallTime = new Date().toISOString(); lastCallOk = true; lastError = undefined;
+    return data;
+  };
+  const data = await cache.getOrFetch(key, fetcher);
+  // UTC-date keys alone do not notice local midnight. Reuse is valid for a
+  // daily forecast only when its first day still matches the provider timezone.
+  if (data.timezone && data.daily?.time[0]) {
+    const parts = new Intl.DateTimeFormat('en', {timeZone: data.timezone, year:'numeric', month:'2-digit', day:'2-digit'}).formatToParts(new Date(Date.now()));
+    const value = (type: string) => parts.find((p) => p.type === type)?.value;
+    const localDay = `${value('year')}-${value('month')}-${value('day')}`;
+    if (data.daily.time[0] < localDay) return cache.getOrFetch(`${key}:local:${localDay}`, fetcher);
+  }
+  return data;
+}
+
 export async function fetchOpenMeteoCurrent(lat: number, lon: number): Promise<SourceResult<CurrentWeather>> {
   try {
-    const data = await cache.getOrFetch<OpenMeteoCurrentResponse>(
-      `openmeteo:current:${lat},${lon}`,
-      async () => {
-        const params = new URLSearchParams({
-          latitude: String(lat),
-          longitude: String(lon),
-          current: 'temperature_2m,apparent_temperature,relative_humidity_2m,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m,cloud_cover,weather_code,precipitation,dew_point_2m',
-          wind_speed_unit: 'ms',
-          timezone: 'auto',
-        });
-        const res = await httpGet(`https://api.open-meteo.com/v1/forecast?${params}`);
-        if (!res.ok) throw new Error(`Open-Meteo returned ${res.status}`);
-        return await res.json() as OpenMeteoCurrentResponse;
-      },
-    );
-
-    lastCallTime = new Date().toISOString();
-    lastCallOk = true;
+    const data = await fetchWeatherDataset(lat, lon);
     const c = data.current;
     return {
       ok: true,
-      source: SOURCE,
+      source: forecastModel(lat, lon).label,
       data: {
         temperature: c.temperature_2m,
         feelsLike: c.apparent_temperature,
@@ -120,29 +138,13 @@ export async function fetchOpenMeteoCurrent(lat: number, lon: number): Promise<S
 export async function fetchOpenMeteoForecast(lat: number, lon: number, days: number): Promise<SourceResult<DailyForecast[]>> {
   const model = forecastModel(lat, lon);
   try {
-    const data = await cache.getOrFetch<OpenMeteoCurrentResponse>(
-      `openmeteo:forecast:${lat},${lon}:${days}:${model.models ?? 'best'}`,
-      async () => {
-        const params = new URLSearchParams({
-          ...(model.models ? { models: model.models } : {}),
-          latitude: String(lat),
-          longitude: String(lon),
-          daily: 'temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum,precipitation_probability_max,wind_speed_10m_max,wind_direction_10m_dominant,uv_index_max,sunrise,sunset',
-          wind_speed_unit: 'ms',
-          timezone: 'auto',
-          forecast_days: String(days),
-        });
-        const res = await httpGet(`https://api.open-meteo.com/v1/forecast?${params}`);
-        if (!res.ok) throw new Error(`Open-Meteo forecast returned ${res.status}`);
-        return await res.json() as OpenMeteoCurrentResponse;
-      },
-    );
+    const data = await fetchWeatherDataset(lat, lon);
 
     if (!data.daily) {
       return { ok: false, error: 'No daily forecast data', source: SOURCE };
     }
 
-    const forecasts: DailyForecast[] = data.daily.time.map((date, i) => ({
+    const forecasts: DailyForecast[] = data.daily.time.slice(0, Math.max(1, Math.min(7, Math.floor(days)))).map((date, i) => ({
       date,
       tempMax: data.daily!.temperature_2m_max[i],
       tempMin: data.daily!.temperature_2m_min[i],
@@ -165,10 +167,12 @@ export async function fetchOpenMeteoForecast(lat: number, lon: number, days: num
 
 /** Hourly cloud cover (%) for the next hours, local time strings (aurora visibility). Same model choice as the forecast. */
 export async function fetchOpenMeteoHourlyCloud(lat: number, lon: number, hours: number): Promise<{ timezone: string; times: string[]; cloud: Array<number | null> }> {
+  lat = Number(lat.toFixed(4)); lon = Number(lon.toFixed(4));
   const model = forecastModel(lat, lon);
-  return cache.getOrFetch(`openmeteo:cloud:${lat},${lon}:${hours}:${model.models ?? 'best'}`, async () => {
+  const window = new Date(Date.now()).toISOString().slice(0, 13);
+  const raw = await cache.getOrFetch(`openmeteo:cloud:${lat},${lon}:48:${model.models ?? 'best'}:${window}`, async () => {
     const params = new URLSearchParams({
-      latitude: String(lat), longitude: String(lon), hourly: 'cloud_cover', timezone: 'auto', forecast_hours: String(hours),
+      latitude: String(lat), longitude: String(lon), hourly: 'cloud_cover', timezone: 'auto', forecast_hours: '48',
       ...(model.models ? { models: model.models } : {}),
     });
     const res = await httpGet(`https://api.open-meteo.com/v1/forecast?${params}`);
@@ -176,9 +180,12 @@ export async function fetchOpenMeteoHourlyCloud(lat: number, lon: number, hours:
     const d = await res.json() as { timezone: string; hourly: { time: string[]; cloud_cover: Array<number | null> } };
     return { timezone: d.timezone, times: d.hourly.time, cloud: d.hourly.cloud_cover };
   }, 30 * 60000);
+  const count = Math.max(1, Math.min(48, Math.floor(hours)));
+  return { timezone: raw.timezone, times: raw.times.slice(0, count), cloud: raw.cloud.slice(0, count) };
 }
 
 export async function fetchOpenMeteoAirQuality(lat: number, lon: number): Promise<SourceResult<AirQualityData>> {
+  lat = Number(lat.toFixed(4)); lon = Number(lon.toFixed(4));
   try {
     const data = await cache.getOrFetch<OpenMeteoAQResponse>(
       `openmeteo:aqi:${lat},${lon}`,

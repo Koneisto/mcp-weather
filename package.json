@@ -1,6 +1,6 @@
 {
   "name": "mcp-weather-server",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "Nordic weather MCP server: FMI observations, MET Nordic forecast, official warnings in 8 Nordic and Baltic countries, radar nowcast, aurora forecast, air quality with pollen. No API keys required.",
   "keywords": [
     "mcp",
@@ -48,7 +48,7 @@
   },
   "scripts": {
     "build": "tsc && node scripts/bundle.mjs",
-    "test": "node --test 'test/*.test.mjs'",
+    "test": "node scripts/test.mjs",
     "test:live": "node test/live.mjs",
     "sbom": "npm sbom --omit=dev --sbom-format cyclonedx > build/sbom.cdx.json"
   },

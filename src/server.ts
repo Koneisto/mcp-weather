@@ -15,6 +15,10 @@ import { roadWeatherTool } from './tools/road-weather.js';
 import { lakeTool } from './tools/lake.js';
 import { keyNote, serverInstructions } from './keys.js';
 
+import { compactDefinition, compactResult, type Profile } from './ai-profile.js';
+import type { ToolResult, tool } from './types.js';
+import type { z } from 'zod';
+
 import { VERSION } from './version.js';
 import { config } from './config.js';
 
@@ -33,11 +37,12 @@ export function resetKeyNote(): void {
   keyNoteShown = false;
 }
 
-export function createMcpServer(): McpServer {
-  const server = new McpServer({ name: 'weather', version: SERVER_VERSION }, { instructions: serverInstructions() });
+export function createMcpServer(profile: Profile = 'full'): McpServer {
+  const server = new McpServer({ name: 'weather', version: SERVER_VERSION }, { instructions: serverInstructions(profile) });
   for (const t of tools) {
     const handler = async (args: never, extra: never) => {
-      const result = await (t.handler as (a: never, e: never) => Promise<{ content: { type: 'text'; text: string }[]; isError?: boolean }>)(args, extra);
+      const result = await (t.handler as (a: never, e: never) => Promise<ToolResult>)(args, extra);
+      if (profile === 'compact') return compactResult(t as unknown as tool<z.ZodRawShape>, result, args as { fields?: string[]; detail?: string });
       if (!keyNoteShown && !result.isError && t.name !== 'get_weather_source_status') {
         keyNoteShown = true;
         const note = keyNote();
@@ -47,7 +52,7 @@ export function createMcpServer(): McpServer {
     };
     server.registerTool(
       t.name,
-      { title: t.title, description: t.description, inputSchema: t.schema, outputSchema: t.outputSchema, annotations: t.annotations },
+      profile === 'compact' ? compactDefinition(t as unknown as tool<z.ZodRawShape>) : { title: t.title, description: t.description, inputSchema: t.schema, outputSchema: t.outputSchema, annotations: t.annotations },
       // the SDK validates structuredContent against outputSchema
       handler as never,
     );
@@ -134,7 +139,7 @@ export function startHttpServer(port: number, host = '127.0.0.1'): Promise<Serve
         path = new URL(req.url, 'http://localhost').pathname;
       } catch { respond(400, 'Invalid request target'); return; }
       if (path === '/health' && req.method === 'GET') { res.writeHead(200, { 'content-type': 'text/plain' }).end('ok'); return; }
-      if (path !== '/mcp') { res.writeHead(404, { 'content-type': 'text/plain' }).end('not found'); return; }
+      if (path !== '/mcp' && path !== '/mcp/compact') { res.writeHead(404, { 'content-type': 'text/plain' }).end('not found'); return; }
       if (!originAllowed(req.headers.origin)) { respond(403, 'Forbidden: origin not allowed'); return; }
       if (req.method !== 'POST') {
         res.writeHead(405, { allow: 'POST', 'content-type': 'application/json' }).end(jsonRpcError(-32000, 'Method not allowed: stateless server, use POST'));
@@ -150,7 +155,7 @@ export function startHttpServer(port: number, host = '127.0.0.1'): Promise<Serve
         if (!accept.includes('text/event-stream') && (!accept || accept.includes('application/json') || accept.includes('*/*'))) {
           req.headers.accept = 'application/json, text/event-stream';
         }
-        const server = createMcpServer();
+        const server = createMcpServer(path === '/mcp/compact' ? 'compact' : 'full');
         const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true });
         res.on('close', () => { void transport.close().catch(() => {}); void server.close().catch(() => {}); });
         try {
