@@ -16,7 +16,10 @@ FROM alpine:3.24.2@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4c
 RUN apk add --no-cache libstdc++ ca-certificates \
  && apk upgrade --no-cache \
  && addgroup -g 1000 node \
- && adduser -u 1000 -G node -s /bin/sh -D node
+ && adduser -u 1000 -G node -s /bin/sh -D node \
+ && mkdir -p /var/lib/mcp-weather \
+ && chown node:node /var/lib/mcp-weather \
+ && chmod 700 /var/lib/mcp-weather
 COPY --from=build /usr/local/bin/node /usr/local/bin/node
 WORKDIR /app
 COPY --from=build /app/package.json ./
@@ -24,9 +27,9 @@ COPY --from=build /app/build/weather.mjs ./weather.mjs
 COPY --from=build /app/build/sbom.cdx.json ./sbom.cdx.json
 ARG VCS_REF=unknown
 LABEL org.opencontainers.image.source="https://github.com/Koneisto/mcp-weather" \
-      org.opencontainers.image.version="1.5.1" \
+      org.opencontainers.image.version="1.6.0" \
       org.opencontainers.image.revision=$VCS_REF
-ENV NODE_ENV=production PORT=3000 HOST=0.0.0.0
+ENV NODE_ENV=production PORT=3000 HOST=0.0.0.0 MCP_STATE_DIR=/var/lib/mcp-weather
 EXPOSE 3000
 # One process serves every client over the SDK's own stateless Streamable HTTP transport (POST /mcp), so the cache
 # is shared.

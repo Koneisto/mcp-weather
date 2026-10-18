@@ -14,7 +14,7 @@ const mk = async () => {
   } else {
     const { StdioClientTransport } = await import(SDK + '/node_modules/@modelcontextprotocol/sdk/dist/esm/client/stdio.js');
     const [command, ...args] = target.split(' ');
-    await c.connect(new StdioClientTransport({ command, args, stderr: 'ignore' }));
+    await c.connect(new StdioClientTransport({ command, args, stderr: 'ignore', env: {...process.env} }));
   }
   return c;
 };
@@ -35,7 +35,7 @@ const errOf = async (name, args) => { const r = await call(name, args); return r
 const sane = (t) => { const T = num(t, /^Temperature: (-?[\d,]+) °C/m), p = num(t, /^Pressure: ([\d,]+) hPa/m), h = num(t, /^Humidity: ([\d,]+) %/m);
   return T > -50 && T < 50 && (isNaN(p) || (p > 940 && p < 1070)) && (isNaN(h) || (h >= 0 && h <= 100)); };
 let t = await cw('hki');
-check('hki: FMI first, Kaisaniemi under 1 km', /^Sources: FMI, /m.test(t) && /Measured at: Helsinki Kaisaniemi \(FMI, 0,\d km away\)/.test(t), t);
+check('hki: FMI first, Kaisaniemi under 1 km', /^Sources: FMI(?:,|$)/m.test(t) && /Measured at: Helsinki Kaisaniemi \(FMI, 0,\d km away\)/.test(t), t);
 check('hki: sane values, FMI credited', sane(t) && /Finnish Meteorological Institute \(CC BY 4\.0\)/.test(t), t);
 t = await cw('Kivistö');
 check('Kivistö: Helsinki-Vantaa airport 7,4 km', /Measured at: Vantaa Helsinki-Vantaan lentoasema \(FMI, 7,4 km away\)/.test(t) && /Location: Kivistö, Finland/.test(t), t);
@@ -45,7 +45,7 @@ check('" efhk ": airport position, not 0,0', /Location: Helsinki-Vantaa \(EFHK\)
 const efhkTemp = num(t, /^Temperature: (-?[\d,]+) °C/m);
 check('Kivistö and EFHK from the same station → same temperature', kivTemp === efhkTemp, [kivTemp, efhkTemp]);
 t = await cw('ESSA');
-check('ESSA: Arlanda, Sweden, SMHI station, no FMI', /Stockholm\/Arlanda Arpt \(ESSA\), Sweden/.test(t) && /^Sources: SMHI, MET Nordic analysis/m.test(t) && !/FMI/.test(line(t, 'Sources')) && sane(t), t);
+check('ESSA: Arlanda, Sweden, SMHI station, no FMI', /Stockholm\/Arlanda Arpt \(ESSA\), Sweden/.test(t) && /^Sources: SMHI(?:,|$)/m.test(t) && !/FMI/.test(line(t, 'Sources')) && sane(t), t);
 t = await cw('Utsjoki');
 check('Utsjoki: model values, nearest station (Kevo) for reference', !/Measured at/.test(t) && /Nearest weather station: Utsjoki Kevo[^(]*\(FMI\), 1\d(,\d)? km away/.test(t), t);
 t = await cw('Ristiina');
@@ -73,7 +73,7 @@ t = (await call('get_weather_forecast', { location: 'tre', days: 7 })).text;
 check('7-day forecast Tampere', (t.match(/^--- \d{4}-\d\d-\d\d ---/gm) || []).length === 7, t.slice(0, 200));
 {
   const r = await call('get_weather_forecast', { location: 'tre', days: 7 });
-  check('forecast Tampere: FMI meteorologist forecast for the full days (at least 5 of 7), credited', r.data.days.filter((d) => d.source === 'FMI').length >= 5 && /^Source: Finnish Meteorological Institute, meteorologist-edited forecast/m.test(r.text), r.data?.days?.map((d) => d.source));
+  check('forecast Tampere: FMI meteorologist forecast for the full days (at least 5 of 7), credited', r.data?.days?.filter((d) => d.source === 'FMI').length >= 5 && /^Source: Finnish Meteorological Institute, meteorologist-edited forecast/m.test(r.text), r.data?.days?.map((d) => d.source));
 }
 const omSunrise = (/Sunrise: (\d\d:\d\d)/.exec((await call('get_weather_forecast', { location: 'EFHK', days: 1 })).text) || [])[1];
 const bad = await call('get_weather_forecast', { location: 'tre', days: 30 });

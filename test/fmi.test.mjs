@@ -228,7 +228,7 @@ test('Tomorrow.io: one request per location; HTTP 429 pauses the source', async 
     const r1 = await fetchTomorrowCurrent(10.3, 20.4);
     const r2 = await fetchTomorrowCurrent(10.5, 20.6);
     assert.equal(r1.ok, false);
-    assert.match(r2.error, /paused until/);
+    assert.match(r2.error, /Upstream budget unavailable/);
     assert.equal(calls, 1, 'no requests while paused');
   } finally { globalThis.fetch = realFetch; }
 });
@@ -249,7 +249,7 @@ test('no station within 15 km: model values, nearest station shown for reference
     assert.doesNotMatch(out, /Measured at:/);
     assert.match(out, /Nearest weather station: Mikkeli Lentoasema AWOS \(FMI\), 25 km away: 8,6 °C at 20:10 \(for reference/);
     assert.match(out, /Finnish Meteorological Institute \(CC BY 4\.0\)/);
-    assert.match(out, /^Sources: Open-Meteo$/m);
+    assert.match(out, /^Sources: MET Norway MET Nordic model via Open-Meteo$/m);
     assert.equal(r.structuredContent.temperature, 7.9);
     assert.equal(r.structuredContent.nearestStation.station, 'Mikkeli Lentoasema AWOS');
     assert.equal(r.structuredContent.measuredAt, undefined);

@@ -225,6 +225,54 @@ Natural Earth (public domain). The free Open-Meteo API is for non-commercial use
 (OpenWeatherMap, WeatherAPI, Tomorrow.io) are subject to their providers' terms. Keys for the optional sources are
 read from the environment and are never written to output.
 
+## Shared load, budgets and compact AI access
+
+All HTTP clients share source work, caches and provider budgets within one service process. Use one process per
+state directory: public reusable station/geocoding/model datasets survive restarts, while time-sensitive warnings
+are fetched under their normal freshness rules. Separate weather and metadata LRU/byte budgets prevent a burst of
+locations from evicting all station catalogs. Open-Meteo model/cache coordinates use at most four decimals; forecast day counts and cloud
+windows reuse common representations. Current weather consults national observations first, then only the sources
+needed for missing essential/requested fields. Optional `fields: ["temperature", "conditions"]` saves upstream work;
+full-mode output stays compatible. Additional sources are not called just to fill optional UV or visibility fields.
+
+`/mcp` and default stdio keep the original twelve tools, readable text, output schemas and `structuredContent`.
+AI clients can instead use **`/mcp/compact`**, or stdio `node build/index.js --compact` (`MCP_PROFILE=compact`).
+Compact discovery omits verbose output schemas, but successful outputs are still validated internally. Results
+contain one JSON text block, optional top-level `fields`, and provenance/time/units/safety information that selectors
+cannot remove. `detail: "full"` includes optional API-key setup help. Field selection for other tools reduces result
+size after retrieval; it does not claim to reduce their provider calls. These profiles share the same backend.
+Protocol-byte savings do not imply identical model-token savings: some clients already hide schemas/duplicates.
+
+The central HTTP client reuses fresh responses and conditionally revalidates known ETag/Last-Modified bodies. A304
+or redirect still spends a network attempt; no HEAD+GET polling is used. It honors no-store/private/cache expiry,
+limits same-origin HTTPS redirects and uses one deadline across queue, redirects and response decoding.
+
+`WEATHER_QUOTAS_JSON` overrides application safety ceilings by provider ID (`open-meteo`, `openweathermap`,
+`weatherapi`, `tomorrow-io`, or another provider's DNS hostname), for example:
+
+```bash
+WEATHER_QUOTAS_JSON='{"tomorrow-io":{"minute":5,"hour":10,"day":100,"month":2500}}'
+```
+
+Defaults:30/minute,200/hour,1000/UTC-day,10000/UTC-calendar-month per provider/account; Tomorrow.io defaults
+10/minute,20/hour,200/day,5000/month. Open-Meteo and Syke allow60/minute (other default windows unchanged) to
+accommodate cold catalog/geocoding work. Minute/hour windows roll. These are **self-imposed ceilings, not provider plan
+entitlements**. Lower them for actual account limits, rolling-day limits and other consumers. Open-Meteo reservations conservatively round up variable/duration/model/location weighting to whole budget units
+([provider calculation](https://open-meteo.com/en/pricing)); other providers count attempts. These counters are not
+a billing reconciliation. Each reserved dispatch
+is persisted before network access, including failures/304/redirects; Retry-After and failure circuits survive restart.
+No allowance is shared automatically across hosts/volumes: partition a shared account's budget between installations.
+`get_weather_source_status` exposes local remaining hour/day ceilings without credentials or account fingerprints.
+
+Keep `MCP_STATE_DIR` across upgrades (native default `~/.cache/mcp-weather`; Docker `/var/lib/mcp-weather` on
+`weather-state`). Files are private. Corrupt/unwritable state fails closed rather than resetting quota. An interrupted
+transaction can leave `quota.lock`: inspect it and confirm no active owner before removing only the stale lock;
+never clear `quota.json` to regain allowance. Do not run several cache writers against one dataset file. Cache
+persistence is best-effort; quota persistence is mandatory before dispatch. Back up state alongside configuration.
+
+Default weather limits are200 entries/16MiB, metadata128 entries/8MiB; see `.env.example` for all tunables. No Redis,
+external cache service or additional runtime dependency is required.
+
 ## Architecture
 
 ```

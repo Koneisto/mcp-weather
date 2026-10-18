@@ -6,7 +6,10 @@ import { degreesToCardinal, formatNum, formatFixed, formatLocalTime } from '../u
 import { ok, fail, errorMessage, READ_ONLY_EXTERNAL } from '../utils/result.js';
 import { locationOut, stationOut, toLocation } from '../utils/schemas.js';
 
+const selectableFields = ['temperature', 'feelsLike', 'conditions', 'humidity', 'pressure', 'windSpeed', 'windDirection', 'windGusts', 'cloudCover', 'visibility', 'uvIndex', 'precipitation', 'dewPoint', 'snowDepth', 'location', 'measuredAt', 'nearestStation', 'attribution', 'sources'] as const;
+
 const schema = {
+  fields: z.array(z.enum(selectableFields)).min(1).max(selectableFields.length).optional().describe('Requested output fields; skips fallback providers once these weather fields are filled.'),
   location: z.string().max(200).describe('City name, coordinates (lat,lon), ICAO code or Finnish city alias (e.g. "Helsinki", "hki", "60.17,24.94", "EFHK")'),
 };
 
@@ -44,7 +47,7 @@ export const currentWeatherTool: tool<typeof schema, typeof outputSchema> = {
   handler: async (args) => {
     try {
       const loc = await resolveLocation(args.location);
-      const { weather: w, sources, summary, observation, nearbyObservation: near, analysis } = await aggregateCurrentWeather(loc);
+      const { weather: w, sources, summary, observation, nearbyObservation: near, analysis } = await aggregateCurrentWeather(loc, args.fields);
 
       const lines: string[] = [summary, ''];
 

@@ -1,3 +1,5 @@
+import { homedir } from 'node:os';
+import { join } from 'node:path';
 export interface Config {
   openWeatherMapKey: string;
   weatherApiKey: string;
@@ -10,6 +12,11 @@ export interface Config {
   httpMaxQueued: number;
   maxHttpRequests: number;
   cacheMaxInflight: number;
+  stateDir: string;
+  quotaLimitsJson: string;
+  cacheMaxBytes: number;
+  metadataCacheMaxEntries: number;
+  metadataCacheMaxBytes: number;
   hasOpenWeatherMap: boolean;
   hasWeatherApi: boolean;
   hasTomorrowIo: boolean;
@@ -48,6 +55,11 @@ export function loadConfig(): Config {
     httpMaxQueued: integer('HTTP_MAX_QUEUED', 64, 0, 256),
     maxHttpRequests: integer('MAX_HTTP_REQUESTS', 8, 1, 64),
     cacheMaxInflight: integer('CACHE_MAX_INFLIGHT', 64, 1, 512),
+    stateDir: env('MCP_STATE_DIR', join(homedir(), '.cache', 'mcp-weather')),
+    quotaLimitsJson: env('WEATHER_QUOTAS_JSON'),
+    cacheMaxBytes: integer('CACHE_MAX_BYTES', 16 * 1024 * 1024, 1024, 128 * 1024 * 1024),
+    metadataCacheMaxEntries: integer('METADATA_CACHE_MAX_ENTRIES', 128, 1, 10000),
+    metadataCacheMaxBytes: integer('METADATA_CACHE_MAX_BYTES', 8 * 1024 * 1024, 1024, 64 * 1024 * 1024),
     hasOpenWeatherMap: openWeatherMapKey.length > 0,
     hasWeatherApi: weatherApiKey.length > 0,
     hasTomorrowIo: tomorrowIoKey.length > 0,
