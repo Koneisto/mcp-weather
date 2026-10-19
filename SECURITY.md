@@ -14,7 +14,7 @@ Please do not open a public issue for security problems.
 
 - Preferred: report privately through GitHub
   ([Security > Report a vulnerability](https://github.com/Koneisto/mcp-weather/security/advisories/new)).
-- Or email **noreply@example.invalid**.
+- Email is not monitored; `noreply@example.invalid` is a non-deliverable placeholder.
 
 Include the affected version, how to reproduce the problem and its impact. You will get an acknowledgement within
 7 days. Once a fix is released, the report is credited in the release notes unless you prefer otherwise.
