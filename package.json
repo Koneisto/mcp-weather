@@ -53,9 +53,9 @@
     "sbom": "npm sbom --omit=dev --sbom-format cyclonedx > build/sbom.cdx.json"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.32.1",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "suncalc": "^1.9.0",
-    "zod": "^4.1.13"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
