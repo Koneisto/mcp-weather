@@ -12,7 +12,7 @@ RUN npm run build && npm run sbom
 
 # Runtime: retain the official Node binary, but leave npm, headers and build tooling behind.
 # Its musl runtime dependencies are libstdc++/libgcc (also verified by the container tests).
-FROM alpine:3.24.2@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6
+FROM alpine:3.24.3@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
 RUN apk add --no-cache libstdc++ ca-certificates \
  && apk upgrade --no-cache \
  && addgroup -g 1000 node \
